@@ -12,7 +12,17 @@ def get_parts(val: str):
         ["mycol", "Random", "Timestamp", "2023-03-03 00:00:00", "2026-12-12 23:59:59"]
 
     """
-    return list(re.findall(r"[ ]?((?!\"|')\S+|(?:\"|').+?(?:\"|'))[ ]?", val))
+    groups = re.findall(r"[ ]?(?:(?!\"|')(\S+)|(?:\"|')(.+?)(?:\"|'))[ ]?",
+                        val)
+
+    # there are two matching groups for the two cases so get the first non empty val
+    def first_non_empty(g):
+        if g[0]:
+            return g[0]
+        else:
+            return g[1]
+
+    return [first_non_empty(group) for group in groups]
 
 
 def render_template(template_str: str, builtin_vars: dict, runtime_vars: dict):

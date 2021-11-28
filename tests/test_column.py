@@ -27,6 +27,14 @@ class TestColumnParsing(unittest.TestCase):
         col = Column.parse_from_yaml(conf)
         assert isinstance(col, columns.Fixed)
 
+    def test_short_fixed_column_parses_with_spaced_value(self):
+        conf = """
+        col: mycol Fixed String 'boop boop'
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Fixed)
+        assert col.value == "boop boop"
+
     # Random Column
     def test_random_column_parses(self):
         conf = """

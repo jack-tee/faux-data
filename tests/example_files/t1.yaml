@@ -1,0 +1,27 @@
+tables:
+  - name: mytable
+    rows: 11
+    columns:
+      # Fixed
+      - name: fixed_long_1
+        column_type: Fixed
+        value: 2
+      - name: fixed_long_2
+        column_type: Fixed
+        value: thing
+      - col: fixed_short_1 Fixed Int 5
+      - col: fixed_short_2 Fixed String "boop boop"
+
+      # Random
+      - name: random_long_1
+        column_type: Random
+        min: 3
+        max: 4
+      - col: random_short_1 Random Int 3 5
+
+      # Selection
+      - name: myothercol
+        column_type: Selection
+        values:
+          - a
+          - b

@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     r = Template.from_string(t1)
 
-    rf = Template.from_file(r"C:\Users\JET\ktest\d.yaml")
+    rf = Template.from_file(r"tests/example_files/t1.yaml")
 
     rf.generate()
 

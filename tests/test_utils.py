@@ -22,3 +22,16 @@ class TestUtilsGetArgs(unittest.TestCase):
         parts = get_parts("mycol  Random Int  ")
         assert len(parts) == 3
         assert parts == ["mycol", "Random", "Int"]
+
+    def test_get_parts_value_with_space(self):
+        parts = get_parts("mycol Fixed String 'boop boop'")
+        assert len(parts) == 4
+        assert parts == ["mycol", "Fixed", "String", "boop boop"]
+
+    def test_get_parts_value_with_space(self):
+        parts = get_parts(
+            'mycol Random Timestamp "2021-04-03 06:02:03" 2021-05-02')
+        assert len(parts) == 5
+        assert parts == [
+            "mycol", "Random", "Timestamp", "2021-04-03 06:02:03", "2021-05-02"
+        ]
