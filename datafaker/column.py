@@ -9,10 +9,7 @@ import yaml
 
 from datafaker.utils import get_parts
 
-pandas_type_mapping = {
-    "Int": "int64",
-    "String": "string",
-}
+pandas_type_mapping = {"Int": "int64", "String": "string", "Float": "float64"}
 
 
 @dataclass(kw_only=True)

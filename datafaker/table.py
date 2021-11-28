@@ -15,7 +15,8 @@ class Table:
     name: str
     rows: int
     columns: List[Column]
-    targets: List[Target]
+    targets: List[Target] = field(default_factory=list)
+    output_cols: List[str] = field(default_factory=list)
     df: pd.DataFrame = None
     complete: bool = False
     error: Exception = None
@@ -25,13 +26,18 @@ class Table:
         conf = yaml.safe_load(yaml_str)
         return cls(**conf)
 
-    def __init__(self, name: str, rows: int, columns: list):
+    def __init__(self,
+                 name: str,
+                 rows: int,
+                 columns: list,
+                 output_cols: list = None,
+                 targets: list = None):
         try:
             self.name = name
             self.rows = rows
             self.df = pd.DataFrame({"rowId": np.arange(self.rows)})
             self.columns = self.parse_cols(columns)
-            self.targets = []
+            self.output_cols = output_cols
 
         except Exception as e:
             self.complete = False
@@ -65,6 +71,9 @@ class Table:
 
         else:
             self.df.drop(columns="rowId", inplace=True)
+
+            if self.output_cols:
+                self.df = self.df[self.output_cols]
             self.complete = True
 
     def load(self):

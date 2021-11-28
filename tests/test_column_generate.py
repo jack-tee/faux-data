@@ -222,6 +222,21 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert "mycol" in e.__repr__()
         assert "invalid literal for int" in e.__repr__()
 
+    def test_random_float(self):
+        conf = """
+        name: mycol
+        column_type: Random
+        data_type: Float
+        min: 1.23
+        max: 3.45
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Random)
+
+        series = col.generate(10)
+
+        assert all(series[(series <= 3.45) & (series >= 1.23)])
+
 
 class TestSelectionColumnGeneration(unittest.TestCase):
     def test_selection_column_values(self):
@@ -260,46 +275,3 @@ class TestSelectionColumnGeneration(unittest.TestCase):
         # should have both values in the output
         assert any(series == 3)
         assert any(series == 6)
-
-
-class TestSelectionColumnGeneration(unittest.TestCase):
-    def test_basic_map_column(self):
-        conf = """
-        name: mytbl
-        rows: 10
-        columns:
-          - col: col1 Fixed String 'boo'
-          - col: col2 Fixed Int 5
-          - col: map_col Map
-            source_columns:
-              - col1
-              - col2
-        """
-        tbl = Table.parse_from_yaml(conf)
-        tbl.generate()
-
-        print(tbl.df)
-        assert len(tbl.df.columns) == 3
-
-        example_dict = tbl.df['map_col'][0]
-        assert example_dict == {'col1': 'boo', 'col2': 5}
-
-    def test_basic_map_column_drop_source(self):
-        conf = """
-        name: mytbl
-        rows: 10
-        columns:
-          - col: col1 Fixed String 'boo'
-          - col: col2 Fixed Int 5
-          - col: map_col Map
-            source_columns:
-              - col1
-              - col2
-            drop: True
-        """
-        tbl = Table.parse_from_yaml(conf)
-        tbl.generate()
-
-        print(tbl.df)
-        assert len(tbl.df.columns) == 1
-        assert tbl.df.columns == ["map_col"]

@@ -25,11 +25,14 @@ class Random(Column):
     data_type: str = "Int"
     min: any
     max: any
+    decimal_places: int = 4
 
     def generate(self, rows: int) -> pd.Series:
         match self.data_type:
             case 'Int':
                 return pd.Series(np.random.randint(int(self.min), int(self.max)+1, rows), dtype=self.pandas_type())
+            case 'Float':
+                return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows), dtype=self.pandas_type())
             case _:
                 raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
 
@@ -46,7 +49,7 @@ class Selection(Column):
 @dataclass(kw_only=True)
 class Map(Column):
     """Creates a dict of columns based on the source cols"""
-    source_columns: List[any] = field(default_factory=list)
+    source_columns: List[str] = field(default_factory=list)
     drop: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:

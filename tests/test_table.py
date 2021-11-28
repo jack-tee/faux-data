@@ -62,3 +62,26 @@ class TestTableGeneration(unittest.TestCase):
 
         assert len(tbl.df.columns) == 2
         assert len(tbl.df) == 11
+
+    def test_output_columns_filters_output(self):
+        conf = """
+        name: mytable
+        rows: 11
+        output_cols: [col2]
+        columns:
+        - name: col1
+          column_type: Fixed
+          value: b
+        - name: col2
+          column_type: Random
+          min: 3
+          max: 10
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        print("\n")
+        print(tbl.df.to_string(index=False))
+
+        assert len(tbl.df.columns) == 1
+        assert tbl.df.columns == ["col2"]
