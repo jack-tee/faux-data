@@ -5,6 +5,7 @@ import unittest
 
 from datafaker.column import Column, ColumnGenerationException
 from datafaker import columns
+from datafaker.table import Table
 
 from tests.utils import empty_df
 
@@ -92,6 +93,30 @@ class TestColumnParsing(unittest.TestCase):
         col = Column.parse_from_yaml(conf)
         assert isinstance(col, columns.Selection)
         assert col.data_type == 'Int'
+
+    # Map Column
+    def test_short_map(self):
+        conf = """
+        col: mycol Map
+        source_columns:
+          - col1
+          - col2
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Map)
+        assert col.source_columns == ["col1", "col2"]
+
+    def test_long_map(self):
+        conf = """
+        name: mycol
+        column_type: Map
+        source_columns:
+          - col3
+          - col4
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Map)
+        assert col.source_columns == ["col3", "col4"]
 
 
 class TestFixedColumnGeneration(unittest.TestCase):
@@ -192,7 +217,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert isinstance(col, columns.Random)
 
         with pytest.raises(ColumnGenerationException) as e:
-            col.add_column(empty_df())
+            col.maybe_add_column(empty_df())
 
         assert "mycol" in e.__repr__()
         assert "invalid literal for int" in e.__repr__()
@@ -235,3 +260,46 @@ class TestSelectionColumnGeneration(unittest.TestCase):
         # should have both values in the output
         assert any(series == 3)
         assert any(series == 6)
+
+
+class TestSelectionColumnGeneration(unittest.TestCase):
+    def test_basic_map_column(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Fixed String 'boo'
+          - col: col2 Fixed Int 5
+          - col: map_col Map
+            source_columns:
+              - col1
+              - col2
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        print(tbl.df)
+        assert len(tbl.df.columns) == 3
+
+        example_dict = tbl.df['map_col'][0]
+        assert example_dict == {'col1': 'boo', 'col2': 5}
+
+    def test_basic_map_column_drop_source(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Fixed String 'boo'
+          - col: col2 Fixed Int 5
+          - col: map_col Map
+            source_columns:
+              - col1
+              - col2
+            drop: True
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        assert tbl.df.columns == ["map_col"]

@@ -41,3 +41,16 @@ class Selection(Column):
 
     def generate(self, rows: int) -> pd.Series:
         return pd.Series(np.random.choice(self.values, rows, replace=True), dtype=self.pandas_type())
+
+
+@dataclass(kw_only=True)
+class Map(Column):
+    """Creates a dict of columns based on the source cols"""
+    source_columns: List[any] = field(default_factory=list)
+    drop: bool = False
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        df[self.name] = df[self.source_columns].to_dict(orient='records')
+
+        if self.drop:
+            df.drop(columns=self.source_columns, inplace=True)

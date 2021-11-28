@@ -74,12 +74,15 @@ class Column:
 
             return cls(**conf)
 
-    def add_column(self, df: pd.DataFrame) -> None:
+    def maybe_add_column(self, df: pd.DataFrame) -> None:
         try:
-            df[self.name] = self.generate(len(df))
+            self.add_column(df)
         except Exception as e:
             raise ColumnGenerationException(
                 f"Error on column [{self.name}]. Caused by: {e}.")
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        df[self.name] = self.generate(len(df))
 
     def generate(self, rows: int) -> pd.Series:
         raise NotImplementedError("Please Implement this method")

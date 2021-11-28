@@ -54,7 +54,7 @@ class Table:
         """Generates the table data"""
         try:
             for column in self.columns:
-                column.add_column(self.df)
+                column.maybe_add_column(self.df)
 
         except Exception as e:
             self.complete = False
