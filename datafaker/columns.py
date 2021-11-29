@@ -1,4 +1,6 @@
 import dataclasses
+import random
+import string
 from dataclasses import dataclass, field
 from typing import List
 
@@ -6,9 +8,6 @@ import numpy as np
 import pandas as pd
 
 from datafaker.column import Column, ColumnGenerationException
-
-
-ALPHABET = list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
 @dataclass(kw_only=True)
 class Fixed(Column):
@@ -22,6 +21,13 @@ class Fixed(Column):
                 return pd.Series(np.full(rows, self.value), dtype=self.pandas_type())
 
 
+unit_factor = {
+    's' :1E9,
+    'ms':1E6,
+    'us':1E3,
+    'ns':1
+}
+
 @dataclass(kw_only=True)
 class Random(Column):
     data_type: str = "Int"
@@ -29,6 +35,7 @@ class Random(Column):
     max: any
     decimal_places: int = 4
     str_max_chars: int = 5000
+    time_unit: str = 'ms'
 
     def generate(self, rows: int) -> pd.Series:
         match self.data_type:
@@ -42,13 +49,21 @@ class Random(Column):
                 # limit how long strings can be
                 self.min = min(int(self.min), self.str_max_chars)
                 self.max = min(int(self.max), self.str_max_chars)
-                chars = np.random.choice(ALPHABET, (rows, self.max))
-                lens = np.random.randint(self.min, self.max+1, rows)
-                return pd.Series(list(chars), dtype='string').str.join('')
-                # np.array(list(''.join(a)[0:l] for a, l in zip(chars, lens))
+                return pd.Series(list(''.join(random.choices(string.ascii_letters, k=random.randint(self.min, self.max))) for _ in range(rows)), dtype=self.pandas_type())
+            
+            case 'Timestamp':
+                date_ints_series = self.random_date_ints(self.min, self.max, rows, self.time_unit)
+                return pd.to_datetime(date_ints_series, unit=self.time_unit)
 
             case _:
                 raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
+
+
+    def random_date_ints(self, start, end, rows, unit='ms'):
+        start, end = pd.Timestamp(start), pd.Timestamp(end)
+        return pd.Series(np.random.uniform(start.value // unit_factor[unit], end.value // unit_factor[unit], rows)).astype(int)
+
+
 
 
 @dataclass(kw_only=True)
