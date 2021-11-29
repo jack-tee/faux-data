@@ -8,6 +8,8 @@ import pandas as pd
 from datafaker.column import Column, ColumnGenerationException
 
 
+ALPHABET = list('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+
 @dataclass(kw_only=True)
 class Fixed(Column):
     value: any
@@ -26,13 +28,25 @@ class Random(Column):
     min: any
     max: any
     decimal_places: int = 4
+    str_max_chars: int = 5000
 
     def generate(self, rows: int) -> pd.Series:
         match self.data_type:
             case 'Int':
                 return pd.Series(np.random.randint(int(self.min), int(self.max)+1, rows), dtype=self.pandas_type())
+
             case 'Float':
-                return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows), dtype=self.pandas_type())
+                return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows).round(decimals=self.decimal_places), dtype=self.pandas_type())
+
+            case 'String':
+                # limit how long strings can be
+                self.min = min(int(self.min), self.str_max_chars)
+                self.max = min(int(self.max), self.str_max_chars)
+                chars = np.random.choice(ALPHABET, (rows, self.max))
+                lens = np.random.randint(self.min, self.max+1, rows)
+                return pd.Series(list(chars), dtype='string').str.join('')
+                # np.array(list(''.join(a)[0:l] for a, l in zip(chars, lens))
+
             case _:
                 raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
 

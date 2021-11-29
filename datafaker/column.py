@@ -17,6 +17,7 @@ class Column:
     name: str
     column_type: str
     data_type: str = None
+    null_percentage: int = None
 
     @classmethod
     def get_subclass(cls, key: str):
@@ -57,12 +58,12 @@ class Column:
 
         elif conf.get("col"):
             parts = get_parts(conf.get("col"))
-            for f, conf_part in zip(dataclasses.fields(cls), parts):
-
-                if f.type == List[any]:
-                    # skip any iterable fields
-                    continue
-                elif f.type != any:
+            fields = [
+                f for f in dataclasses.fields(cls)
+                if f.name not in ["null_percentage"] and f.type != List[any]
+            ]
+            for f, conf_part in zip(fields, parts):
+                if f.type != any:
                     conf[f.name] = f.type(conf_part.strip())
                 else:
                     conf[f.name] = conf_part.strip()
@@ -74,12 +75,16 @@ class Column:
     def maybe_add_column(self, df: pd.DataFrame) -> None:
         try:
             self.add_column(df)
+            self.post_process(df)
         except Exception as e:
             raise ColumnGenerationException(
                 f"Error on column [{self.name}]. Caused by: {e}.")
 
     def add_column(self, df: pd.DataFrame) -> None:
         df[self.name] = self.generate(len(df))
+
+    def post_process(self, df: pd.DataFrame) -> None:
+        pass
 
     def generate(self, rows: int) -> pd.Series:
         raise NotImplementedError("Please Implement this method")

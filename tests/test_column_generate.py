@@ -173,6 +173,30 @@ class TestFixedColumnGeneration(unittest.TestCase):
         assert all(series == 3)
         assert series.dtype == 'int64'
 
+    def test_fixed_column_float_short(self):
+        conf = """
+        col: mycol Fixed Float 3.56
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Fixed)
+
+        series = col.generate(5)
+        assert all(series == 3.56)
+        assert series.dtype == 'float64'
+
+    def test_fixed_column_float_long(self):
+        conf = """
+        name: mycol
+        column_type: Fixed 
+        value: 3.76
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Fixed)
+
+        series = col.generate(5)
+        assert all(series == 3.76)
+        assert series.dtype == 'float64'
+
 
 class TestRandomColumnGeneration(unittest.TestCase):
     def test_random_column_no_data_type(self):
@@ -236,6 +260,51 @@ class TestRandomColumnGeneration(unittest.TestCase):
         series = col.generate(10)
 
         assert all(series[(series <= 3.45) & (series >= 1.23)])
+
+    def test_random_string(self):
+        conf = """
+        name: mycol
+        column_type: Random
+        data_type: String
+        min: 8
+        max: 14
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Random)
+
+        series = col.generate(100)
+
+        lens = series.str.len()
+        assert series.dtype == 'string'
+        assert all((lens >= 8) & (lens <= 14))
+        assert min(lens) == 8
+        assert max(lens) == 14
+
+    def test_random_string_short(self):
+        conf = """
+        col: mycol Random String 12 18
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Random)
+
+        series = col.generate(10)
+
+        lens = series.str.len()
+        assert series.dtype == 'string'
+        assert all((lens >= 12) & (lens <= 18))
+
+    def test_random_string_limited_to_5000_chars(self):
+        conf = """
+        col: mycol Random String 10000 100000
+        """
+        col = Column.parse_from_yaml(conf)
+        assert isinstance(col, columns.Random)
+
+        series = col.generate(10)
+
+        lens = series.str.len()
+        assert series.dtype == 'string'
+        assert all(lens == 5000)
 
 
 class TestSelectionColumnGeneration(unittest.TestCase):
