@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from datafaker.column import Column
-from datafaker.target import Target
+from .column import Column
+from .target import Target
 
 
 @dataclass(kw_only=True)

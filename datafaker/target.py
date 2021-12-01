@@ -16,4 +16,8 @@ class Target(TemplateEntity):
 
 @dataclass(kw_only=True)
 class File(Target):
-    pass
+    filetype: str
+    filepath: str
+
+    def save(self, tbl):
+        print("saved")
