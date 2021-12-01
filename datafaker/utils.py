@@ -27,9 +27,9 @@ def get_parts(val: str):
 
 def render_template(template_str: str, builtin_vars: dict, runtime_vars: dict):
 
-    vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+    vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
-    rendered_template = chevron.render(template_str, vars, warn=True)
+    rendered_template = chevron.render(template_str, vars_, warn=True)
     return rendered_template
 
 
@@ -40,24 +40,24 @@ def resolve_variables(template_str: str, builtin_vars: dict,
 
     variable_lines = extract_variable_lines(template_str)
     builtin_vars.update(runtime_vars)
-    vars = builtin_vars.copy()
+    vars_ = builtin_vars.copy()
 
     if not variable_lines:
         # no vars in template so just return builtins plus runtime vars
-        return vars
+        return vars_
 
     for variable_line in variable_lines:
-        rendered_var_line = chevron.render(variable_line, vars)
+        rendered_var_line = chevron.render(variable_line, vars_)
         var = yaml.safe_load(rendered_var_line)
 
         key = list(var)[0]  # get the key of the only element
-        if key not in vars:
-            vars.update(var)
+        if key not in vars_:
+            vars_.update(var)
 
-    return vars
+    return vars_
 
 
-def extract_variable_lines(template_str: str) -> List[str]:
+def extract_variable_lines(template_str: str) -> List[str] | None:
     """Extracts the variables from a template as a list of strings"""
     print(template_str)
     pattern = r"(?:^variables:)(.*)(?:^tables:)"
