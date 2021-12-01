@@ -361,25 +361,6 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert any(series.dt.second > 0)
         assert all(series.dt.microsecond == 0)
 
-    def test_random_timestamp_boop(self):
-        conf = """
-        col: mycol Random Timestamp '2021-01-01 08:00:00' "2021-01-01 16:00:00"
-        time_unit: s
-        output_type: Int
-        """
-        col = Column.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
-
-        series = col.generate(10)
-        assert series.dtype == 'datetime64[ns]'
-        assert all((series >= '2021-01-01 08:00:00')
-                   & (series <= '2021-01-01 16:00:00'))
-
-        # verify precision
-        assert col.time_unit == 's'
-        assert any(series.dt.second > 0)
-        assert all(series.dt.microsecond == 0)
-
 
 class TestSelectionColumnGeneration(unittest.TestCase):
     def test_selection_column_values(self):

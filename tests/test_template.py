@@ -48,34 +48,34 @@ class TestTemplateResolveVariables(unittest.TestCase):
         """)
         runtime_vars = {}
         builtin_vars = {}
-        vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+        vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
         expected = {
             "env": "dev",
             "dataset": "dev_users",
             "table": "dev_users.mytable"
         }
-        assert expected == vars
+        assert expected == vars_
 
     def test_resolve_nested_vars_with_runtime_env(self):
         template_str = strip_lborder("""
         variables:
           env: dev
-          dataset: {{ env }}_users
+          dataset: {{ env }}_orders
           table: {{ dataset }}.mytable
         tables:
           ...
         """)
         runtime_vars = {"env": "test"}
         builtin_vars = {}
-        vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+        vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
         expected = {
             "env": "test",
-            "dataset": "test_users",
-            "table": "test_users.mytable"
+            "dataset": "test_orders",
+            "table": "test_orders.mytable"
         }
-        assert expected == vars
+        assert expected == vars_
 
     def test_resolve_nested_vars_with_runtime_override(self):
         template_str = strip_lborder("""
@@ -88,14 +88,14 @@ class TestTemplateResolveVariables(unittest.TestCase):
         """)
         runtime_vars = {"env": "test", "dataset": "another_dataset"}
         builtin_vars = {}
-        vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+        vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
         expected = {
             "env": "test",
             "dataset": "another_dataset",
             "table": "another_dataset.mytable"
         }
-        assert expected == vars
+        assert expected == vars_
 
     def test_a_builtin_var_is_overridden_by_a_runtime_var(self):
         template_str = strip_lborder("""
@@ -104,10 +104,10 @@ class TestTemplateResolveVariables(unittest.TestCase):
         """)
         runtime_vars = {"warehouse_dir": "a/new/path"}
         builtin_vars = {"warehouse_dir": "some/path"}
-        vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+        vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
         expected = {"warehouse_dir": "a/new/path"}
-        assert expected == vars
+        assert expected == vars_
 
     def test_a_template_var_is_overridden_by_a_runtime_var(self):
         template_str = strip_lborder("""
@@ -118,10 +118,10 @@ class TestTemplateResolveVariables(unittest.TestCase):
         """)
         runtime_vars = {"type": "apple"}
         builtin_vars = {}
-        vars = resolve_variables(template_str, builtin_vars, runtime_vars)
+        vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
 
         expected = {"type": "apple"}
-        assert expected == vars
+        assert expected == vars_
 
 
 class TestTemplateRenderTemplate(unittest.TestCase):

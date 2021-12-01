@@ -43,7 +43,9 @@ class Random(Column):
                 return pd.Series(np.random.randint(int(self.min), int(self.max)+1, rows), dtype=self.pandas_type())
 
             case 'Float':
-                return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows).round(decimals=self.decimal_places), dtype=self.pandas_type())
+                return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows)
+                                          .round(decimals=self.decimal_places),
+                                 dtype=self.pandas_type())
 
             case 'String':
                 # limit how long strings can be
@@ -64,8 +66,6 @@ class Random(Column):
         return pd.Series(np.random.uniform(start.value // unit_factor[unit], end.value // unit_factor[unit], rows)).astype(int)
 
 
-
-
 @dataclass(kw_only=True)
 class Selection(Column):
     values: List[any] = field(default_factory=list)
@@ -80,9 +80,18 @@ class Map(Column):
     """Creates a dict of columns based on the source cols"""
     source_columns: List[str] = field(default_factory=list)
     drop: bool = False
+    parent: any = None
+
 
     def add_column(self, df: pd.DataFrame) -> None:
-        df[self.name] = df[self.source_columns].to_dict(orient='records')
+
+        if self.parent:
+            df_ = df[self.source_columns]
+            df_[self.parent] = df_.to_dict(orient='records')
+            df[self.name] = df_[self.parent].to_frame().to_dict(orient='records')
+
+        else:
+            df[self.name] = df[self.source_columns].to_dict(orient='records')
 
         if self.drop:
             df.drop(columns=self.source_columns, inplace=True)

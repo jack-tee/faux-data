@@ -4,7 +4,7 @@ from typing import List
 
 import yaml
 
-from table import Table
+from .table import Table
 
 
 @dataclass(kw_only=True)

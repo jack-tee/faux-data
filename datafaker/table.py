@@ -15,7 +15,7 @@ class Table:
     name: str
     rows: int
     columns: List[Column]
-    targets: List[Target] = field(default_factory=list)
+    targets: List[Target] = field(default_factory=list, repr=False)
     output_cols: List[str] = field(default_factory=list)
     df: pd.DataFrame = None
     complete: bool = False
