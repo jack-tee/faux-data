@@ -1,6 +1,7 @@
 import unittest
 
-from datafaker.target import Target, File
+from datafaker.factory import TargetFactory
+from datafaker.target import File
 
 
 class TestTargetParsing(unittest.TestCase):
@@ -11,7 +12,7 @@ class TestTargetParsing(unittest.TestCase):
         filetype: csv
         filepath: path/to/my/file.csv
         """
-        targ = Target.parse_from_yaml(conf)
+        targ = TargetFactory.parse_from_yaml(conf)
         assert isinstance(targ, File)
         assert targ.filepath == "path/to/my/file.csv"
         assert targ.filetype == "csv"

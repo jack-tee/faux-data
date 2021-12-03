@@ -3,14 +3,15 @@ from dataclasses import dataclass, field
 import importlib
 import re
 from typing import List
-
+from .column import Column
+from .target import Target
 import yaml
 
 
-@dataclass(kw_only=True)
-class TemplateEntity:
-    """Base class for Columns and Targets"""
-    type_key: str = field(metadata={"base": True})
+class BaseFactory:
+    """Base class creating entities based on input dicts"""
+    class_ = None
+    type_key: str
     short_key: str
     short_skip_fields: str
     import_path: str | None = None
@@ -19,7 +20,7 @@ class TemplateEntity:
     def get_subclass(cls, key: str):
         if cls.import_path:
             importlib.import_module(cls.import_path)
-        for c in cls.__subclasses__():
+        for c in cls.class_.__subclasses__():
             if c.__name__ == key:
                 return c
         raise NotImplementedError(
@@ -46,21 +47,20 @@ class TemplateEntity:
 
         c = cls.get_subclass(type_)
 
-        return c.build(conf)
+        return cls.build(c, conf)
 
     @classmethod
-    def build(cls, conf: dict):
+    def build(cls, c: type, conf: dict):
         """Build the column type from the provided column configuration."""
 
         if conf.get(cls.type_key):
-            return cls(**conf)
+            return c(**conf)
 
         elif conf.get(cls.short_key):
             parts = get_parts(conf.get(cls.short_key))
             fields = [
-                f for f in dataclasses.fields(cls)
-                if f.name not in cls.short_skip_fields.split(",")
-                and f.type != List[any] and f.init == True
+                f for f in dataclasses.fields(c)
+                if f.name not in cls.short_skip_fields and f.type != List[any]
             ]
             for f, conf_part in zip(fields, parts):
                 if f.type != any:
@@ -70,7 +70,23 @@ class TemplateEntity:
 
             del conf[cls.short_key]
 
-            return cls(**conf)
+            return c(**conf)
+
+
+class ColumnFactory(BaseFactory):
+    class_ = Column
+    type_key: str = "column_type"
+    short_key: str = "col"
+    short_skip_fields: List[str] = ["null_percentage"]
+    import_path: str | None = "datafaker.columns"
+
+
+class TargetFactory(BaseFactory):
+    class_ = Target
+    type_key: str = "target"
+    short_key: str = "t"
+    short_skip_fields: List[str] = []
+    import_path: str | None = None
 
 
 def get_parts(val: str):

@@ -7,6 +7,7 @@ import pandas as pd
 import yaml
 
 from .column import Column
+from .factory import ColumnFactory
 from .target import Target
 
 
@@ -48,7 +49,7 @@ class Table:
         cols = []
         try:
             for column in columns:
-                cols.append(Column.parse(column))
+                cols.append(ColumnFactory.parse(column))
 
         except Exception as e:
             self.complete = False

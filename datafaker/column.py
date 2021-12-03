@@ -9,18 +9,12 @@ import pandas as pd
 import yaml
 
 from datafaker.utils import get_parts
-from .template_entity import TemplateEntity
 
 pandas_type_mapping = {"Int": "int64", "String": "string", "Float": "float64"}
 
 
 @dataclass(kw_only=True)
-class Column(TemplateEntity):
-    type_key: str = field(default="column_type", init=False)
-    short_key: str = field(default="col", init=False)
-    short_skip_fields: str = field(default="null_percentage", init=False)
-    import_path: str | None = field(default="datafaker.columns", init=False)
-
+class Column:
     name: str
     column_type: str
     data_type: str = None
