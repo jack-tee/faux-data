@@ -1,9 +1,15 @@
 import sys
+from typing import List
 
 from .template import Template
+from .utils import get_parts
+
 
 def parse_params(args):
-    args_iter = iter(args)
+    args = " ".join(args)
+    parts = get_parts(args)
+
+    args_iter = iter(parts)
 
     params = {}
     prev_elem = None
@@ -29,17 +35,17 @@ def parse_params(args):
 def show_help():
     print("help")
 
-def main():
+def cmd(args: List[str]):
     try:
-        cmd = sys.argv[1]
+        cmd = args[1]
     except IndexError as e:
         show_help()
         sys.exit(1)
 
     match cmd:
         case 'run':
-            filename = sys.argv[2]
-            params = parse_params(sys.argv[3:])
+            filename = args[2]
+            params = parse_params(args[3:])
             print(params)
             t = Template.from_file(filename)
             t.generate()
@@ -47,3 +53,7 @@ def main():
 
         case _:
             raise Exception(f"Unrecognised command {cmd}")
+
+
+def main():
+    cmd(sys.argv)
