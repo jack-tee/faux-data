@@ -14,3 +14,14 @@ class File(Target):
 
     def save(self, tbl):
         print("saved")
+
+
+@dataclass(kw_only=True)
+class BigQuery(Target):
+    project: str
+    dataset: str
+    table: str
+    truncate: bool = False
+
+    def save(self, tbl):
+        print("saved")

@@ -111,18 +111,17 @@ class Map(Column):
     """Creates a dict of columns based on the source cols"""
     source_columns: List[str] = field(default_factory=list)
     drop: bool = False
-    parent: any = None
-
+    select_one: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:
+        
+        if self.select_one:
+            # randomly select one source_column per row and blank all other columns on that row
+            chosen_cols = df[self.source_columns].columns.to_series().sample(len(df), replace=True, ignore_index=True)
+            for col in self.source_columns:
+                df.loc[chosen_cols != col, col] = np.nan
 
-        if self.parent:
-            df_ = df[self.source_columns]
-            df_[self.parent] = df_.to_dict(orient='records')
-            df[self.name] = df_[self.parent].to_frame().to_dict(orient='records')
-
-        else:
-            df[self.name] = df[self.source_columns].to_dict(orient='records')
+        df[self.name] = df[self.source_columns].to_dict(orient='records')
 
         if self.drop:
             df.drop(columns=self.source_columns, inplace=True)

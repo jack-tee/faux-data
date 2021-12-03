@@ -52,29 +52,25 @@ class TestMapColumnGeneration(unittest.TestCase):
         assert len(tbl.df.columns) == 1
         assert tbl.df.columns == ["map_col"]
 
-    def test_basic_map_column_with_parent(self):
+    def test_basic_map_column_with_select_one(self):
         conf = """
         name: mytbl
         rows: 10
         columns:
           - col: col1 Fixed String 'boo'
           - col: col2 Fixed Int 5
+          - col: col3 Fixed Float 5.6
           - col: map_col Map
-            parent: 1
-            source_columns:
-              - col1
-              - col2
-            drop: True
+            source_columns: [col1, col2, col3]
+            select_one: True
         """
         tbl = Table.parse_from_yaml(conf)
         tbl.generate()
 
         print(tbl.df)
-        assert len(tbl.df.columns) == 1
-        assert tbl.df.columns == ["map_col"]
 
-        example_dict = tbl.df['map_col'][0]
-        assert example_dict == {1: {'col1': 'boo', 'col2': 5}}
+        # check that the source_columns only have one non-null
+        assert all(tbl.df[["col1", "col2", "col3"]].notnull().sum(axis=1))
 
 
 class TestNestedColumns(unittest.TestCase):
