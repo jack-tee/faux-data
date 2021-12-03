@@ -1,7 +1,8 @@
 import re
-import yaml
-import chevron
 from typing import List
+
+import chevron
+import yaml
 
 
 def get_parts(val: str):

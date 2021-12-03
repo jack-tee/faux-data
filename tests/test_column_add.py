@@ -4,7 +4,7 @@ import pytest
 import unittest
 
 from datafaker.column import Column, ColumnGenerationException
-from datafaker import columns
+from datafaker import column
 from datafaker.table import Table
 
 from tests.utils import empty_df

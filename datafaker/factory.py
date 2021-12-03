@@ -1,11 +1,12 @@
 import dataclasses
-from dataclasses import dataclass, field
 import importlib
 import re
 from typing import List
+
+import yaml
+
 from .column import Column
 from .target import Target
-import yaml
 
 
 class BaseFactory:
@@ -78,7 +79,7 @@ class ColumnFactory(BaseFactory):
     type_key: str = "column_type"
     short_key: str = "col"
     short_skip_fields: List[str] = ["null_percentage"]
-    import_path: str | None = "datafaker.columns"
+    import_path: str | None = None
 
 
 class TargetFactory(BaseFactory):

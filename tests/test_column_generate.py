@@ -5,7 +5,7 @@ import unittest
 
 from datafaker.column import Column, ColumnGenerationException
 from datafaker.factory import ColumnFactory
-from datafaker import columns
+from datafaker import column
 from datafaker.table import Table
 
 from tests.utils import empty_df
@@ -20,21 +20,21 @@ class TestColumnParsing(unittest.TestCase):
         value: b
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
     def test_short_fixed_column_parses(self):
         conf = """
         col: mycol Fixed String b
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
     def test_short_fixed_column_parses_with_spaced_value(self):
         conf = """
         col: mycol Fixed String 'boop boop'
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
         assert col.value == "boop boop"
 
     # Random Column
@@ -46,7 +46,7 @@ class TestColumnParsing(unittest.TestCase):
         max: 5
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
         assert col.data_type == "Int"
         assert col.min == 1
         assert col.max == 5
@@ -56,7 +56,7 @@ class TestColumnParsing(unittest.TestCase):
         col: mycol Random Int 2 6
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
         assert col.data_type == "Int"
         assert col.min == "2"
         assert col.max == "6"
@@ -71,7 +71,7 @@ class TestColumnParsing(unittest.TestCase):
           - b
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Selection)
+        assert isinstance(col, column.Selection)
         assert col.data_type == None
 
     def test_short_selection_column_parses(self):
@@ -82,7 +82,7 @@ class TestColumnParsing(unittest.TestCase):
           - h
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Selection)
+        assert isinstance(col, column.Selection)
 
     def test_short_selection_column_int_parses(self):
         conf = """
@@ -92,7 +92,7 @@ class TestColumnParsing(unittest.TestCase):
           - 5
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Selection)
+        assert isinstance(col, column.Selection)
         assert col.data_type == 'Int'
 
     # Map Column
@@ -104,7 +104,7 @@ class TestColumnParsing(unittest.TestCase):
           - col2
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Map)
+        assert isinstance(col, column.Map)
         assert col.source_columns == ["col1", "col2"]
 
     def test_long_map(self):
@@ -116,7 +116,7 @@ class TestColumnParsing(unittest.TestCase):
           - col4
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Map)
+        assert isinstance(col, column.Map)
         assert col.source_columns == ["col3", "col4"]
 
 
@@ -128,7 +128,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         value: b
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert series.size == 5
@@ -142,7 +142,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         value: '4'
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert series.size == 5
@@ -156,7 +156,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         value: 4
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert series.size == 5
@@ -168,7 +168,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         col: mycol Fixed Int 3
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert all(series == 3)
@@ -179,7 +179,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         col: mycol Fixed Float 3.56
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert all(series == 3.56)
@@ -192,7 +192,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         value: 3.76
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Fixed)
+        assert isinstance(col, column.Fixed)
 
         series = col.generate(5)
         assert all(series == 3.76)
@@ -208,7 +208,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         max: 10
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(20)
         assert series.dtype == 'int64'
@@ -221,7 +221,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         max: 8
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(50)
 
@@ -239,7 +239,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         max: 10
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         with pytest.raises(ColumnGenerationException) as e:
             col.maybe_add_column(empty_df())
@@ -256,7 +256,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         max: 3.45
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
 
@@ -271,7 +271,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         max: 14
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(100)
 
@@ -286,7 +286,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         col: mycol Random String 12 18
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
 
@@ -299,7 +299,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         col: mycol Random String 10000 100000
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
 
@@ -312,7 +312,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         col: mycol Random Timestamp '2021-01-01' "2021-04-01 12:00:00"
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
         assert series.dtype == 'datetime64[ns]'
@@ -332,7 +332,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         time_unit: us
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
         assert series.dtype == 'datetime64[ns]'
@@ -350,7 +350,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         time_unit: s
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Random)
+        assert isinstance(col, column.Random)
 
         series = col.generate(10)
         assert series.dtype == 'datetime64[ns]'
@@ -373,7 +373,7 @@ class TestSelectionColumnGeneration(unittest.TestCase):
           - b
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Selection)
+        assert isinstance(col, column.Selection)
 
         series = col.generate(10)
         assert series.size == 10
@@ -392,7 +392,7 @@ class TestSelectionColumnGeneration(unittest.TestCase):
           - 6
         """
         col = ColumnFactory.parse_from_yaml(conf)
-        assert isinstance(col, columns.Selection)
+        assert isinstance(col, column.Selection)
 
         series = col.generate(10)
         assert series.size == 10
