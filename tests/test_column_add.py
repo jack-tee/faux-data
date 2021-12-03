@@ -70,7 +70,30 @@ class TestMapColumnGeneration(unittest.TestCase):
         print(tbl.df)
 
         # check that the source_columns only have one non-null
-        assert all(tbl.df[["col1", "col2", "col3"]].notnull().sum(axis=1))
+        assert all(tbl.df[["col1", "col2", "col3"]].notnull().sum(axis=1) == 1)
+
+
+class TestArrayColumnGeneration(unittest.TestCase):
+    def test_basic_array_column(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Fixed Int 4
+          - col: col2 Fixed Int 5
+          - col: arr_col Array
+            source_columns:
+              - col1
+              - col2
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 3
+
+        first_row = tbl.df['arr_col'][0]
+        assert list(first_row) == [4, 5]
 
 
 class TestNestedColumns(unittest.TestCase):

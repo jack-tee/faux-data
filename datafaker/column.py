@@ -6,7 +6,12 @@ from typing import List
 import numpy as np
 import pandas as pd
 
-pandas_type_mapping = {"Int": "int64", "String": "string", "Float": "float64"}
+pandas_type_mapping = {
+    "Int": "int64", 
+    "String": "string", 
+    "Float": "float64", 
+    "Timestamp":"datetime64[ns]"
+}
 
 
 @dataclass(kw_only=True)
@@ -114,7 +119,7 @@ class Map(Column):
     select_one: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:
-        
+
         if self.select_one:
             # randomly select one source_column per row and blank all other columns on that row
             chosen_cols = df[self.source_columns].columns.to_series().sample(len(df), replace=True, ignore_index=True)
@@ -125,6 +130,15 @@ class Map(Column):
 
         if self.drop:
             df.drop(columns=self.source_columns, inplace=True)
+
+
+@dataclass(kw_only=True)
+class Array(Column):
+    """Creates an array column based on a list of `source_columns:`."""
+    source_columns: List[str] = field(default_factory=list)
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        df[self.name] = list(df[self.source_columns].values)
 
 
 class ColumnGenerationException(Exception):
