@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 import pytest
@@ -178,6 +179,37 @@ class TestColumnParsing(unittest.TestCase):
         col = ColumnFactory.parse_from_yaml(conf)
         assert isinstance(col, column.Empty)
         assert col.data_type == None
+
+    # MapValues Column
+    def test_map_values_short(self):
+        conf = """
+        col: mycol MapValues String
+        source_column: someother
+        values:
+          a: 4
+          b: boop
+          c: foo
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.MapValues)
+        assert col.data_type == "String"
+        assert col.values == {"a": 4, "b": "boop", "c": "foo"}
+        assert np.isnan(col.default)
+
+    def test_map_values_long(self):
+        conf = """
+        name: mycol
+        column_type: MapValues
+        source_column: someother
+        default: bar
+        values:
+          a: "yo"
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.MapValues)
+        assert col.data_type is None
+        assert col.values == {"a": "yo"}
+        assert col.default == "bar"
 
 
 class TestFixedColumnGeneration(unittest.TestCase):

@@ -10,7 +10,7 @@ pandas_type_mapping = {
     "Int": "Int64", 
     "String": "string", 
     "Float": "float64", 
-    "Timestamp":"datetime64[ns]"
+    "Timestamp": "datetime64[ns]"
 }
 
 
@@ -62,6 +62,16 @@ class Fixed(Column):
 class Empty(Column):
     def add_column(self, df: pd.DataFrame):
         df[self.name] = pd.Series(np.full(len(df), np.nan), dtype=self.pandas_type())
+
+
+@dataclass(kw_only=True)
+class MapValues(Column):
+    source_column: str
+    values: dict
+    default: any = np.nan
+    
+    def add_column(self, df: pd.DataFrame):
+        df[self.name] = df[self.source_column].map(self.values).fillna(self.default)
 
 
 
