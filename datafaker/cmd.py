@@ -42,37 +42,34 @@ def show_help():
 
 def cmd(args: List[str]):
     try:
-        cmd = args[1]
+        cmd_args = args[1:]
     except IndexError as e:
         show_help()
         sys.exit(1)
 
-    match cmd:
-        case 'run':
-            # run the template
-            filename = args[2]
-            params = parse_params(args[3:])
+    match cmd_args:
+        case [cmd, filename, *objs]:
+            params = parse_params(objs)
             set_debug(params)
-            t = Template.from_file(filename, params)
-            t.generate()
-            print(t)
 
-        case 'render':
-            # render the template
-            filename = args[2]
-            params = parse_params(args[3:])
-            set_debug(params)
-            t = Template.render_from_file(filename, params)
-            show_template(filename, params, t)
+            match cmd:
+                case 'run':
+                    t = Template.from_file(filename, params)
+                    t.generate()
+                    print(t)
 
-        case 'sample':
-            # generate data and show a sample
-            filename = args[2]
-            params = parse_params(args[3:])
-            set_debug(params)
+                case 'render':
+                    t = Template.render_from_file(filename, params)
+                    show_template(filename, params, t)
+
+                case 'sample':
+                    pass
+
+                case _:
+                    Exception(f"Unrecognised command {cmd}")
 
         case _:
-            raise Exception(f"Unrecognised command {cmd}")
+            raise Exception(f"Unrecognised args [{cmd_args}]")
 
 def show_template(filename, params, t):
     s = f"""
