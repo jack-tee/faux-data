@@ -112,6 +112,26 @@ class Selection(Column):
 
 
 @dataclass(kw_only=True)
+class Sequential(Column):
+    """
+    
+    See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
+    """
+    start: any = 0
+    step: any = 1
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        if self.data_type in ['Int', 'Decimal', 'Float']:
+            df[self.name] = df['rowId'] * float(self.step) + float(self.start)
+
+        elif self.data_type == 'Timestamp':
+            df[self.name] = pd.date_range(start=self.start, periods=len(df), freq=self.step)
+
+        else:
+            raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
+
+
+@dataclass(kw_only=True)
 class Map(Column):
     """Creates a dict of columns based on the source cols"""
     source_columns: List[str] = field(default_factory=list)

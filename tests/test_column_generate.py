@@ -119,6 +119,48 @@ class TestColumnParsing(unittest.TestCase):
         assert isinstance(col, column.Map)
         assert col.source_columns == ["col3", "col4"]
 
+    # Sequential Column
+    def test_short_sequential(self):
+        conf = """
+        col: mycol Sequential Timestamp 10 3
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Sequential)
+        assert int(col.start) == 10
+        assert int(col.step) == 3
+
+    def test_short_sequential_dates(self):
+        conf = """
+        col: mycol Sequential Timestamp "2021-03-02 00:06:02" -2H30m
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Sequential)
+        assert col.start == "2021-03-02 00:06:02"
+        assert col.step == "-2H30m"
+
+    def test_long_sequential_defaults(self):
+        conf = """
+        name: mycol
+        column_type: Sequential
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Sequential)
+        assert col.start == 0
+        assert col.step == 1
+
+    def test_long_sequential_y2kbug(self):
+        conf = """
+        name: mycol
+        column_type: Sequential
+        data_type: Timestamp
+        start: "1999-12-31 23:50:00" 
+        step: "1min1S"
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Sequential)
+        assert col.start == "1999-12-31 23:50:00"
+        assert col.step == "1min1S"
+
 
 class TestFixedColumnGeneration(unittest.TestCase):
     def test_fixed_column_plain_string(self):

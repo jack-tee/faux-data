@@ -96,6 +96,43 @@ class TestArrayColumnGeneration(unittest.TestCase):
         assert list(first_row) == [4, 5]
 
 
+class TestSequentialColumnGeneration(unittest.TestCase):
+    def test_basic_seq_column(self):
+        conf = """
+        name: mytbl
+        rows: 5
+        columns:
+          - col: seq_col Sequential Int 10 3
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        assert list(tbl.df['seq_col'].values) == [10, 13, 16, 19, 22]
+
+    def test_basic_seq_column_timestamp(self):
+        conf = """
+        name: mytbl
+        rows: 5
+        columns:
+          - col: seq_col Sequential Timestamp "1999-12-31 23:58:00" "1min1S"
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        print(tbl.df['seq_col'].values)
+        assert list(tbl.df['seq_col'].values) == [
+            pd.Timestamp('1999-12-31T23:58:00.000000000'),
+            pd.Timestamp('1999-12-31T23:59:01.000000000'),
+            pd.Timestamp('2000-01-01T00:00:02.000000000'),
+            pd.Timestamp('2000-01-01T00:01:03.000000000'),
+            pd.Timestamp('2000-01-01T00:02:04.000000000')
+        ]
+
+
 class TestNestedColumns(unittest.TestCase):
     @pytest.mark.skip(reason="Not implemented yet")
     def test_basic_nested_table(self):
