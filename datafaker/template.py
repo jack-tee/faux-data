@@ -1,3 +1,4 @@
+import base64
 from dataclasses import dataclass, field
 from typing import List
 
@@ -25,6 +26,11 @@ class Template:
     def from_string(cls, template_str):
         parsed = yaml.safe_load(template_str)
         return cls(**parsed)
+
+    @classmethod
+    def from_base64_string(cls, base64_str):
+        template_str = base64.b64decode(base64_str).decode('utf-8')
+        return cls.from_string(template_str)
 
     @classmethod
     def from_file(cls, filepath):

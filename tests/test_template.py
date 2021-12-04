@@ -1,6 +1,7 @@
 import pytest
 import unittest
 from datafaker.utils import extract_variable_lines, resolve_variables, render_template
+from datafaker.template import Template
 from tests.utils import strip_lborder
 
 
@@ -193,3 +194,31 @@ class TestTemplateRenderTemplate(unittest.TestCase):
                                                 runtime_vars)
 
         assert "filepath: data/prod/myfile.csv" in rendered_template
+
+
+class TestTemplateFromString(unittest.TestCase):
+    def test_basic_from_string(self):
+        template_str = strip_lborder("""
+        tables:
+          - name: mytable
+            rows: 10
+            targets: []
+            columns:
+              - col: col1 Fixed String boop
+        """)
+        t = Template.from_string(template_str)
+
+        assert isinstance(t, Template)
+        assert len(t.tables) == 1
+        assert t.tables[0].rows == 10
+
+    def test_basic_from_base64_string(self):
+        # same template as above
+        base64_str = strip_lborder("""
+        dGFibGVzOgogIC0gbmFtZTogbXl0YWJsZQogICAgcm93czogMTAKICAgIHRhcmdldHM6IFtdCiAgICBjb2x1bW5zOgogICAgICAtIGNvbDogY29sMSBGaXhlZCBTdHJpbmcgYm9vcA==
+        """)
+        t = Template.from_base64_string(base64_str)
+
+        assert isinstance(t, Template)
+        assert len(t.tables) == 1
+        assert t.tables[0].rows == 10
