@@ -1,0 +1,15 @@
+variables:
+  env: dev
+  path: path/to/{{ env }}/file.csv
+  row_count: 10
+
+tables:
+  - name: '{{ env }}_mytable'
+    rows: {{ row_count }}
+    targets: []
+    columns:
+      - col: id Sequential Int 10 3
+      - col: event_time Random Timestamp '{{ start }}' '{{ end }}'
+      - col: amnt Random Float 10 3
+        decimal_places: 2
+      

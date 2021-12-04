@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 pandas_type_mapping = {
-    "Int": "int64", 
+    "Int": "Int64", 
     "String": "string", 
     "Float": "float64", 
     "Timestamp":"datetime64[ns]"
@@ -33,8 +33,9 @@ class Column:
         df[self.name] = self.generate(len(df))
 
     def post_process(self, df: pd.DataFrame) -> None:
-        """TBI"""
-        pass
+        if self.data_type:
+            df[self.name] = df[self.name].astype(self.pandas_type())
+        
 
     def generate(self, rows: int) -> pd.Series:
         raise NotImplementedError("Please Implement this method")
@@ -52,9 +53,16 @@ class Fixed(Column):
     def generate(self, rows: int) -> pd.Series:
         match self.data_type:
             case 'Int':
-                return pd.Series(np.full(rows, self.value)).astype(self.pandas_type())
+                return pd.Series(np.full(rows, self.value)).astype('float64').astype(self.pandas_type())
             case _:
                 return pd.Series(np.full(rows, self.value), dtype=self.pandas_type())
+
+
+@dataclass(kw_only=True)
+class Empty(Column):
+    def add_column(self, df: pd.DataFrame):
+        df[self.name] = pd.Series(np.full(len(df), np.nan), dtype=self.pandas_type())
+
 
 
 unit_factor = {

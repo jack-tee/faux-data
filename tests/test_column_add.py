@@ -133,6 +133,38 @@ class TestSequentialColumnGeneration(unittest.TestCase):
         ]
 
 
+class TestEmptyColumn(unittest.TestCase):
+    def test_basic_empty(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Empty String
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        assert all(tbl.df["col1"].isnull())
+        assert tbl.df["col1"].dtype == "string"
+
+    def test_basic_empty_int(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Empty Int
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        assert all(tbl.df["col1"].isnull())
+        assert tbl.df["col1"].dtype == "Int64"
+
+
 class TestNestedColumns(unittest.TestCase):
     @pytest.mark.skip(reason="Not implemented yet")
     def test_basic_nested_table(self):

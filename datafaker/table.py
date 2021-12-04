@@ -35,7 +35,6 @@ class Table:
         try:
             self.name = name
             self.rows = rows
-            self.df = pd.DataFrame({"rowId": np.arange(self.rows)})
             self.columns = self.parse_cols(columns)
             self.output_cols = output_cols
 
@@ -59,6 +58,7 @@ class Table:
     def generate(self) -> pd.DataFrame:
         """Generates the table data"""
         try:
+            self.df = pd.DataFrame({"rowId": np.arange(self.rows)})
             for column in self.columns:
                 column.maybe_add_column(self.df)
 
@@ -81,6 +81,20 @@ class Table:
 
     def result(self):
         return "yope"
+
+    def __repr__(self):
+        if isinstance(self.df, pd.DataFrame):
+            df_repr = self.df.head(5)  #.to_markdown(index=False)
+            df_types = self.df.dtypes
+        else:
+            df_repr = "Not generated"
+            df_types = ""
+
+        return f"""
+Table: {self.name}
+Sample:
+{df_repr}
+{df_types}"""
 
 
 class TableParsingException(Exception):

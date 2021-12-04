@@ -1,7 +1,11 @@
-import pytest
 import unittest
-from datafaker.utils import extract_variable_lines, resolve_variables, render_template
+
+import pytest
 from datafaker.template import Template
+from datafaker.template_rendering import (extract_variable_lines,
+                                          render_template, resolve_variables)
+from jinja2.exceptions import UndefinedError
+
 from tests.utils import strip_lborder
 
 
@@ -143,8 +147,7 @@ class TestTemplateRenderTemplate(unittest.TestCase):
         runtime_vars = {}
         builtin_vars = {}
 
-        rendered_template = render_template(template_str, builtin_vars,
-                                            runtime_vars)
+        rendered_template = render_template(template_str, runtime_vars)
 
         assert "filepath: data/dev/myfile.csv" in rendered_template
 
@@ -163,15 +166,31 @@ class TestTemplateRenderTemplate(unittest.TestCase):
               ... 
         """)
         runtime_vars = {"env": "prod"}
-        builtin_vars = {}
 
-        rendered_template = render_template(template_str, builtin_vars,
-                                            runtime_vars)
+        rendered_template = render_template(template_str, runtime_vars)
 
         assert "filepath: data/prod/myfile.csv" in rendered_template
 
-    @pytest.mark.skip(
-        reason="Chevron doesn't currently support errors for missing vars")
+    def test_basic_ts_render(self):
+        template_str = strip_lborder("""
+        variables:
+          env: dev
+          filename: path/to/{{ env }}/file_{{ start.strftime("%Y_%m") }}.csv
+        
+        tables:
+          - name: mytable
+            targets: 
+              target: file
+              filepath: {{ filename }}
+            columns:
+              ... 
+        """)
+        runtime_vars = {"env": "prod", "start": "2021-03-04"}
+
+        rendered_template = render_template(template_str, runtime_vars)
+
+        assert "filepath: path/to/prod/file_2021_03.csv" in rendered_template
+
     def test_missing_var_render(self):
         template_str = strip_lborder("""
         variables:
@@ -186,14 +205,11 @@ class TestTemplateRenderTemplate(unittest.TestCase):
               ... 
         """)
         runtime_vars = {"env": "prod"}
-        builtin_vars = {}
 
-        with pytest.raises(Exception) as e:
+        with pytest.raises(UndefinedError) as e:
+            _ = render_template(template_str, runtime_vars)
 
-            rendered_template = render_template(template_str, builtin_vars,
-                                                runtime_vars)
-
-        assert "filepath: data/prod/myfile.csv" in rendered_template
+        assert "fileext" in e.__repr__()
 
 
 class TestTemplateFromString(unittest.TestCase):

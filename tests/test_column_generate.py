@@ -161,6 +161,24 @@ class TestColumnParsing(unittest.TestCase):
         assert col.start == "1999-12-31 23:50:00"
         assert col.step == "1min1S"
 
+    # Empty Column
+    def test_empty_short(self):
+        conf = """
+        col: mycol Empty String
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Empty)
+        assert col.data_type == "String"
+
+    def test_empty_long(self):
+        conf = """
+        name: mycol 
+        column_type: Empty
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Empty)
+        assert col.data_type == None
+
 
 class TestFixedColumnGeneration(unittest.TestCase):
     def test_fixed_column_plain_string(self):
@@ -214,7 +232,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
 
         series = col.generate(5)
         assert all(series == 3)
-        assert series.dtype == 'int64'
+        assert series.dtype == 'Int64'
 
     def test_fixed_column_float_short(self):
         conf = """
@@ -253,7 +271,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert isinstance(col, column.Random)
 
         series = col.generate(20)
-        assert series.dtype == 'int64'
+        assert series.dtype == 'Int64'
 
     def test_random_column_between_min_max(self):
         conf = """
