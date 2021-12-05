@@ -21,6 +21,10 @@ class Template:
         for table in self.tables:
             table.generate()
 
+    def run(self):
+        for table in self.tables:
+            table.run()
+
     def result(self):
         return '/n'.join(t.result() for t in self.tables)
 

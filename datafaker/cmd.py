@@ -55,7 +55,7 @@ def cmd(args: List[str]):
             match cmd:
                 case 'run':
                     t = Template.from_file(filename, params)
-                    t.generate()
+                    t.run()
                     print(t)
 
                 case 'render':
@@ -63,7 +63,9 @@ def cmd(args: List[str]):
                     show_template(filename, params, t)
 
                 case 'sample':
-                    pass
+                    t = Template.from_file(filename, params)
+                    t.generate()
+                    print(t)
 
                 case _:
                     Exception(f"Unrecognised command {cmd}")

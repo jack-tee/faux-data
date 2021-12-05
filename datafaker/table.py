@@ -6,7 +6,7 @@ import pandas as pd
 import yaml
 
 from .column import Column
-from .factory import ColumnFactory
+from .factory import ColumnFactory, TargetFactory
 from .target import Target
 
 
@@ -36,7 +36,8 @@ class Table:
             self.name = name
             self.rows = rows
             self.columns = self.parse_cols(columns)
-            self.output_cols = output_cols
+            self.targets = self.parse_targets(targets)
+            self.output_cols = output_cols if output_cols else None
 
         except Exception as e:
             self.complete = False
@@ -55,7 +56,23 @@ class Table:
                 f"Error parsing column [{column.get('name')}]. {e}")
         return cols
 
-    def generate(self) -> pd.DataFrame:
+    def parse_targets(self, targets) -> list:
+        targs = []
+
+        if not targets:
+            return targs
+
+        try:
+            for target in targets:
+                targs.append(TargetFactory.parse(target))
+
+        except Exception as e:
+            self.complete = False
+            self.error = TableParsingException(
+                f"Error parsing target [{target.get('name')}]. {e}")
+        return targs
+
+    def generate(self) -> None:
         """Generates the table data"""
         try:
             self.df = pd.DataFrame({"rowId": np.arange(self.rows)})
@@ -74,10 +91,28 @@ class Table:
 
             if self.output_cols:
                 self.df = self.df[self.output_cols]
+
             self.complete = True
 
     def load(self):
         """Loads `self.df` to the specified targets"""
+        if not self.targets:
+            print("No targets!")
+
+        try:
+            for target in self.targets:
+                target.save(self)
+
+        except Exception as e:
+            self.complete = False
+            self.error = TableLoadingException(
+                f"Error on table [{self.name}]. {e}")
+
+            raise self.error
+
+    def run(self):
+        self.generate()
+        self.load()
 
     def result(self):
         return "yope"
@@ -102,4 +137,8 @@ class TableParsingException(Exception):
 
 
 class TableGenerationException(Exception):
+    pass
+
+
+class TableLoadingException(Exception):
     pass

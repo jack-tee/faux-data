@@ -6,7 +6,14 @@ variables:
 tables:
   - name: '{{ env }}_mytable'
     rows: {{ row_count }}
-    targets: []
+    targets:
+      - target: File
+        filetype: csv
+        filepath: /tests/output.csv
+      - target: BigQuery
+        project: sbg-data-ding-s-ingestion-2e4d
+        dataset: gcpmis95
+        table: dftest
     columns:
       - col: id Sequential Int 10 3
       - col: event_time Random Timestamp '{{ start }}' '{{ end }}'

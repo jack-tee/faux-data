@@ -1,4 +1,6 @@
+google-cloud-bigquery
 pandas==1.3.4
+pyarrow
 pyyaml
 jinja2
 tabulate
