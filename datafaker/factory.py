@@ -14,6 +14,7 @@ class BaseFactory:
     """Base class creating entities based on input dicts"""
     class_ = None
     error_class = None
+    id_key: str
     type_key: str
     short_key: str
     short_skip_fields: str
@@ -87,7 +88,7 @@ class BaseFactory:
         except Exception as e:
 
             raise cls.error_class(
-                f"Error: {cls.class_.__name__} [{conf['name']}]. {e}")
+                f"Error: {cls.class_.__name__} [{conf[cls.id_key]}]. {e}")
 
 
 class ColumnParsingException(Exception):
@@ -97,6 +98,7 @@ class ColumnParsingException(Exception):
 class ColumnFactory(BaseFactory):
     class_ = Column
     error_class = ColumnParsingException
+    id_key: str = "name"
     type_key: str = "column_type"
     short_key: str = "col"
     short_skip_fields: List[str] = ["null_percentage", "id"]
@@ -110,6 +112,7 @@ class TargetParsingException(Exception):
 class TargetFactory(BaseFactory):
     class_ = Target
     error_class = TargetParsingException
+    id_key: str = "target"
     type_key: str = "target"
     short_key: str = "t"
     short_skip_fields: List[str] = []

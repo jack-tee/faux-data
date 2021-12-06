@@ -21,14 +21,14 @@ class File(Target):
 
 @dataclass(kw_only=True)
 class BigQuery(Target):
-    project: str
+    project: str | None = None
     dataset: str
     table: str
     truncate: bool = False
     post_generation_sql: str | None = None
     client = None
 
-    def get_dataset(self, dataset_id: str):
+    def get_or_create_dataset(self, dataset_id: str):
         try:
             dataset = self.client.get_dataset(dataset_id)
         except Exception as e:
@@ -40,11 +40,15 @@ class BigQuery(Target):
         return dataset
 
     def save(self, tbl):
-        self.client = bigquery.Client()
+        if not self.client:
+            self.client = bigquery.Client()
+
+        if not self.project:
+            self.project = self.client().project
 
         dataset_id = f"{self.project}.{self.dataset}"
         schema_table = f"{self.project}.{self.dataset}.{self.table}"
-        dataset = self.get_dataset(dataset_id)
+        dataset = self.get_or_create_dataset(dataset_id)
 
         job_config = None
 
@@ -56,9 +60,9 @@ class BigQuery(Target):
         result = self.client.load_table_from_dataframe(
             tbl.df, schema_table, job_config=job_config).result()
 
-        if result.state == "DONE":
-            # execute post gen sql
-            pass
+        if self.post_generation_sql and result.state == "DONE":
+            self.client.query(self.post_generation_sql.format(t=self),
+                              project=self.project).result()
 
         logging.info(
             f"Result: {result.state} {result.output_rows} rows written to {result.destination}"
