@@ -210,31 +210,3 @@ class TestTemplateRenderTemplate(unittest.TestCase):
             _ = render_template(template_str, runtime_vars)
 
         assert "fileext" in e.__repr__()
-
-
-class TestTemplateFromString(unittest.TestCase):
-    def test_basic_from_string(self):
-        template_str = strip_lborder("""
-        tables:
-          - name: mytable
-            rows: 10
-            targets: []
-            columns:
-              - col: col1 Fixed String boop
-        """)
-        t = Template.from_string(template_str)
-
-        assert isinstance(t, Template)
-        assert len(t.tables) == 1
-        assert t.tables[0].rows == 10
-
-    def test_basic_from_base64_string(self):
-        # same template as above
-        base64_str = strip_lborder("""
-        dGFibGVzOgogIC0gbmFtZTogbXl0YWJsZQogICAgcm93czogMTAKICAgIHRhcmdldHM6IFtdCiAgICBjb2x1bW5zOgogICAgICAtIGNvbDogY29sMSBGaXhlZCBTdHJpbmcgYm9vcA==
-        """)
-        t = Template.from_base64_string(base64_str)
-
-        assert isinstance(t, Template)
-        assert len(t.tables) == 1
-        assert t.tables[0].rows == 10

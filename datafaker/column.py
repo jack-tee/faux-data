@@ -16,6 +16,7 @@ pandas_type_mapping = {
 
 @dataclass(kw_only=True)
 class Column:
+    id: str = ""
     name: str
     column_type: str
     data_type: str = None
@@ -185,8 +186,7 @@ class Array(Column):
     def add_column(self, df: pd.DataFrame) -> None:
         df[self.name] = list(df[self.source_columns].values)
 
-class ColumnParsingException(Exception):
-    pass
+
 
 class ColumnGenerationException(Exception):
     pass

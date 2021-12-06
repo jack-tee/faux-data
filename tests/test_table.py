@@ -1,7 +1,7 @@
 import pytest
 import unittest
 
-from datafaker.table import Table
+from datafaker.table import Table, TableParsingException
 
 
 class TestTableParsing(unittest.TestCase):
@@ -14,12 +14,11 @@ class TestTableParsing(unittest.TestCase):
           column_type: Fixed
           # value: missing 
         """
-        tbl = Table.parse_from_yaml(conf)
+        with pytest.raises(TableParsingException) as e:
+            tbl = Table.parse_from_yaml(conf)
 
-        assert tbl.complete == False
-        msg = tbl.error.__repr__()
-        assert "mycol" in msg
-        assert "'value'" in msg
+        assert "mytable" in e.__repr__()
+        assert "mycol" in e.__repr__()
 
 
 class TestTableGeneration(unittest.TestCase):

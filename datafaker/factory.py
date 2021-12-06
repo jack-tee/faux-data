@@ -5,7 +5,7 @@ from typing import List
 
 import yaml
 
-from .column import Column, ColumnParsingException
+from .column import Column
 from .target import Target
 from .utils import get_parts
 
@@ -13,6 +13,7 @@ from .utils import get_parts
 class BaseFactory:
     """Base class creating entities based on input dicts"""
     class_ = None
+    error_class = None
     type_key: str
     short_key: str
     short_skip_fields: str
@@ -30,6 +31,7 @@ class BaseFactory:
 
     @classmethod
     def parse_from_yaml(cls, yaml_str):
+        """For testing"""
         conf = yaml.safe_load(yaml_str)
         return cls.parse(conf)
 
@@ -72,29 +74,42 @@ class BaseFactory:
 
             del conf[cls.short_key]
 
-        if conf.get("columns"):
-            sub_columns = []
-            for elem in conf.get("columns"):
-                sub_columns.append(cls.parse(elem))
-
-            conf["columns"] = sub_columns
         try:
+            if conf.get("columns"):
+                sub_columns = []
+                for elem in conf.get("columns"):
+
+                    sub_columns.append(cls.parse(elem))
+
+                conf["columns"] = sub_columns
+
             return c(**conf)
         except Exception as e:
-            raise ColumnParsingException(
-                f"Error parsing column [{conf.get('name')}]. Caused by {e}")
+
+            raise cls.error_class(
+                f"Error: {cls.class_.__name__} [{conf['name']}]. {e}")
+
+
+class ColumnParsingException(Exception):
+    pass
 
 
 class ColumnFactory(BaseFactory):
     class_ = Column
+    error_class = ColumnParsingException
     type_key: str = "column_type"
     short_key: str = "col"
-    short_skip_fields: List[str] = ["null_percentage"]
+    short_skip_fields: List[str] = ["null_percentage", "id"]
     import_path: str | None = None
+
+
+class TargetParsingException(Exception):
+    pass
 
 
 class TargetFactory(BaseFactory):
     class_ = Target
+    error_class = TargetParsingException
     type_key: str = "target"
     short_key: str = "t"
     short_skip_fields: List[str] = []

@@ -32,28 +32,21 @@ class Table:
                  columns: list,
                  output_cols: list = None,
                  targets: list = None):
-
-        self.name = name
-        self.rows = rows
-        self.columns = self.parse_cols(columns)
-        self.targets = self.parse_targets(targets)
-        self.output_cols = output_cols if output_cols else None
-
-        # except Exception as e:
-        #     self.complete = False
-        #     self.error = TableParsingException(
-        #         f"Error on table [{self.name}]. {e}")
-
-    def parse_cols(self, columns) -> list:
-        cols = []
         try:
-            for column in columns:
-                cols.append(ColumnFactory.parse(column))
+            self.name = name
+            self.rows = rows
+            self.columns = self.parse_cols(columns)
+            self.targets = self.parse_targets(targets)
+            self.output_cols = output_cols if output_cols else None
 
         except Exception as e:
             self.complete = False
-            raise TableParsingException(
-                f"Error parsing column [{column.get('name')}]. {e}")
+            raise TableParsingException(f"Error on table [{self.name}]. {e}")
+
+    def parse_cols(self, columns) -> list:
+        cols = []
+        for column in columns:
+            cols.append(ColumnFactory.parse(column))
 
         return cols
 
@@ -63,14 +56,9 @@ class Table:
         if not targets:
             return targs
 
-        try:
-            for target in targets:
-                targs.append(TargetFactory.parse(target))
+        for target in targets:
+            targs.append(TargetFactory.parse(target))
 
-        except Exception as e:
-            self.complete = False
-            self.error = TableParsingException(
-                f"Error parsing target [{target.get('name')}]. {e}")
         return targs
 
     def generate(self) -> None:

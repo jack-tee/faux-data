@@ -5,7 +5,7 @@ import unittest
 
 from datafaker.column import Column, ColumnGenerationException
 from datafaker import column
-from datafaker.table import Table
+from datafaker.table import Table, TableParsingException
 
 from tests.utils import empty_df
 
@@ -184,13 +184,12 @@ class TestNestedColumns(unittest.TestCase):
         assert len(tbl.df.columns) == 1
         assert tbl.df.columns == ["payload"]
 
-    def test_basic_2_level_nested_table(self):
+    def test_basic_multi_level_nested_table(self):
         conf = """
         name: mytbl
         rows: 10
         columns:
           - col: message_body Map
-            
             columns:
 
               - col: schema Map
@@ -201,13 +200,11 @@ class TestNestedColumns(unittest.TestCase):
                 columns:
                   - col: user Map
                     columns:
-                    - col: id Random
+                    - col: id Random id 1 200
                     - col: email Random String 4 8
 
         """
         tbl = Table.parse_from_yaml(conf)
-        tbl.generate()
 
-        print(tbl.df)
-        # assert len(tbl.df.columns) == 1
-        # assert tbl.df.columns == ["message_body"]
+        assert len(tbl.columns) == 1
+        assert isinstance(tbl.columns[0], column.Map)
