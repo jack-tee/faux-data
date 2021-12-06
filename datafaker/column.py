@@ -153,10 +153,17 @@ class Sequential(Column):
 class Map(Column):
     """Creates a dict of columns based on the source cols"""
     source_columns: List[str] = field(default_factory=list)
+    columns: List = field(default_factory=list)
     drop: bool = False
     select_one: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:
+        if self.columns:
+            self.drop = True
+            for sub_col in self.columns:
+                self.source_columns.append(sub_col.name)
+                sub_col.maybe_add_column(df)
+
 
         if self.select_one:
             # randomly select one source_column per row and blank all other columns on that row
@@ -178,6 +185,8 @@ class Array(Column):
     def add_column(self, df: pd.DataFrame) -> None:
         df[self.name] = list(df[self.source_columns].values)
 
+class ColumnParsingException(Exception):
+    pass
 
 class ColumnGenerationException(Exception):
     pass

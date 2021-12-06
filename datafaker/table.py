@@ -32,17 +32,17 @@ class Table:
                  columns: list,
                  output_cols: list = None,
                  targets: list = None):
-        try:
-            self.name = name
-            self.rows = rows
-            self.columns = self.parse_cols(columns)
-            self.targets = self.parse_targets(targets)
-            self.output_cols = output_cols if output_cols else None
 
-        except Exception as e:
-            self.complete = False
-            self.error = TableParsingException(
-                f"Error on table [{self.name}]. {e}")
+        self.name = name
+        self.rows = rows
+        self.columns = self.parse_cols(columns)
+        self.targets = self.parse_targets(targets)
+        self.output_cols = output_cols if output_cols else None
+
+        # except Exception as e:
+        #     self.complete = False
+        #     self.error = TableParsingException(
+        #         f"Error on table [{self.name}]. {e}")
 
     def parse_cols(self, columns) -> list:
         cols = []
@@ -52,8 +52,9 @@ class Table:
 
         except Exception as e:
             self.complete = False
-            self.error = TableParsingException(
+            raise TableParsingException(
                 f"Error parsing column [{column.get('name')}]. {e}")
+
         return cols
 
     def parse_targets(self, targets) -> list:

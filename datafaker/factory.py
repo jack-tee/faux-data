@@ -5,7 +5,7 @@ from typing import List
 
 import yaml
 
-from .column import Column
+from .column import Column, ColumnParsingException
 from .target import Target
 from .utils import get_parts
 
@@ -56,7 +56,7 @@ class BaseFactory:
         """Build the column type from the provided column configuration."""
 
         if conf.get(cls.type_key):
-            return c(**conf)
+            pass
 
         elif conf.get(cls.short_key):
             parts = get_parts(conf.get(cls.short_key))
@@ -72,7 +72,17 @@ class BaseFactory:
 
             del conf[cls.short_key]
 
+        if conf.get("columns"):
+            sub_columns = []
+            for elem in conf.get("columns"):
+                sub_columns.append(cls.parse(elem))
+
+            conf["columns"] = sub_columns
+        try:
             return c(**conf)
+        except Exception as e:
+            raise ColumnParsingException(
+                f"Error parsing column [{conf.get('name')}]. Caused by {e}")
 
 
 class ColumnFactory(BaseFactory):

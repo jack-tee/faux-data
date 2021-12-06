@@ -9,6 +9,8 @@ from datafaker.table import Table
 
 from tests.utils import empty_df
 
+pd.set_option('max_colwidth', 800)
+
 
 class TestMapColumnGeneration(unittest.TestCase):
     def test_basic_map_column(self):
@@ -166,19 +168,46 @@ class TestEmptyColumn(unittest.TestCase):
 
 
 class TestNestedColumns(unittest.TestCase):
-    @pytest.mark.skip(reason="Not implemented yet")
     def test_basic_nested_table(self):
         conf = """
         name: mytbl
         rows: 10
         columns:
-          - col: payload.col1 Fixed String 'boo'
-          - col: payload.col2.a Fixed Int 5
-          - col: payload.col2.b Fixed String yope
+          - col: payload Map
+            columns:
+              - col: num Random Int 0 10
         """
         tbl = Table.parse_from_yaml(conf)
         tbl.generate()
 
-        #print(tbl.df)
+        print(tbl.df)
         assert len(tbl.df.columns) == 1
         assert tbl.df.columns == ["payload"]
+
+    def test_basic_2_level_nested_table(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: message_body Map
+            
+            columns:
+
+              - col: schema Map
+                columns:
+                  - col: type Fixed String struct
+
+              - col: payload Map
+                columns:
+                  - col: user Map
+                    columns:
+                    - col: id Random
+                    - col: email Random String 4 8
+
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        print(tbl.df)
+        # assert len(tbl.df.columns) == 1
+        # assert tbl.df.columns == ["message_body"]

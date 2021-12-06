@@ -12,7 +12,7 @@
             "args": [
                 "-s",
                 "-k",
-                "test_extract_vars"
+                "test_basic_2_level_nested_table"
             ]
         },
         {

@@ -25,7 +25,7 @@ class BigQuery(Target):
     dataset: str
     table: str
     truncate: bool = False
-    post_generation_sql: str = None
+    post_generation_sql: str | None = None
     client = None
 
     def get_dataset(self, dataset_id: str):
@@ -55,6 +55,10 @@ class BigQuery(Target):
         logging.info(f"Uploading {tbl.name} data to {schema_table}")
         result = self.client.load_table_from_dataframe(
             tbl.df, schema_table, job_config=job_config).result()
+
+        if result.state == "DONE":
+            # execute post gen sql
+            pass
 
         logging.info(
             f"Result: {result.state} {result.output_rows} rows written to {result.destination}"
