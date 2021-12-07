@@ -1,5 +1,6 @@
-from datafaker.utils import get_parts
 import unittest
+
+from datafaker.utils import get_parts
 
 
 class TestUtilsGetArgs(unittest.TestCase):

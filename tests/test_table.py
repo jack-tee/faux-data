@@ -1,6 +1,6 @@
-import pytest
 import unittest
 
+import pytest
 from datafaker.table import Table, TableParsingException
 
 
@@ -66,7 +66,7 @@ class TestTableGeneration(unittest.TestCase):
         conf = """
         name: mytable
         rows: 11
-        output_cols: [col2]
+        output_columns: [col2]
         columns:
         - name: col1
           column_type: Fixed

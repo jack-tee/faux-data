@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from datafaker.factory import TargetFactory
-from datafaker.target import File, BigQuery
+from datafaker.target import BigQuery, File
 
 
 class TestTargetParsing(unittest.TestCase):

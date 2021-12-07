@@ -39,7 +39,7 @@ class Column:
         
 
     def generate(self, rows: int) -> pd.Series:
-        raise NotImplementedError("Please Implement this method")
+        raise NotImplementedError("Subclasses of Column should implement either `generate` or `add_column`")
 
     def pandas_type(self) -> str | None:
         if self.data_type:
@@ -111,6 +111,10 @@ class Random(Column):
             case 'Timestamp':
                 date_ints_series = self.random_date_ints(self.min, self.max, rows, self.time_unit)
                 return pd.to_datetime(date_ints_series, unit=self.time_unit)
+
+            case 'TimestampAsInt':
+                date_ints_series = self.random_date_ints(self.min, self.max, rows, self.time_unit)
+                return date_ints_series
 
             case _:
                 raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")

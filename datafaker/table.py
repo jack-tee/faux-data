@@ -16,7 +16,7 @@ class Table:
     rows: int
     columns: List[Column]
     targets: List[Target] = field(default_factory=list, repr=False)
-    output_cols: List[str] = field(default_factory=list)
+    output_columns: List[str] = field(default_factory=list)
     df: pd.DataFrame = None
     complete: bool = False
     error: Exception = None
@@ -30,14 +30,14 @@ class Table:
                  name: str,
                  rows: int,
                  columns: list,
-                 output_cols: list = None,
+                 output_columns: list = None,
                  targets: list = None):
         try:
             self.name = name
             self.rows = rows
             self.columns = self.parse_cols(columns)
             self.targets = self.parse_targets(targets)
-            self.output_cols = output_cols if output_cols else None
+            self.output_columns = output_columns if output_columns else None
 
         except Exception as e:
             self.complete = False
@@ -78,8 +78,8 @@ class Table:
         else:
             self.df.drop(columns="rowId", inplace=True)
 
-            if self.output_cols:
-                self.df = self.df[self.output_cols]
+            if self.output_columns:
+                self.df = self.df[self.output_columns]
 
             self.complete = True
 

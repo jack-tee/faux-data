@@ -1,7 +1,7 @@
 import logging
 import random
 import re
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from typing import List
 
 import dateutil

@@ -1,6 +1,6 @@
-import pytest
 import unittest
 
+import pytest
 from datafaker.cmd import parse_params
 
 simple_tests = [("--start 2021-03-02", {

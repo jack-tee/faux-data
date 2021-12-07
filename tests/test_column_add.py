@@ -1,13 +1,9 @@
-import pandas as pd
-
-import pytest
 import unittest
 
-from datafaker.column import Column, ColumnGenerationException
+import pandas as pd
+import pytest
 from datafaker import column
-from datafaker.table import Table, TableParsingException
-
-from tests.utils import empty_df
+from datafaker.table import Table
 
 pd.set_option('max_colwidth', 800)
 

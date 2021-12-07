@@ -1,11 +1,9 @@
 import logging
 import sys
-import time
 from typing import List
 
 from .template import Template
 from .utils import get_parts
-
 
 
 def parse_params(args):

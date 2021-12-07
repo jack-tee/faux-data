@@ -1,13 +1,11 @@
-import numpy as np
-import pandas as pd
-
-import pytest
 import unittest
 
-from datafaker.column import Column, ColumnGenerationException
-from datafaker.factory import ColumnFactory
+import numpy as np
+import pandas as pd
+import pytest
 from datafaker import column
-from datafaker.table import Table
+from datafaker.column import ColumnGenerationException
+from datafaker.factory import ColumnFactory
 
 from tests.utils import empty_df
 

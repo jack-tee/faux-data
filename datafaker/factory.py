@@ -1,6 +1,5 @@
 import dataclasses
 import importlib
-import re
 from typing import List
 
 import yaml

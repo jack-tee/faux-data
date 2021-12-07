@@ -26,6 +26,16 @@
                 "--start",
                 "\"2021-04-03 06:00:00\""
             ]
+        },
+        {
+            "name": "agg_cust_progress",
+            "type": "python",
+            "request": "launch",
+            "module": "datafaker.cmd",
+            "args": [
+                "sample",
+                "tests/render_test_files/agg_cust_pro.yaml",
+            ]
         }
     ]
 }
