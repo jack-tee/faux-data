@@ -70,6 +70,29 @@ class TestMapColumnGeneration(unittest.TestCase):
         # check that the source_columns only have one non-null
         assert all(tbl.df[["col1", "col2", "col3"]].notnull().sum(axis=1) == 1)
 
+    def test_basic_map_column_with_json(self):
+        conf = """
+        name: mytbl
+        rows: 12
+        columns:
+          - col: map_col Map
+            json: True
+            drop: True
+            columns:
+              - col: col1 Fixed String 'boo'
+              - col: col2 Fixed Int 5
+              - col: col3 Fixed Float 5.6
+
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        print(tbl.df)
+
+        assert len(tbl.df) == 12
+        assert tbl.df["map_col"][0] == """{"col1":"boo","col2":5,"col3":5.6}"""
+        assert tbl.df["map_col"].dtype == "string"
+
 
 class TestArrayColumnGeneration(unittest.TestCase):
     def test_basic_array_column(self):
