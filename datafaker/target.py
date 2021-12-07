@@ -43,7 +43,7 @@ class BigQuery(Target):
             self.client = bigquery.Client()
 
         if not self.project:
-            self.project = self.client().project
+            self.project = self.client.project
 
         dataset_id = f"{self.project}.{self.dataset}"
         schema_table = f"{self.project}.{self.dataset}.{self.table}"
