@@ -21,7 +21,11 @@ def parse_params(args):
             if prev_elem:
                 params[prev_elem.strip("-")] = True
 
-            prev_elem = elem
+            if "=" in elem:
+                params[elem.split("=")[0].strip("-")] = elem.split("=")[1]
+            else:
+                prev_elem = elem
+
             continue
         else:
             if prev_elem:
@@ -30,15 +34,20 @@ def parse_params(args):
             else:
                 print(f"don't know waht to do with {elem}")
     if elem.startswith("--"):
-        params[elem.strip("-")] = True
+        if prev_elem:
+            params[prev_elem.strip("-")] = True
+
+        if "=" in elem:
+            params[elem.split("=")[0].strip("-")] = elem.split("=")[1]
     
     return  params
 
 
-def show_help():
-    print("help")
+
 
 def cmd(args: List[str]):
+    """The main entry point to the cli."""
+
     try:
         cmd_args = args[1:]
     except IndexError as e:
@@ -46,6 +55,9 @@ def cmd(args: List[str]):
         sys.exit(1)
 
     match cmd_args:
+        case [] | ["--help"] | ["-h"]:
+            show_help()
+
         case [cmd, filename, *objs]:
             params = parse_params(objs)
             set_debug(params)
@@ -69,10 +81,30 @@ def cmd(args: List[str]):
                     Exception(f"Unrecognised command {cmd}")
 
         case _:
-            raise Exception(f"Unrecognised args [{cmd_args}]")
+            print("Unrecognised args [{cmd_args}]")
+            show_help()
+
+def show_help():
+    s = """\
+datafaker - a fake data generator.
+
+Usage:
+  datafaker [command]
+
+Available Commands:
+  render filename.yaml [params]    render a template
+  sample filename.yaml [params]    generate a sample dataset for a template
+  run filename.yaml [params]       run a template loading data to the specified targets
+
+Flags:
+  --debug    enable debug logging
+
+  extra flags are passed to the template to override variables
+"""
+    print(s)
 
 def show_template(filename, params, t):
-    s = f"""
+    s = f"""\
 Filename: {filename}
 Input params: {params}
 ====================== Rendered Template =======================

@@ -87,8 +87,6 @@ class TestMapColumnGeneration(unittest.TestCase):
         tbl = Table.parse_from_yaml(conf)
         tbl.generate()
 
-        print(tbl.df)
-
         assert len(tbl.df) == 12
         assert tbl.df["map_col"][0] == """{"col1":"boo","col2":5,"col3":5.6}"""
         assert tbl.df["map_col"].dtype == "string"

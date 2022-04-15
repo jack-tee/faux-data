@@ -118,6 +118,8 @@ class Table:
 Table: {self.name}
 Sample:
 {df_repr}
+
+Schema:
 {df_types}"""
 
 

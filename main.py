@@ -7,7 +7,7 @@ def generate(request):
 
     request_json = request.get_json()
     if not request.args:
-        raise Exception("no request args")
+        raise ValueError("no request args")
 
     if "template" in request.args:
         # passing a template path
@@ -16,6 +16,11 @@ def generate(request):
 
     elif "template_str" in request.args:
         t = Template.from_base64_string(request.args["template_str"])
+
+    else:
+        raise ValueError(
+            "No template provided. Please provide a `template` or `template_str` parameter."
+        )
 
     t.generate()
     return t.result()
