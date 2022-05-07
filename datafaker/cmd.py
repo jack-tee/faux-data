@@ -23,22 +23,20 @@ def parse_params(args):
 
             if "=" in elem:
                 params[elem.split("=")[0].strip("-")] = elem.split("=")[1]
-            else:
-                prev_elem = elem
+                continue
 
-            continue
         else:
             if prev_elem:
                 params[prev_elem.strip("-")] = elem
                 prev_elem = None
+                continue
             else:
                 print(f"don't know waht to do with {elem}")
-    if elem.startswith("--"):
-        if prev_elem:
-            params[prev_elem.strip("-")] = True
 
-        if "=" in elem:
-            params[elem.split("=")[0].strip("-")] = elem.split("=")[1]
+        prev_elem = elem
+
+    if prev_elem:
+        params[prev_elem.strip("-")] = True
     
     return  params
 
@@ -100,6 +98,7 @@ Flags:
   --debug    enable debug logging
 
   extra flags are passed to the template to override variables
+  e.g datafaker render templates/mytemplate.yaml --myvar=foo
 """
     print(s)
 
@@ -107,6 +106,8 @@ def show_template(filename, params, t):
     s = f"""\
 Filename: {filename}
 Input params: {params}
+===================== Resolved Parameters ======================
+
 ====================== Rendered Template =======================
 {t}
 ================================================================"""

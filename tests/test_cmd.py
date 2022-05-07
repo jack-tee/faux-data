@@ -22,6 +22,34 @@ simple_tests = [
         "equals": "yope",
         "other": "bloop"
     }),
+    ("--debug", {
+        "debug": True,
+    }),
+    ("--debug --foo=bar", {
+        "debug": True,
+        "foo": "bar",
+    }),
+    ("--debug --foo bar", {
+        "debug": True,
+        "foo": "bar",
+    }),
+    ("--debug --foo bar --last", {
+        "debug": True,
+        "foo": "bar",
+        "last": True,
+    }),
+    ("--debug --foo bar --last --finally", {
+        "debug": True,
+        "foo": "bar",
+        "last": True,
+        "finally": True,
+    }),
+    ("--debug --foo bar --last --finally=boop", {
+        "debug": True,
+        "foo": "bar",
+        "last": True,
+        "finally": "boop",
+    }),
 ]
 
 
