@@ -94,6 +94,39 @@ class TestColumnParsing(unittest.TestCase):
         assert isinstance(col, column.Selection)
         assert col.data_type == 'Int'
 
+    def test_short_selection_column_string_with_weights_parses(self):
+        conf = """
+        col: mycol Selection String
+        values:
+          - first
+          - second
+        weights:
+          - 5
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Selection)
+        assert col.data_type == 'String'
+        assert col.values == [
+            "first", "first", "first", "first", "first", "second"
+        ]
+
+    def test_short_selection_column_string_with_too_many_weights_parses(self):
+        conf = """
+        col: mycol Selection String
+        values:
+          - first
+          - second
+        weights:
+          - 2
+          - 2
+          - 2
+          - 3
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Selection)
+        assert col.data_type == 'String'
+        assert col.values == ["first", "first", "second", "second"]
+
     # Map Column
     def test_short_map(self):
         conf = """
@@ -211,6 +244,7 @@ class TestColumnParsing(unittest.TestCase):
 
 
 class TestFixedColumnGeneration(unittest.TestCase):
+
     def test_fixed_column_plain_string(self):
         conf = """
         name: mycol
@@ -290,6 +324,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
 
 
 class TestRandomColumnGeneration(unittest.TestCase):
+
     def test_random_column_no_data_type(self):
         conf = """
         name: mycol
@@ -454,6 +489,7 @@ class TestRandomColumnGeneration(unittest.TestCase):
 
 
 class TestSelectionColumnGeneration(unittest.TestCase):
+
     def test_selection_column_values(self):
         conf = """
         name: mycol

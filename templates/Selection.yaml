@@ -37,3 +37,12 @@ tables:
           - "2021-01-01"
           - "2022-03-02 05:03:02"
       - col: sel_bool Selection Bool
+
+      - col: sel_str_weights Selection String
+        values:
+          - first
+          - second
+          - third
+        weights:
+          - 20
+          - 3

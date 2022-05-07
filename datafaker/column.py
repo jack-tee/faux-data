@@ -2,6 +2,7 @@ import random
 import string
 from dataclasses import dataclass, field
 from decimal import Decimal
+from itertools import chain, zip_longest
 from typing import List
 
 import numpy as np
@@ -140,12 +141,17 @@ class Random(Column):
 class Selection(Column):
     values: List[any] = field(default_factory=list)
     #source_columns: List[any] = field(default_factory=list)
+    weights: List[int] = field(default_factory=list)
 
     def __post_init__(self):
         if self.data_type == 'Bool' and not self.values:
             self.values = [True, False]
         elif not self.values:
             raise Exception("no `values:` were provided ")
+
+        if self.weights:
+            value_weight_pairs = list(zip_longest(self.values, self.weights[0:len(self.values)], fillvalue=1))
+            self.values = list(chain(*[list([k] * v) for k, v in value_weight_pairs]))
 
 
     def generate(self, rows: int) -> pd.Series:
