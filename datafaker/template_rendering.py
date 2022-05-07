@@ -2,7 +2,7 @@ import logging
 import random
 import re
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Tuple
 
 import dateutil
 import pandas as pd
@@ -14,7 +14,9 @@ from jinja2.exceptions import UndefinedError
 JINJA = Environment(loader=BaseLoader, undefined=StrictUndefined)
 
 
-def render_template(template_str: str, runtime_vars: dict):
+def render_template(template_str: str,
+                    runtime_vars: dict) -> Tuple[str, dict[str:str]]:
+
     start, end = resolve_time_period(runtime_vars.get("start"),
                                      runtime_vars.get("end"))
     if runtime_vars.get("start"):
@@ -35,7 +37,7 @@ def render_template(template_str: str, runtime_vars: dict):
         raise TemplateRenderException(
             f"The template expected variables that were not provided - {e}")
 
-    return rendered_template
+    return rendered_template, vars_
 
 
 def resolve_variables(template_str: str, builtin_vars: dict,

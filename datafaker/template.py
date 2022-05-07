@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import base64
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Tuple
 
 import yaml
 
@@ -29,12 +31,13 @@ class Template:
         return '/n'.join(t.result() for t in self.tables)
 
     @classmethod
-    def from_string(cls, template_str, params={}):
-        parsed = yaml.safe_load(cls.render_template(template_str, params))
+    def from_string(cls, template_str, params={}) -> Template:
+        rendered_template, _ = cls.render_template(template_str, params)
+        parsed = yaml.safe_load(rendered_template)
         return cls(**parsed)
 
     @classmethod
-    def from_base64_string(cls, base64_str):
+    def from_base64_string(cls, base64_str) -> Template:
         template_str = base64.b64decode(base64_str).decode('utf-8')
         return cls.from_string(template_str)
 
@@ -45,12 +48,14 @@ class Template:
         return cls.from_string(template_str, params)
 
     @classmethod
-    def render_template(cls, template_str, params={}) -> str:
+    def render_template(cls,
+                        template_str,
+                        params={}) -> Tuple[str, dict[str:str]]:
         """Renders a template string using the provided `params`."""
         return render_template(template_str, params)
 
     @classmethod
-    def render_from_file(cls, filepath, params):
+    def render_from_file(cls, filepath, params) -> Tuple[str, dict[str:str]]:
         with open(filepath, "r") as f:
             template_str = f.read()
         return cls.render_template(template_str, params)

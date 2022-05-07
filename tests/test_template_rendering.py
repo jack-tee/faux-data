@@ -147,7 +147,7 @@ class TestTemplateRenderTemplate(unittest.TestCase):
         runtime_vars = {}
         builtin_vars = {}
 
-        rendered_template = render_template(template_str, runtime_vars)
+        rendered_template, _ = render_template(template_str, runtime_vars)
 
         assert "filepath: data/dev/myfile.csv" in rendered_template
 
@@ -167,7 +167,7 @@ class TestTemplateRenderTemplate(unittest.TestCase):
         """)
         runtime_vars = {"env": "prod"}
 
-        rendered_template = render_template(template_str, runtime_vars)
+        rendered_template, _ = render_template(template_str, runtime_vars)
 
         assert "filepath: data/prod/myfile.csv" in rendered_template
 
@@ -187,7 +187,7 @@ class TestTemplateRenderTemplate(unittest.TestCase):
         """)
         runtime_vars = {"env": "prod", "start": "2021-03-04"}
 
-        rendered_template = render_template(template_str, runtime_vars)
+        rendered_template, _ = render_template(template_str, runtime_vars)
 
         assert "filepath: path/to/prod/file_2021_03.csv" in rendered_template
 

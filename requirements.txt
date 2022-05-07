@@ -1,5 +1,5 @@
 google-cloud-bigquery
-pandas==1.3.4
+pandas==1.4.2
 pyarrow
 pyyaml
 jinja2

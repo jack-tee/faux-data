@@ -1,4 +1,5 @@
 import logging
+import pprint
 import sys
 from typing import List
 
@@ -67,8 +68,8 @@ def cmd(args: List[str]):
                     print(t)
 
                 case 'render':
-                    t = Template.render_from_file(filename, params)
-                    show_template(filename, params, t)
+                    t, v = Template.render_from_file(filename, params)
+                    show_template(filename, params, t, v)
 
                 case 'sample':
                     t = Template.from_file(filename, params)
@@ -102,12 +103,12 @@ Flags:
 """
     print(s)
 
-def show_template(filename, params, t):
+def show_template(filename, params, t, v):
     s = f"""\
 Filename: {filename}
 Input params: {params}
 ===================== Resolved Parameters ======================
-
+{pprint.pformat(v)}
 ====================== Rendered Template =======================
 {t}
 ================================================================"""
