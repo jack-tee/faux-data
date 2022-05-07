@@ -1,0 +1,25 @@
+tables:
+  - name: series
+    rows: 7
+    columns:
+      # Random
+      - name: series
+        column_type: Series
+        values:
+          - a
+          - b
+      - col: series_str Series String
+        values:
+          - "first"
+          - "second"
+          - "third"
+      - col: series_int Series Int
+        values:
+          - 2
+          - 3
+          - 4
+      - col: series_int Series Float
+        values:
+          - 2.2
+          - 3.5
+          - 4.6

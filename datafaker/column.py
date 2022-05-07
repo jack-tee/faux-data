@@ -219,6 +219,15 @@ class Array(Column):
         df[self.name] = list(df[self.source_columns].values)
 
 
+@dataclass(kw_only=True)
+class Series(Column):
+    """Repeats a series of values"""
+    values: List[str] = field(default_factory=list)
+
+    def generate(self, rows: int) -> pd.Series:
+        repeats = rows // len(self.values) + 1
+        return pd.Series(np.tile(self.values, repeats)[0:rows])
+
 
 class ColumnGenerationException(Exception):
     pass

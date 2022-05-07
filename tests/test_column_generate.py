@@ -242,6 +242,32 @@ class TestColumnParsing(unittest.TestCase):
         assert col.values == {"a": "yo"}
         assert col.default == "bar"
 
+    # Series Column
+    def test_series_long(self):
+        conf = """
+        name: mycol
+        column_type: Series
+        values:
+          - first
+          - second
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Series)
+        assert col.data_type is None
+        assert col.values == ["first", "second"]
+
+    def test_series_short(self):
+        conf = """
+        col: mycol Series Int
+        values:
+          - 2
+          - 4
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Series)
+        assert col.data_type == 'Int'
+        assert col.values == [2, 4]
+
 
 class TestFixedColumnGeneration(unittest.TestCase):
 
@@ -526,3 +552,47 @@ class TestSelectionColumnGeneration(unittest.TestCase):
         # should have both values in the output
         assert any(series == 3)
         assert any(series == 6)
+
+
+class TestSeriesColumnGeneration(unittest.TestCase):
+
+    def test_series_column_values(self):
+        conf = """
+        name: mycol
+        column_type: Series
+        values:
+          - a
+          - b
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Series)
+
+        series = col.generate(7)
+        assert series.size == 7
+        assert all(series.isin(["a", "b"]))
+        # because the df has an odd number of rows and there are an even number of values
+        # the first and last value should be 'a' and the second and second last should be 'b'
+        assert series[0] == "a"
+        assert series[series.size - 1] == "a"
+        assert series[1] == "b"
+        assert series[series.size - 2] == "b"
+
+    def test_series_column_values_floats(self):
+        conf = """
+        col: mycol Series Float
+        values:
+          - 3.3
+          - 6.2
+        """
+        col = ColumnFactory.parse_from_yaml(conf)
+        assert isinstance(col, column.Series)
+
+        series = col.generate(7)
+        assert series.size == 7
+        assert all(series.isin([3.3, 6.2]))
+        # because the df has an odd number of rows and there are an even number of values
+        # the first and last value should be 3.3 and the second and second last should be 6.2
+        assert series[0] == 3.3
+        assert series[series.size - 1] == 3.3
+        assert series[1] == 6.2
+        assert series[series.size - 2] == 6.2
