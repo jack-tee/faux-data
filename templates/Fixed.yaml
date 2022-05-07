@@ -1,0 +1,14 @@
+tables:
+  - name: fixed
+    rows: 9
+    columns:
+      # Random
+      - name: fixed
+        column_type: Fixed
+        value: woop
+      - col: fixed_str Fixed String boop
+      - col: fixed_int Fixed Int 6
+      - col: fixed_float Fixed Float 4.56
+      - col: fixed_dec Fixed Decimal 4.56
+      - col: fixed_ts Fixed Timestamp "2024-06-04"
+      - col: fixed_bool Fixed Bool False

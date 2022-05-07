@@ -1,6 +1,7 @@
 import random
 import string
 from dataclasses import dataclass, field
+from decimal import Decimal
 from typing import List
 
 import numpy as np
@@ -9,9 +10,11 @@ import pandas as pd
 pandas_type_mapping = {
     "Int": "Int64", 
     "String": "string", 
-    "Float": "float64", 
+    "Float": "float64",
+    "Decimal": "float",
     "Timestamp": "datetime64[ns]",
     "TimestampAsInt": "Int64",
+    "Bool": "bool"
 }
 
 
@@ -22,6 +25,7 @@ class Column:
     column_type: str
     data_type: str = None
     null_percentage: int = 0
+    decimal_places: int = 4
 
     def maybe_add_column(self, df: pd.DataFrame) -> None:
         try:
@@ -35,8 +39,13 @@ class Column:
         df[self.name] = self.generate(len(df))
 
     def post_process(self, df: pd.DataFrame) -> None:
-        if self.data_type:
-            df[self.name] = df[self.name].astype(self.pandas_type())
+        match self.data_type:
+            case None:
+                pass
+            case 'Decimal':
+                df[self.name] = df[self.name][df[self.name].notnull()].round(decimals=self.decimal_places).astype("string").apply(lambda v: Decimal(v)).astype("object")
+            case _:
+                df[self.name] = df[self.name].astype(self.pandas_type())
         
 
     def generate(self, rows: int) -> pd.Series:
@@ -56,6 +65,8 @@ class Fixed(Column):
         match self.data_type:
             case 'Int':
                 return pd.Series(np.full(rows, self.value)).astype('float64').astype(self.pandas_type())
+            case 'Bool':
+                return pd.Series(np.full(rows, bool(self.value)), dtype=self.pandas_type())
             case _:
                 return pd.Series(np.full(rows, self.value), dtype=self.pandas_type())
 
@@ -87,18 +98,17 @@ unit_factor = {
 @dataclass(kw_only=True)
 class Random(Column):
     data_type: str = "Int"
-    min: any
-    max: any
-    decimal_places: int = 4
+    min: any = 0
+    max: any = 1
     str_max_chars: int = 5000
     time_unit: str = 'ms'
 
     def generate(self, rows: int) -> pd.Series:
         match self.data_type:
-            case 'Int':
+            case 'Int' | 'Bool':
                 return pd.Series(np.random.randint(int(self.min), int(self.max)+1, rows), dtype=self.pandas_type())
 
-            case 'Float':
+            case 'Float' | 'Decimal':
                 return pd.Series(np.random.uniform(float(self.min), float(self.max)+1, rows)
                                           .round(decimals=self.decimal_places),
                                  dtype=self.pandas_type())
@@ -129,7 +139,14 @@ class Random(Column):
 @dataclass(kw_only=True)
 class Selection(Column):
     values: List[any] = field(default_factory=list)
-    source_columns: List[any] = field(default_factory=list)
+    #source_columns: List[any] = field(default_factory=list)
+
+    def __post_init__(self):
+        if self.data_type == 'Bool' and not self.values:
+            self.values = [True, False]
+        elif not self.values:
+            raise Exception("no `values:` were provided ")
+
 
     def generate(self, rows: int) -> pd.Series:
         return pd.Series(np.random.choice(self.values, rows, replace=True), dtype=self.pandas_type())
@@ -146,7 +163,7 @@ class Sequential(Column):
 
     def add_column(self, df: pd.DataFrame) -> None:
         if self.data_type in ['Int', 'Decimal', 'Float']:
-            df[self.name] = df['rowId'] * float(self.step) + float(self.start)
+            df[self.name] = (df['rowId'] * float(self.step) + float(self.start)).round(decimals=self.decimal_places)
 
         elif self.data_type == 'Timestamp':
             df[self.name] = pd.date_range(start=self.start, periods=len(df), freq=self.step)

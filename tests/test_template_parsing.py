@@ -66,7 +66,7 @@ class TestTemplateFromString(unittest.TestCase):
                     columns:
                       - col: user Map
                         columns:
-                        - col: id Random # missing min, max
+                        - col: id Selection # missing min, max
                         - col: email Random String 4 8
         """)
         with pytest.raises(TableParsingException) as e:

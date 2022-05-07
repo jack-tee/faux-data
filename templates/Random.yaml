@@ -1,0 +1,17 @@
+tables:
+  - name: randoms
+    rows: 11
+    columns:
+      # Random
+      - name: random_long_1
+        column_type: Random
+        min: 3
+        max: 4
+      - col: random_short_int Random Int 3 5
+      - col: random_short_float Random Float 3.5 7.8
+        decimal_places: 3
+      - col: random_short_dec Random Decimal 3.45 8.9
+        decimal_places: 5
+      - col: random_short_str Random String 23 56
+      - col: random_short_bool Random Bool
+      - col: random_short_ts Random Timestamp "2020-03-02" 2022-01-01

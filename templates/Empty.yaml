@@ -1,0 +1,13 @@
+tables:
+  - name: empty
+    rows: 9
+    columns:
+      # Random
+      - name: empty
+        column_type: Empty
+      - col: empty_str Empty String
+      - col: empty_int Empty Int
+      - col: empty_float Empty Float
+      - col: empty_dec Empty Decimal
+      - col: empty_ts Empty Timestamp
+      - col: empty_bool Empty Bool

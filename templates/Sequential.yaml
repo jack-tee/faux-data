@@ -1,0 +1,23 @@
+tables:
+  - name: sequential
+    rows: 9
+    columns:
+      # Random
+      - name: seq
+        column_type: Sequential
+        data_type: Int
+        start: 20
+        step: 2
+      #- col: seq_str Sequential String
+      - col: seq_int Sequential Int 0 45
+      - col: seq_float Sequential Float
+        start: 3.4
+        step: 5.6367546
+        decimal_places: 2
+      - col: seq_dec Sequential Decimal
+        start: 3.4
+        step: 5.63783434
+        decimal_places: 8
+      - col: seq_ts Sequential Timestamp
+        start: 2021-06-06
+        step: 1M

@@ -100,7 +100,7 @@ class ColumnFactory(BaseFactory):
     id_key: str = "name"
     type_key: str = "column_type"
     short_key: str = "col"
-    short_skip_fields: List[str] = ["null_percentage", "id"]
+    short_skip_fields: List[str] = ["null_percentage", "id", "decimal_places"]
     import_path: str | None = None
 
 

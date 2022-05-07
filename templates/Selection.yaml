@@ -1,0 +1,39 @@
+tables:
+  - name: selection
+    rows: 5
+    columns:
+      # Selection
+      - name: sel
+        column_type: Selection
+        values:
+          - "boo"
+          - "yoo"
+          - "foo"
+
+      - col: sel_str Selection String
+        values:
+          - "boo"
+          - "yoo"
+          - "foo"
+
+      - col: sel_int Selection Int
+        values:
+          - 1
+          - 200
+
+      - col: sel_float Selection Float
+        values:
+          - 1
+          - 200.56
+
+      - col: sel_dec Selection Decimal
+        values:
+          - 1
+          - 200.5667
+
+      - col: sel_ts Selection Timestamp
+        values:
+          - "2020-01-01"
+          - "2021-01-01"
+          - "2022-03-02 05:03:02"
+      - col: sel_bool Selection Bool
