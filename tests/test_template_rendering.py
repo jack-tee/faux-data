@@ -3,8 +3,8 @@ import unittest
 import pytest
 from datafaker.template import Template
 from datafaker.template_rendering import (extract_variable_lines,
-                                          render_template, resolve_variables)
-from jinja2.exceptions import UndefinedError
+                                          render_template, resolve_variables,
+                                          TemplateRenderException)
 
 from tests.utils import strip_lborder
 
@@ -206,7 +206,7 @@ class TestTemplateRenderTemplate(unittest.TestCase):
         """)
         runtime_vars = {"env": "prod"}
 
-        with pytest.raises(UndefinedError) as e:
+        with pytest.raises(TemplateRenderException) as e:
             _ = render_template(template_str, runtime_vars)
 
         assert "fileext" in e.__repr__()

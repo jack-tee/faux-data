@@ -9,6 +9,7 @@ import pandas as pd
 import yaml
 from jinja2 import BaseLoader, Environment
 from jinja2.runtime import StrictUndefined
+from jinja2.exceptions import UndefinedError
 
 JINJA = Environment(loader=BaseLoader, undefined=StrictUndefined)
 
@@ -27,7 +28,12 @@ def render_template(template_str: str, runtime_vars: dict):
 
     vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
     logging.debug(f"Final template vars: {vars_}")
-    rendered_template = JINJA.from_string(template_str).render(vars_)
+
+    try:
+        rendered_template = JINJA.from_string(template_str).render(vars_)
+    except UndefinedError as e:
+        raise TemplateRenderException(
+            f"The template expected variables that were not provided - {e}")
 
     return rendered_template
 
