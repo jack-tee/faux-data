@@ -10,6 +10,8 @@ from .factory import ColumnFactory, TargetFactory
 from .target import Target
 
 
+pd.set_option("max_colwidth", 180)
+
 @dataclass(kw_only=True)
 class Table:
     name: str

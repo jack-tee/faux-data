@@ -1,0 +1,88 @@
+columns:
+  - name: Selection
+    title: Generates columns by selecting random values
+    desc: >
+      A selection column
+    examples:
+      - desc: A simple Selection column fills a column with a random selection from the provided `values`.
+        yaml: |+
+          name: simple_selection
+          column_type: Selection
+          values: 
+            - first
+            - second
+
+      - desc: You can apply weighting to the provided `values` to make some more likely to be selected. In this example USD is 10 times more likely than GBP and EUR is 3 times more likely than GBP. A specific weighting is not needed for GBP since it defaults to 1.
+        yaml: |+
+          name: weighted_selection
+          column_type: Selection
+          values: 
+            - USD
+            - EUR
+            - GBP
+          weights:
+            - 10
+            - 3
+
+
+  - name: Random
+    title: Generates columns of random data
+    desc: |+
+      A Random column
+    examples:
+      - desc: A Random column generates random values between `min:` and `max:`.
+        yaml: |+
+          name: simple_random_int
+          column_type: Random
+          data_type: Int
+          min: 5
+          max: 200
+      - desc: You can generate random timestamps as well.
+        yaml: |+
+          name: event_time
+          column_type: Random
+          data_type: Timestamp
+          min: 2022-01-01
+          max: 2022-01-02 12:00:00
+      
+      - desc: Or random strings, where min and max are the length of the string.
+        yaml: |+
+          name: message_id
+          column_type: Random
+          data_type: String
+          min: 4
+          max: 12
+
+  - name: Sequential
+    title: Generates a column by incrementing a field from a `start:` by a `step:` for each row.
+    examples:
+      - desc: A simple Sequential column can be used for generating incrementing Ids.
+        yaml: |+
+          name: id
+          column_type: Sequential
+          data_type: Int
+          start: 1
+          step: 1
+      - desc: They can also be used for timestamps
+        yaml: |+
+          col: event_time Sequential Timestamp "1999-12-31 23:56:29" 1min45S
+
+
+  - name: Fixed
+    title: Generates a column with a single fixed value
+    examples:
+      - desc: 
+        yaml: |+
+          name: currency
+          column_type: Fixed
+          value: BTC
+
+  - name: Empty
+    title: Generates and empty (null) column of data
+    examples:
+      - desc: A simple empty column
+        yaml: |+
+          name: pending_balance
+          column_type: Empty
+          data_type: Float
+          
