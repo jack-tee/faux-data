@@ -1,0 +1,30 @@
+# Columns
+
+{% for column in columns.columns %}
+- [{{ column.name }}](#{{ column.name | lower }}) - {{ column.title }}
+
+{% endfor %}
+
+{% for column in columns.columns %}
+
+## {{ column.name }}
+
+{{ column.desc }}
+
+### Examples
+{% for example in column.examples %}
+
+{{ example.desc }}
+
+Template:
+```
+{{ example.yaml -}}
+```
+
+Result:
+{{ example |  render_column_example }}
+
+---
+
+{% endfor %}
+{% endfor %}
