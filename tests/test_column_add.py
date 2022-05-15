@@ -8,7 +8,70 @@ from datafaker.table import Table
 pd.set_option('max_colwidth', 800)
 
 
+class TestOutputTypes(unittest.TestCase):
+
+    def test_random_ints_output_as_strings(self):
+        """Tests that a random int column can be output as string."""
+
+        conf = """
+        name: mytbl
+        rows: 5
+        columns:
+          - col: tcol Random Int 3 10
+            output_type: String
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        assert tbl.df["tcol"].dtype == 'string'
+
+    def test_random_timestamps_output_as_strings_default_format(self):
+        """Tests that a random timestamp column can be output as string."""
+
+        conf = """
+        name: mytbl
+        rows: 5
+        columns:
+          - col: tcol Random Timestamp "2021-01-01" "2021-01-02 23:59:59"
+            output_type: String
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        # print(tbl.df)
+        # print(tbl.df.dtypes)
+        assert len(tbl.df.columns) == 1
+        assert tbl.df["tcol"].dtype == 'string'
+        # check the dates are in the correct format
+        assert all(tbl.df["tcol"].str.fullmatch(
+            r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"))
+
+    def test_random_timestamps_output_as_strings_custom_format(self):
+        """Tests that a random timestamp column can be output as string with a custom date_format."""
+
+        conf = """
+        name: mytbl
+        rows: 5
+        columns:
+          - col: tcol Random Timestamp "2021-01-01" "2021-10-02 23:59:59"
+            output_type: String
+            date_format: "%Y-%m-01"
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        # print(tbl.df)
+        # print(tbl.df.dtypes)
+        assert len(tbl.df.columns) == 1
+        assert tbl.df["tcol"].dtype == 'string'
+        # check the dates are in the correct format
+        assert all(tbl.df["tcol"].str.fullmatch(r"\d{4}-\d{2}-01"))
+
+
 class TestMapColumnGeneration(unittest.TestCase):
+
     def test_basic_map_column(self):
         conf = """
         name: mytbl
@@ -93,6 +156,7 @@ class TestMapColumnGeneration(unittest.TestCase):
 
 
 class TestArrayColumnGeneration(unittest.TestCase):
+
     def test_basic_array_column(self):
         conf = """
         name: mytbl
@@ -116,6 +180,7 @@ class TestArrayColumnGeneration(unittest.TestCase):
 
 
 class TestSequentialColumnGeneration(unittest.TestCase):
+
     def test_basic_seq_column(self):
         conf = """
         name: mytbl
@@ -153,6 +218,7 @@ class TestSequentialColumnGeneration(unittest.TestCase):
 
 
 class TestEmptyColumn(unittest.TestCase):
+
     def test_basic_empty(self):
         conf = """
         name: mytbl
@@ -185,6 +251,7 @@ class TestEmptyColumn(unittest.TestCase):
 
 
 class TestNestedColumns(unittest.TestCase):
+
     def test_basic_nested_table(self):
         conf = """
         name: mytbl
@@ -225,3 +292,85 @@ class TestNestedColumns(unittest.TestCase):
 
         assert len(tbl.columns) == 1
         assert isinstance(tbl.columns[0], column.Map)
+
+
+class TestExtractDateColumn(unittest.TestCase):
+    """Tests the ExtractDate column_type."""
+
+    def test_extract_date_as_string(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: event_time Random Timestamp 2021-01-01 2022-02-01
+          - name: dt
+            column_type: ExtractDate
+            source_column: event_time
+            data_type: String
+            date_format: "%Y-%m-%d"
+
+        """
+        tbl = Table.parse_from_yaml(conf)
+
+        assert len(tbl.columns) == 2
+        assert isinstance(tbl.columns[1], column.ExtractDate)
+
+        tbl.generate()
+
+        assert tbl.df["event_time"].dtype == 'datetime64[ns]'
+        assert tbl.df["dt"].dtype == 'string'
+
+        assert all(
+            tbl.df["event_time"].dt.strftime("%Y-%m-%d") == tbl.df["dt"])
+
+    def test_extract_date_as_date(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: event_time Random Timestamp 2021-01-01 2022-02-01
+          - name: dt
+            column_type: ExtractDate
+            data_type: Date
+            source_column: event_time
+
+        """
+        tbl = Table.parse_from_yaml(conf)
+
+        assert len(tbl.columns) == 2
+        assert isinstance(tbl.columns[1], column.ExtractDate)
+
+        tbl.generate()
+
+        print(tbl.df.dtypes)
+
+        assert tbl.df["event_time"].dtype == 'datetime64[ns]'
+        assert tbl.df["dt"].dtype == 'object'
+
+        assert all(tbl.df["event_time"].dt.date == tbl.df["dt"])
+
+    def test_extract_date_as_int(self):
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: event_time Random Timestamp 2021-01-01 2022-02-01
+          - name: dt
+            column_type: ExtractDate
+            data_type: Int
+            source_column: event_time
+            date_format: "%Y%m"
+
+        """
+        tbl = Table.parse_from_yaml(conf)
+
+        assert len(tbl.columns) == 2
+        assert isinstance(tbl.columns[1], column.ExtractDate)
+
+        tbl.generate()
+
+        #print(tbl.df)
+        #print(tbl.df.dtypes)
+
+        assert tbl.df["event_time"].dtype == 'datetime64[ns]'
+        assert tbl.df["dt"].dtype == 'Int64'

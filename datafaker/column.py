@@ -1,21 +1,23 @@
+import logging
 import random
 import string
 from dataclasses import dataclass, field
 from decimal import Decimal
 from itertools import chain, zip_longest
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 import pandas as pd
 
 pandas_type_mapping = {
-    "Int": "Int64", 
-    "String": "string", 
+    "Int": "Int64",
+    "String": "string",
     "Float": "float64",
     "Decimal": "float",
     "Timestamp": "datetime64[ns]",
     "TimestampAsInt": "Int64",
-    "Bool": "bool"
+    "Bool": "bool",
+    "Date": "object",
 }
 
 
@@ -25,8 +27,10 @@ class Column:
     name: str
     column_type: str
     data_type: str = None
+    output_type: Optional[str] = None
     null_percentage: int = 0
     decimal_places: int = 4
+    date_format: str = "%Y-%m-%d %H:%M:%S"
 
     def maybe_add_column(self, df: pd.DataFrame) -> None:
         try:
@@ -44,9 +48,28 @@ class Column:
             case None:
                 pass
             case 'Decimal':
-                df[self.name] = df[self.name][df[self.name].notnull()].round(decimals=self.decimal_places).astype("string").apply(lambda v: Decimal(v)).astype("object")
+                df[self.name] = df[self.name][df[self.name].notnull()] \
+                                    .round(decimals=self.decimal_places) \
+                                    .astype("string") \
+                                    .apply(lambda v: Decimal(v)) \
+                                    .astype("object")
             case _:
-                df[self.name] = df[self.name].astype(self.pandas_type())
+                pandas_type = self.pandas_type()
+                if pandas_type is None:
+                    logging.warning(f"column: [{self.name}] -> data_type [{self.data_type}] not recognised, ignoring.")
+                else:
+                    df[self.name] = df[self.name].astype(self.pandas_type())
+
+        match self.output_type:
+            case None:
+                pass
+            case 'String':
+                if df[self.name].dtype == 'datetime64[ns]':
+                    df[self.name] = df[self.name].dt.strftime(self.date_format).astype('string')
+                else:
+                    df[self.name] = df[self.name].astype(pandas_type_mapping[self.output_type])
+            case _:
+                raise Exception(f"output_type: [{self.output_type}] not recognised")
         
 
     def generate(self, rows: int) -> pd.Series:
@@ -168,7 +191,7 @@ class Sequential(Column):
     step: any = 1
 
     def add_column(self, df: pd.DataFrame) -> None:
-        if self.data_type in ['Int', 'Decimal', 'Float']:
+        if self.data_type in ['Int', 'Decimal', 'Float', None]:
             df[self.name] = (df['rowId'] * float(self.step) + float(self.start)).round(decimals=self.decimal_places)
 
         elif self.data_type == 'Timestamp':
@@ -227,6 +250,45 @@ class Series(Column):
     def generate(self, rows: int) -> pd.Series:
         repeats = rows // len(self.values) + 1
         return pd.Series(np.tile(self.values, repeats)[0:rows])
+
+
+@dataclass(kw_only=True)
+class ExtractDate(Column):
+    """Extracts dates from a `source_columnn:`."""
+    
+    source_column: str
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        match self.data_type:
+            case 'String' | 'Int':
+                df[self.name] = df[self.source_column].dt.strftime(self.date_format)
+            case 'Date':
+                df[self.name] = df[self.source_column].dt.date
+            case _:
+                raise NotImplementedError(f"data_type: [{self.data_type}] is not implemented for the ExtractDate column_type")
+
+
+@dataclass(kw_only=True)
+class Eval(Column):
+    expression: str
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        df[self.name] = df.eval(self.expression)
+
+
+@dataclass(kw_only=True)
+class TimestampOffset(Column):
+    """Create a new column by adding or removing random time deltas from another timestamp column."""
+    min: str
+    max: str
+    source_column: str
+    time_unit: str = "s"
+
+    def add_column(self, df: pd.DataFrame) -> None:
+        low = pd.Timedelta(self.min).total_seconds()
+        high = pd.Timedelta(self.max).total_seconds()
+
+        df[self.name] = df[self.source_column] + pd.to_timedelta(np.random.uniform(low, high, size=len(df)), 's').round(self.time_unit)
 
 
 class ColumnGenerationException(Exception):

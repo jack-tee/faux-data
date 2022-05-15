@@ -47,7 +47,8 @@ class BaseFactory:
 
         else:
             raise NotImplementedError(
-                f"Could not determine type. Missing key {cls.type_key}")
+                f"[{conf.get('name')}]. Could not determine type. Missing key {cls.type_key}"
+            )
 
         c = cls.get_subclass(type_)
 
@@ -100,7 +101,9 @@ class ColumnFactory(BaseFactory):
     id_key: str = "name"
     type_key: str = "column_type"
     short_key: str = "col"
-    short_skip_fields: List[str] = ["null_percentage", "id", "decimal_places"]
+    short_skip_fields: List[str] = [
+        "null_percentage", "id", "decimal_places", "output_type", "date_format"
+    ]
     import_path: str | None = None
 
 
