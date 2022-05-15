@@ -1,22 +1,23 @@
 # Generate documentation
 from __future__ import annotations
+
 from dataclasses import dataclass, field
+from typing import Optional
 
 import pandas as pd
 import yaml
 from jinja2 import Environment, FileSystemLoader
-
 from datafaker.factory import ColumnFactory
 
 
-
 def render_column_example(example: Example) -> str:
-    df = pd.DataFrame({"rowId":list(range(example.rows))})
+    df = pd.DataFrame({"rowId": list(range(example.rows))})
     col = ColumnFactory.parse_from_yaml(example.yaml)
     col.maybe_add_column(df)
 
-    return df.rename(columns={"rowId":""}).to_markdown(index=False, tablefmt="github")
-
+    return df.rename(columns={
+        "rowId": ""
+    }).to_markdown(index=False, tablefmt="github")
 
 
 @dataclass
@@ -25,7 +26,7 @@ class ColumnDocs:
 
     def __post_init__(self):
         self.columns = [ColumnDoc(**c) for c in self.columns]
-        
+
 
 @dataclass
 class ColumnDoc:
@@ -39,7 +40,8 @@ class ColumnDoc:
 
         if not self.desc:
             self.desc = f"A {self.name} column"
-        
+
+
 @dataclass
 class Example:
     desc: str
@@ -47,22 +49,17 @@ class Example:
     rows: int = 5
 
 
-
 def main():
 
-    env = Environment(
-        loader=FileSystemLoader("docs/templates")
-    )
+    env = Environment(loader=FileSystemLoader("docs/templates"))
 
     env.filters["render_column_example"] = render_column_example
 
     # Generate COLUMNS.md
     column_docs = yaml.safe_load(open("./docs/column_docs.yaml"))
-    c = ColumnDocs(column_docs["columns"])
+    column_docs = ColumnDocs(column_docs["columns"])
     template = env.get_template("column_docs.jinja")
-    template.stream(columns=c).dump("COLUMNS.md")
-
-
+    template.stream(columns=column_docs).dump("COLUMNS.md")
 
 
 if __name__ == '__main__':
