@@ -9,8 +9,10 @@ from .column import Column
 from .factory import ColumnFactory, TargetFactory
 from .target import Target
 
-
 pd.set_option("max_colwidth", 180)
+
+# TODO: Handle a filename as rows: parameter
+
 
 @dataclass(kw_only=True)
 class Table:
@@ -59,7 +61,11 @@ class Table:
             return targs
 
         for target in targets:
-            targs.append(TargetFactory.parse(target))
+            try:
+                targs.append(TargetFactory.parse(target))
+            except Exception as e:
+                # TODO handle error
+                pass
 
         return targs
 

@@ -1,3 +1,4 @@
+import os
 import logging
 import pprint
 import sys
@@ -75,6 +76,19 @@ def cmd(args: List[str]):
                     t = Template.from_file(filename, params)
                     t.generate()
                     print(t)
+
+                case 'sample-all':
+                    for root, _, filenames in os.walk(filename):
+                        for filename in filenames:
+                            if filename.endswith(".yaml"):
+                                filepath = os.path.join(root, filename)
+                                try:
+                                    t = Template.from_file(filepath, params)
+                                    t.generate()
+                                    print(filepath, "OK")
+                                except Exception as e:
+                                    print(filepath, e)
+
 
                 case _:
                     Exception(f"Unrecognised command {cmd}")
