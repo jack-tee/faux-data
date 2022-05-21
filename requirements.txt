@@ -1,6 +1,9 @@
 google-cloud-bigquery
+google-cloud-pubsub
 pandas==1.4.2
 pyarrow
 pyyaml
 jinja2
 tabulate
+fsspec
+gcsfs

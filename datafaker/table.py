@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List
+import logging
 
 import numpy as np
 import pandas as pd
@@ -32,7 +33,7 @@ class Table:
 
     def __init__(self,
                  name: str,
-                 rows: int,
+                 rows: int | str,
                  columns: list,
                  output_columns: list = None,
                  targets: list = None):
@@ -64,15 +65,23 @@ class Table:
             try:
                 targs.append(TargetFactory.parse(target))
             except Exception as e:
-                # TODO handle error
+                logging.warning(f"unable to parse target - {e}")
                 pass
 
         return targs
 
+    def create_df(self) -> pd.DataFrame:
+        if isinstance(self.rows, int):
+            return pd.DataFrame({"rowId": np.arange(self.rows)})
+        else:
+            df = pd.read_csv(self.rows)
+            df['rowId'] = df.index
+            return df
+
     def generate(self) -> None:
         """Generates the table data"""
         try:
-            self.df = pd.DataFrame({"rowId": np.arange(self.rows)})
+            self.df = self.create_df()
             for column in self.columns:
                 column.maybe_add_column(self.df)
 

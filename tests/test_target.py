@@ -1,11 +1,14 @@
 import unittest
 from unittest.mock import MagicMock
 
+from google.cloud import bigquery
 import pandas as pd
+
 from datafaker.factory import TargetFactory
 from datafaker.table import Table
-from datafaker.target import BigQuery, File
-from google.cloud import bigquery
+from datafaker import target
+
+target.GOOGLE_PROJECT_ID = 'myproject'
 
 tbl_conf = {
     "name": "dummy_table",
@@ -18,21 +21,61 @@ dataset = pd.DataFrame({"rowId": list(range(10))})
 tbl.df = dataset
 
 
-class TestTargetParsing(unittest.TestCase):
-    # Fixed Column
+class TestLocalFileTargetParsing(unittest.TestCase):
+
     def test_file_target_parses(self):
         conf = """
-        target: File
+        target: LocalFile
         filetype: csv
-        filepath: path/to/my/file.csv
+        filepath: path/to/my
+        filename: file.csv
         """
         targ = TargetFactory.parse_from_yaml(conf)
-        assert isinstance(targ, File)
-        assert targ.filepath == "path/to/my/file.csv"
+        assert isinstance(targ, target.LocalFile)
+        assert targ.construct_path() == "path/to/my/file.csv"
         assert targ.filetype == "csv"
 
 
+class TestCloudStorageTarget(unittest.TestCase):
+
+    def test_target_cloud_storage_target_parses(self):
+        conf = """
+        target: CloudStorage
+        filetype: csv
+        bucket: mybucket
+        prefix: prefix
+        filename: file.csv
+        """
+        targ = TargetFactory.parse_from_yaml(conf)
+        assert isinstance(targ, target.CloudStorage)
+        assert targ.construct_path() == "gs://mybucket/prefix/file.csv"
+        assert targ.filetype == "csv"
+
+
+class TestPubsubTarget(unittest.TestCase):
+
+    def test_target_pubsub_target_parses(self):
+        conf = """
+        target: Pubsub
+        topic: mytopic
+        """
+        targ = TargetFactory.parse_from_yaml(conf)
+        assert isinstance(targ, target.Pubsub)
+        assert targ.topic_path == "projects/myproject/topics/mytopic"
+
+    def test_target_pubsub_target_parses_override_project(self):
+        conf = """
+        target: Pubsub
+        topic: mytopic
+        project: anotherproject
+        """
+        targ = TargetFactory.parse_from_yaml(conf)
+        assert isinstance(targ, target.Pubsub)
+        assert targ.topic_path == "projects/anotherproject/topics/mytopic"
+
+
 class TestBigQueryTarget(unittest.TestCase):
+
     def test_target_bigquery_default_project(self):
         conf = """
         target: BigQuery
@@ -40,7 +83,7 @@ class TestBigQueryTarget(unittest.TestCase):
         table: my_table
         """
         targ = TargetFactory.parse_from_yaml(conf)
-        assert isinstance(targ, BigQuery)
+        assert isinstance(targ, target.BigQuery)
 
     def test_target_bigquery_default_project_save(self):
         conf = """
@@ -49,7 +92,7 @@ class TestBigQueryTarget(unittest.TestCase):
         table: my_table
         """
         targ = TargetFactory.parse_from_yaml(conf)
-        assert isinstance(targ, BigQuery)
+        assert isinstance(targ, target.BigQuery)
         mock_client = MagicMock()
         mock_client.get_dataset.return_value = "datasetfound"
         mock_client.project = "myproject"
@@ -69,7 +112,7 @@ class TestBigQueryTarget(unittest.TestCase):
         table: my_table
         """
         targ = TargetFactory.parse_from_yaml(conf)
-        assert isinstance(targ, BigQuery)
+        assert isinstance(targ, target.BigQuery)
         mock_client = MagicMock()
         mock_client.get_dataset.return_value = "datasetfound"
         mock_client.project = "myproject"
@@ -89,11 +132,10 @@ class TestBigQueryTarget(unittest.TestCase):
         truncate: True
         """
         targ = TargetFactory.parse_from_yaml(conf)
-        assert isinstance(targ, BigQuery)
+        assert isinstance(targ, target.BigQuery)
         assert targ.truncate == True
         mock_client = MagicMock()
         mock_client.get_dataset.return_value = "datasetfound"
-        mock_client.project = "myproject"
 
         targ.client = mock_client
 
