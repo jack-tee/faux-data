@@ -1,0 +1,7 @@
+tables:
+  - name: timestamp_offsets
+    rows: 10
+    columns:
+      - col: start_time Random Timestamp "{{ start }}" "{{ end }}"
+      - col: end_time TimestampOffset Timestamp "1min" "2min"
+        source_column: start_time

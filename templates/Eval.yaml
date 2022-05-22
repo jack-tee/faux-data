@@ -1,0 +1,11 @@
+tables:
+  - name: evals
+    rows: 10
+    columns:
+      - name: eval_copy_rowId
+        column_type: Eval
+        expression: "rowId"
+
+      - col: eval_copy_rowId_plus Eval Int "rowId + 3"
+
+      - col: eval_copy_rowId_multiply Eval Int "rowId * 3"

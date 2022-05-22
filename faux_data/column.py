@@ -1,3 +1,4 @@
+import abc
 import logging
 import random
 import string
@@ -22,7 +23,7 @@ pandas_type_mapping = {
 
 
 @dataclass(kw_only=True)
-class Column:
+class Column(abc.ABC):
     id: str = ""
     name: str
     column_type: str
@@ -70,7 +71,6 @@ class Column:
                     df[self.name] = df[self.name].astype(pandas_type_mapping[self.output_type])
             case _:
                 raise Exception(f"output_type: [{self.output_type}] not recognised")
-        
 
     def generate(self, rows: int) -> pd.Series:
         raise NotImplementedError("Subclasses of Column should implement either `generate` or `add_column`")
@@ -83,6 +83,11 @@ class Column:
 
 @dataclass(kw_only=True)
 class Fixed(Column):
+    """
+    A column with a single fixed `value:`.
+
+    """
+
     value: any
 
     def generate(self, rows: int) -> pd.Series:
@@ -97,16 +102,24 @@ class Fixed(Column):
 
 @dataclass(kw_only=True)
 class Empty(Column):
+    """
+    An empty column.
+
+    """
     def add_column(self, df: pd.DataFrame):
         df[self.name] = pd.Series(np.full(len(df), np.nan), dtype=self.pandas_type())
 
 
 @dataclass(kw_only=True)
 class MapValues(Column):
+    """
+    A map column.
+
+    """
     source_column: str
     values: dict
     default: any = np.nan
-    
+
     def add_column(self, df: pd.DataFrame):
         df[self.name] = df[self.source_column].map(self.values).fillna(self.default)
 
@@ -121,6 +134,11 @@ unit_factor = {
 
 @dataclass(kw_only=True)
 class Random(Column):
+    """
+    A random value.
+
+    """
+
     data_type: str = "Int"
     min: any = 0
     max: any = 1
@@ -142,7 +160,7 @@ class Random(Column):
                 self.min = min(int(self.min), self.str_max_chars)
                 self.max = min(int(self.max), self.str_max_chars)
                 return pd.Series(list(''.join(random.choices(string.ascii_letters, k=random.randint(self.min, self.max))) for _ in range(rows)), dtype=self.pandas_type())
-            
+
             case 'Timestamp':
                 date_ints_series = self.random_date_ints(self.min, self.max, rows, self.time_unit)
                 return pd.to_datetime(date_ints_series, unit=self.time_unit)
@@ -162,6 +180,11 @@ class Random(Column):
 
 @dataclass(kw_only=True)
 class Selection(Column):
+    """
+    A random selection from some preset values
+
+    """
+
     values: List[any] = field(default_factory=list)
     #source_columns: List[any] = field(default_factory=list)
     weights: List[int] = field(default_factory=list)
@@ -184,7 +207,7 @@ class Selection(Column):
 @dataclass(kw_only=True)
 class Sequential(Column):
     """
-    
+
     See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
     """
     start: any = 0
@@ -203,7 +226,11 @@ class Sequential(Column):
 
 @dataclass(kw_only=True)
 class Map(Column):
-    """Creates a dict of columns based on the source cols"""
+    """
+    Creates a dict of columns based on the source cols
+
+    """
+
     source_columns: List[str] = field(default_factory=list)
     columns: List = field(default_factory=list)
     drop: bool = False
@@ -235,7 +262,11 @@ class Map(Column):
 
 @dataclass(kw_only=True)
 class Array(Column):
-    """Creates an array column based on a list of `source_columns:`."""
+    """
+    Creates an array column based on a list of `source_columns:`.
+
+    """
+
     source_columns: List[str] = field(default_factory=list)
 
     def add_column(self, df: pd.DataFrame) -> None:
@@ -244,7 +275,11 @@ class Array(Column):
 
 @dataclass(kw_only=True)
 class Series(Column):
-    """Repeats a series of values"""
+    """
+    Repeats a series of values
+
+    """
+
     values: List[str] = field(default_factory=list)
 
     def generate(self, rows: int) -> pd.Series:
@@ -254,8 +289,11 @@ class Series(Column):
 
 @dataclass(kw_only=True)
 class ExtractDate(Column):
-    """Extracts dates from a `source_columnn:`."""
-    
+    """
+    Extracts dates from a `source_columnn:`.
+
+    """
+
     source_column: str
 
     def add_column(self, df: pd.DataFrame) -> None:
@@ -270,6 +308,11 @@ class ExtractDate(Column):
 
 @dataclass(kw_only=True)
 class Eval(Column):
+    """
+    An eval column
+
+    """
+
     expression: str
 
     def add_column(self, df: pd.DataFrame) -> None:
@@ -278,7 +321,10 @@ class Eval(Column):
 
 @dataclass(kw_only=True)
 class TimestampOffset(Column):
-    """Create a new column by adding or removing random time deltas from another timestamp column."""
+    """
+    Create a new column by adding or removing random time deltas from another timestamp column.
+
+    """
     min: str
     max: str
     source_column: str

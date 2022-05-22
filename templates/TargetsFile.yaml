@@ -1,0 +1,35 @@
+tables:
+  - name: filetarget
+    rows: 50
+    targets:
+      - target: LocalFile
+        filetype: csv
+        filepath: output/path
+        filename: Localfile.csv
+      - target: LocalFile
+        filetype: csv
+        filepath: output/parts
+        filename: Localfile.csv
+        partition_cols: [dt, currency]
+      - target: CloudStorage
+        filetype: csv
+        bucket: df2test
+        prefix: prefix
+        filename: test.csv
+      - target: CloudStorage
+        filetype: csv
+        bucket: df2test
+        prefix: prefix
+        partition_cols: [dt, currency]
+        filename: test.csv
+    columns:
+      - col: col1 Fixed String foo
+      - col: col2 Random Timestamp '{{ start }}' '{{ end }}'
+      - col: currency Selection String
+        values:
+          - EUR
+          - GBP
+      - col: dt ExtractDate String
+        source_column: col2
+        date_format: '%Y-%m-%d'
+      

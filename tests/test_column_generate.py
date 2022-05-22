@@ -3,9 +3,9 @@ import unittest
 import numpy as np
 import pandas as pd
 import pytest
-from datafaker import column
-from datafaker.column import ColumnGenerationException
-from datafaker.factory import ColumnFactory
+from faux_data import column
+from faux_data.column import ColumnGenerationException
+from faux_data.factory import ColumnFactory
 
 from tests.utils import empty_df
 

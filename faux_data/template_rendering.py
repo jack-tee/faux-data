@@ -8,8 +8,8 @@ import dateutil
 import pandas as pd
 import yaml
 from jinja2 import BaseLoader, Environment
-from jinja2.runtime import StrictUndefined
 from jinja2.exceptions import UndefinedError
+from jinja2.runtime import StrictUndefined
 
 JINJA = Environment(loader=BaseLoader, undefined=StrictUndefined)
 

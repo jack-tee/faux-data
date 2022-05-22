@@ -1,7 +1,7 @@
 import unittest
 
 import pytest
-from datafaker.cmd import parse_params
+from faux_data.cmd import parse_params
 
 simple_tests = [
     ("--start 2021-03-02", {

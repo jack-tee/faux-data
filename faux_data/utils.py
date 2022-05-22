@@ -3,7 +3,7 @@ import re
 
 def get_parts(val: str):
     """Splits a string into parts respecting double and single quotes
-    
+
     Examples:
         >>> get_parts("mycol Random Timestamp \"2023-03-03 00:00:00\" '2026-12-12 23:59:59'")
         ["mycol", "Random", "Timestamp", "2023-03-03 00:00:00", "2026-12-12 23:59:59"]

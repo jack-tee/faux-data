@@ -1,0 +1,24 @@
+tables:
+  - name: streamingtarget
+    rows: 20
+    targets:
+      - target: Pubsub
+        topic: mytopic
+        attribute_cols: [col2]
+        attributes:
+          source_name: boop
+
+    columns:
+      - col: col1 Random Int 3 30
+      - col: col2 Fixed String boo
+      - col: col3 Random Decimal 2.3 4.7
+        decimal_places: 3
+      - col: col4 Random Timestamp '{{ start }}' '{{ end }}'
+      - col: col5 Map
+        columns:
+          - col: col5_1 Random Int 2 70
+          - col: col5_2 Random String 2 5
+
+
+      
+        

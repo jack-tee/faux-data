@@ -1,13 +1,14 @@
 import unittest
 
 import pytest
-from datafaker.table import TableParsingException
-from datafaker.template import Template
+from faux_data.table import TableParsingException
+from faux_data.template import Template
 
 from tests.utils import strip_lborder
 
 
 class TestTemplateFromString(unittest.TestCase):
+
     def test_basic_from_string(self):
         template_str = strip_lborder("""
         tables:

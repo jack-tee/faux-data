@@ -4,5 +4,7 @@
     "editor.formatOnSave": true,
     "python.formatting.provider": "yapf", // or "black" here
     "python.linting.pylintEnabled": true,
-    "python.analysis.extraPaths": ["datafaker"]
+    "python.analysis.extraPaths": [
+        "faux_data"
+    ]
 }

@@ -1,4 +1,4 @@
-from datafaker.template import Template
+from faux_data.template import Template
 
 
 ## Google Cloud Function Entrypoint

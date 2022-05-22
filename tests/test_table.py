@@ -1,10 +1,11 @@
 import unittest
 
 import pytest
-from datafaker.table import Table, TableParsingException
+from faux_data.table import Table, TableParsingException
 
 
 class TestTableParsing(unittest.TestCase):
+
     def test_basic_table_parsing_error_on_column(self):
         conf = """
         name: mytable
@@ -22,6 +23,7 @@ class TestTableParsing(unittest.TestCase):
 
 
 class TestTableGeneration(unittest.TestCase):
+
     def test_basic_single_column_table_parses(self):
         conf = """
         name: mytable

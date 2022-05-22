@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 import pprint
 import sys
 from typing import List
@@ -39,7 +39,7 @@ def parse_params(args):
 
     if prev_elem:
         params[prev_elem.strip("-")] = True
-    
+
     return  params
 
 
@@ -99,10 +99,10 @@ def cmd(args: List[str]):
 
 def show_help():
     s = """\
-datafaker - a fake data generator.
+faux-data - a fake data generator.
 
 Usage:
-  datafaker [command]
+  faux [command]
 
 Available Commands:
   render filename.yaml [params]    render a template
@@ -113,7 +113,7 @@ Flags:
   --debug    enable debug logging
 
   extra flags are passed to the template to override variables
-  e.g datafaker render templates/mytemplate.yaml --myvar=foo
+  e.g faux render templates/mytemplate.yaml --myvar=foo
 """
     print(s)
 
@@ -136,7 +136,7 @@ def set_debug(params: dict) -> None:
         logging.debug(f"Parsed params {params} from args {sys.argv}")
     else:
         logging.basicConfig(level="INFO")
-    
+
 
 def main():
     cmd(sys.argv)

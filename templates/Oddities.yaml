@@ -1,0 +1,14 @@
+tables:
+  - name: oddstuff
+    rows: 20
+    columns:
+      - name: placed_in_running
+        column_type: Selection
+        data_type: string
+        values:
+          - "N"
+          - "Y"
+      - name: ev_type_id
+        column_type: Sequential
+        start: 1
+        step: 1

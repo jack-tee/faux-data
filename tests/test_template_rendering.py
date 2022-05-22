@@ -1,8 +1,8 @@
 import unittest
 
 import pytest
-from datafaker.template import Template
-from datafaker.template_rendering import (extract_variable_lines,
+from faux_data.template import Template
+from faux_data.template_rendering import (extract_variable_lines,
                                           render_template, resolve_variables,
                                           TemplateRenderException)
 
@@ -10,6 +10,7 @@ from tests.utils import strip_lborder
 
 
 class TestTemplateExtractVariableLines(unittest.TestCase):
+
     def test_extract_with_no_vars(self):
         template_str = strip_lborder("""
         tables:
@@ -42,6 +43,7 @@ class TestTemplateExtractVariableLines(unittest.TestCase):
 
 
 class TestTemplateResolveVariables(unittest.TestCase):
+
     def test_resolve_nested_vars_no_runtime(self):
         template_str = strip_lborder("""
         variables:
@@ -130,6 +132,7 @@ class TestTemplateResolveVariables(unittest.TestCase):
 
 
 class TestTemplateRenderTemplate(unittest.TestCase):
+
     def test_basic_render(self):
         template_str = strip_lborder("""
         variables:

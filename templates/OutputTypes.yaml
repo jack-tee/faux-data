@@ -1,0 +1,18 @@
+tables:
+  - name: output_types
+    rows: 11
+    columns:
+      # Fixed
+      - name: ints_as_str
+        column_type: Random
+        data_type: Int
+        output_type: String
+        min: 5
+        max: 100
+      
+      - col: timestamps_as_strs Sequential Timestamp "2022-01-01" 1H
+        output_type: String
+
+      - col: dec_as_strs Random Decimal 2.3 8.7
+        decimal_places: 8
+        output_type: String

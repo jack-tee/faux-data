@@ -28,6 +28,16 @@
             ]
         },
         {
+            "name": "Template sample",
+            "type": "python",
+            "request": "launch",
+            "module": "datafaker.cmd",
+            "args": [
+                "sample",
+                "templates/Oddities.yaml",
+            ]
+        },
+        {
             "name": "agg_cust_progress",
             "type": "python",
             "request": "launch",

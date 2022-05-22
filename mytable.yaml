@@ -1,0 +1,25 @@
+tables:
+  - name: mytable
+    rows: 100
+    targets:
+      - target: BigQuery
+        dataset: mydataset
+        table: mytable
+    columns:
+      - name: id
+        column_type: Sequential
+        data_type: Int
+        start: 1
+        step: 1
+    
+      - name: event_time
+        column_type: Random
+        data_type: Timestamp
+        min: '{{ start }}'
+        max: '{{ end }}'
+      
+      - col: currency Selection String
+        values:
+          - USD
+          - GBP
+          - EUR

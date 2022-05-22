@@ -3,11 +3,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Optional
+import inspect
 
 import pandas as pd
 import yaml
 from jinja2 import Environment, FileSystemLoader
-from datafaker.factory import ColumnFactory
+from faux_data.factory import ColumnFactory
+from faux_data import target, column
 
 
 def render_column_example(example: Example) -> str:
@@ -49,17 +51,35 @@ class Example:
     rows: int = 5
 
 
+def is_usable(obj):
+    """
+    Util function to determine if an object is usable
+    i.e. it is a class but is not abstract
+    """
+    return inspect.isclass(obj) \
+        and not inspect.isabstract(obj) \
+        and issubclass(obj, (target.Target,column.Column)) \
+        and not (obj is target.Target or obj is column.Column)
+
+
 def main():
 
     env = Environment(loader=FileSystemLoader("docs/templates"))
 
     env.filters["render_column_example"] = render_column_example
+    env.filters["cleandoc"] = inspect.cleandoc
 
     # Generate COLUMNS.md
     column_docs = yaml.safe_load(open("./docs/column_docs.yaml"))
     column_docs = ColumnDocs(column_docs["columns"])
     template = env.get_template("column_docs.jinja")
     template.stream(columns=column_docs).dump("COLUMNS.md")
+
+    # Generate README.md
+    targets = inspect.getmembers(target, is_usable)
+    columns = inspect.getmembers(column, is_usable)
+    template = env.get_template("readme.md.jinja")
+    template.stream(columns=columns, targets=targets).dump("README.md")
 
 
 if __name__ == '__main__':

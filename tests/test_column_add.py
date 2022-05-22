@@ -2,8 +2,8 @@ import unittest
 
 import pandas as pd
 import pytest
-from datafaker import column
-from datafaker.table import Table
+from faux_data import column
+from faux_data.table import Table
 
 pd.set_option('max_colwidth', 800)
 

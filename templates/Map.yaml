@@ -1,0 +1,17 @@
+tables:
+  - name: map_cols
+    rows: 11
+    columns:
+      # Fixed
+      - name: top_level_map
+        column_type: Map
+        columns:
+          - col: nested_field_int Random Int 2 50
+          - col: nested_field_str Random String 2 5
+          - name: nested_map
+            column_type: Map
+            columns:
+              - col: second_nested_field_int Random Int 2 60
+              - col: second_nested_map Map
+                columns:
+                  - col: t Random String 2 4

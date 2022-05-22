@@ -4,9 +4,9 @@ from unittest.mock import MagicMock
 from google.cloud import bigquery
 import pandas as pd
 
-from datafaker.factory import TargetFactory
-from datafaker.table import Table
-from datafaker import target
+from faux_data.factory import TargetFactory
+from faux_data.table import Table
+from faux_data import target
 
 target.GOOGLE_PROJECT_ID = 'myproject'
 
