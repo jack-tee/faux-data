@@ -9,6 +9,9 @@ The main aims of Faux Data are to:
 - Provide easy integration with cloud services specifically on the google cloud platform
 - Support serverless generation of data e.g. deploying the code as a cloud function
 
+It was originally based on the scala application [dunnhumby/data-faker](https://github.com/dunnhumby/data-faker), the templates are still similar but are not directly compatible. 
+
+
 ## Quick Start
 
 ### Install
@@ -155,10 +158,13 @@ faux-data templates support the following columns
 ### {{ column[0] }}
 
 {{ column[1].__doc__ | cleandoc }}
-See the [{{ column[0] }} examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#{{ column[0] | lower }}) for more info and usage examples.
 {% endfor %}
 
 ## Targets
+
+faux-data templates support the following targets
 
 {% for target in targets -%}
 - [{{ target[0] }}](#{{ target[0] | lower }})
@@ -175,8 +181,8 @@ See the [{{ column[0] }} examples](COLUMNS.md) for usage examples.
 
 The library can be used in various ways
 - via the faux cli
-- as a library by importing it into your python project, instantiating templates and calling the generate and load methods on them
-- running the code in a cloud function, passing a template to the cloud function at runtime, or using a template stored in cloud storage
+- as a library by importing it into your python project, instantiating templates and calling the `.generate()` and `.load()` methods on them
+- running the code in a cloud function, passing a template to the cloud function at call time, or using a template stored in cloud storage
 
 
 ### Deploying as a Cloud Function

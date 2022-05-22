@@ -9,6 +9,9 @@ The main aims of Faux Data are to:
 - Provide easy integration with cloud services specifically on the google cloud platform
 - Support serverless generation of data e.g. deploying the code as a cloud function
 
+It was originally based on the scala application [dunnhumby/data-faker](https://github.com/dunnhumby/data-faker), the templates are still similar but are not directly compatible. 
+
+
 ## Quick Start
 
 ### Install
@@ -165,65 +168,79 @@ faux-data templates support the following columns
 ### Array
 
 Creates an array column based on a list of `source_columns:`.
-See the [Array examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#array) for more info and usage examples.
 
 ### Empty
 
 An empty column.
-See the [Empty examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#empty) for more info and usage examples.
 
 ### Eval
 
 An eval column
-See the [Eval examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#eval) for more info and usage examples.
 
 ### ExtractDate
 
 Extracts dates from a `source_columnn:`.
-See the [ExtractDate examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#extractdate) for more info and usage examples.
 
 ### Fixed
 
 A column with a single fixed `value:`.
-See the [Fixed examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#fixed) for more info and usage examples.
 
 ### Map
 
 Creates a dict of columns based on the source cols
-See the [Map examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#map) for more info and usage examples.
 
 ### MapValues
 
 A map column.
-See the [MapValues examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#mapvalues) for more info and usage examples.
 
 ### Random
 
 A random value.
-See the [Random examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#random) for more info and usage examples.
 
 ### Selection
 
 A random selection from some preset values
-See the [Selection examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#selection) for more info and usage examples.
 
 ### Sequential
 
 See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
-See the [Sequential examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#sequential) for more info and usage examples.
 
 ### Series
 
 Repeats a series of values
-See the [Series examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#series) for more info and usage examples.
 
 ### TimestampOffset
 
 Create a new column by adding or removing random time deltas from another timestamp column.
-See the [TimestampOffset examples](COLUMNS.md) for usage examples.
+
+See [COLUMNS.md](COLUMNS.md#timestampoffset) for more info and usage examples.
 
 
 ## Targets
+
+faux-data templates support the following targets
 
 - [BigQuery](#bigquery)
 - [CloudStorage](#cloudstorage)
@@ -337,8 +354,8 @@ Usage:
 
 The library can be used in various ways
 - via the faux cli
-- as a library by importing it into your python project, instantiating templates and calling the generate and load methods on them
-- running the code in a cloud function, passing a template to the cloud function at runtime, or using a template stored in cloud storage
+- as a library by importing it into your python project, instantiating templates and calling the `.generate()` and `.load()` methods on them
+- running the code in a cloud function, passing a template to the cloud function at call time, or using a template stored in cloud storage
 
 
 ### Deploying as a Cloud Function
