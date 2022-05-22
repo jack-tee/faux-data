@@ -4,13 +4,21 @@ Faux Data is a library for generating data using template files.
 
 Templates define the columns, types, and logic for generating the data and targets define where the data should be loaded to.
 
-The main aims of Faux Data are to:
+The main aims of Faux Data are:
 - Make it easy to generate schematically correct datasets
-- Provide easy integration with cloud services specifically on the google cloud platform
-- Support serverless generation of data e.g. deploying the code as a cloud function
+- Provide easy integration with cloud services specifically on the Google Cloud Platform
+- Support serverless generation of data e.g. using a Cloud Function invocation to generate data
 
-It was originally based on the scala application [dunnhumby/data-faker](https://github.com/dunnhumby/data-faker), the templates are still similar but are not directly compatible. 
+Faux Data was originally a Python port of the scala application [dunnhumby/data-faker](https://github.com/dunnhumby/data-faker), but has evolved from there. The templates are still similar but are not directly compatible.
+## Contents
 
+- [Quick Start](#quick-start)
+- [Columns](#columns)
+  - [Array](#array), [Empty](#empty), [Eval](#eval), [ExtractDate](#extractdate), [Fixed](#fixed), [Map](#map), [MapValues](#mapvalues), [Random](#random), [Selection](#selection), [Sequential](#sequential), [Series](#series), [TimestampOffset](#timestampoffset)
+- [Targets](#targets)
+  - [BigQuery](#bigquery), [CloudStorage](#cloudstorage), [LocalFile](#localfile), [Pubsub](#pubsub)
+- [Deploying](#deploying)
+- [Concepts](#concepts)
 
 ## Quick Start
 
