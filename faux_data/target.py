@@ -93,11 +93,10 @@ class CloudStorage(PartitionedFileTarget, Target):
 
     If partition_cols is specified then data will be split into separate files and loaded to cloud storage
     with filepaths that follow the hive partitioning structure.
-    e.g.
-        If a dataset has dt and currency columns and these are specified as partition_cols
-        then you might expect the following files to be created:
-        gs://bucket/prefix/dt=2022-01-01/currency=USD/filename
-        gs://bucket/prefix/dt=2022-01-01/currency=EUR/filename
+    e.g. If a dataset has dt and currency columns and these are specified as partition_cols
+    then you might expect the following files to be created:
+    - gs://bucket/prefix/dt=2022-01-01/currency=USD/filename
+    - gs://bucket/prefix/dt=2022-01-01/currency=EUR/filename
     """
 
     bucket: str
