@@ -13,9 +13,9 @@ The main aims of Faux Data are to:
 
 ### Install
 
-Install faux-data via pip
+Install faux-data locally via pip
 
-`pip install faux-data`
+`> pip install faux-data`
 
 check the install has been successful with
 
@@ -67,12 +67,6 @@ tables:
         data_type: Timestamp
         min: '2022-05-20 00:00:00'
         max: '2022-05-21 00:00:00'
-      
-      - col: currency Selection String
-        values:
-          - USD
-          - GBP
-          - EUR
 ```
 
 Notice that {{ '{{ start }}' }} and {{ '{{ end }}' }} are replaced with start and end dates automatically. Start and end are built-in variables that you can use in templates.
@@ -151,11 +145,17 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 ## Columns
 
+faux-data templates support the following columns
+
+{% for column in columns -%}
+- [{{ column[0] }}](#{{ column[0] | lower }})
+{% endfor %}
+
 {% for column in columns %}
 ### {{ column[0] }}
 
-{{ column[1].__doc__ }}
-
+{{ column[1].__doc__ | cleandoc }}
+See the [{{ column[0] }} examples](COLUMNS.md) for usage examples.
 {% endfor %}
 
 ## Targets

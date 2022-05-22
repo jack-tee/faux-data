@@ -13,9 +13,9 @@ The main aims of Faux Data are to:
 
 ### Install
 
-Install faux-data via pip
+Install faux-data locally via pip
 
-`pip install faux-data`
+`> pip install faux-data`
 
 check the install has been successful with
 
@@ -67,12 +67,6 @@ tables:
         data_type: Timestamp
         min: '2022-05-20 00:00:00'
         max: '2022-05-21 00:00:00'
-      
-      - col: currency Selection String
-        values:
-          - USD
-          - GBP
-          - EUR
 ```
 
 Notice that {{ start }} and {{ end }} are replaced with start and end dates automatically. Start and end are built-in variables that you can use in templates.
@@ -151,102 +145,82 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 ## Columns
 
+faux-data templates support the following columns
+
+- [Array](#array)
+- [Empty](#empty)
+- [Eval](#eval)
+- [ExtractDate](#extractdate)
+- [Fixed](#fixed)
+- [Map](#map)
+- [MapValues](#mapvalues)
+- [Random](#random)
+- [Selection](#selection)
+- [Sequential](#sequential)
+- [Series](#series)
+- [TimestampOffset](#timestampoffset)
+
+
 
 ### Array
 
-
-    Creates an array column based on a list of `source_columns:`.
-    
-    
-
+Creates an array column based on a list of `source_columns:`.
+See the [Array examples](COLUMNS.md) for usage examples.
 
 ### Empty
 
-
-    An empty column.
-    
-    
-
+An empty column.
+See the [Empty examples](COLUMNS.md) for usage examples.
 
 ### Eval
 
-
-    An eval column
-    
-    
-
+An eval column
+See the [Eval examples](COLUMNS.md) for usage examples.
 
 ### ExtractDate
 
-
-    Extracts dates from a `source_columnn:`.
-    
-    
-
+Extracts dates from a `source_columnn:`.
+See the [ExtractDate examples](COLUMNS.md) for usage examples.
 
 ### Fixed
 
-
-    A column with a single fixed `value:`.
-    
-    
-
+A column with a single fixed `value:`.
+See the [Fixed examples](COLUMNS.md) for usage examples.
 
 ### Map
 
-
-    Creates a dict of columns based on the source cols
-    
-    
-
+Creates a dict of columns based on the source cols
+See the [Map examples](COLUMNS.md) for usage examples.
 
 ### MapValues
 
-
-    A map column.
-    
-    
-
+A map column.
+See the [MapValues examples](COLUMNS.md) for usage examples.
 
 ### Random
 
-
-    A random value.
-    
-    
-
+A random value.
+See the [Random examples](COLUMNS.md) for usage examples.
 
 ### Selection
 
-
-    A random selection from some preset values
-    
-    
-
+A random selection from some preset values
+See the [Selection examples](COLUMNS.md) for usage examples.
 
 ### Sequential
 
-
-    
-    See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
-    
-
+See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
+See the [Sequential examples](COLUMNS.md) for usage examples.
 
 ### Series
 
-
-    Repeats a series of values
-    
-    
-
+Repeats a series of values
+See the [Series examples](COLUMNS.md) for usage examples.
 
 ### TimestampOffset
 
-
-    Create a new column by adding or removing random time deltas from another timestamp column.
-    
-    
-
+Create a new column by adding or removing random time deltas from another timestamp column.
+See the [TimestampOffset examples](COLUMNS.md) for usage examples.
 
 
 ## Targets
@@ -293,7 +267,7 @@ Usage:
 If partition_cols is specified then data will be split into separate files and loaded to cloud storage
 with filepaths that follow the hive partitioning structure.
 e.g.
-    If a dataset has dt and currency columns and these are specified as partition_cols 
+    If a dataset has dt and currency columns and these are specified as partition_cols
     then you might expect the following files to be created:
     gs://bucket/prefix/dt=2022-01-01/currency=USD/filename
     gs://bucket/prefix/dt=2022-01-01/currency=EUR/filename
@@ -317,10 +291,10 @@ Usage:
       partition_cols: [col1, col2] # Optional. The columns within the dataset to partition on.
 
 
-If partition_cols is specified then data will be split into separate files and 
+If partition_cols is specified then data will be split into separate files and
 separate files / directories will be created with filepaths that follow the hive partitioning structure.
 e.g.
-    If a dataset has dt and currency columns and these are specified as partition_cols 
+    If a dataset has dt and currency columns and these are specified as partition_cols
     then you might expect the following files to be created:
     filepath/dt=2022-01-01/currency=USD/filename
     filepath/dt=2022-01-01/currency=EUR/filename
