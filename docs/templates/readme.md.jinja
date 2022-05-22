@@ -160,6 +160,10 @@ See the [{{ column[0] }} examples](COLUMNS.md) for usage examples.
 
 ## Targets
 
+{% for target in targets -%}
+- [{{ target[0] }}](#{{ target[0] | lower }})
+{% endfor %}
+
 {% for target in targets %}
 ### {{ target[0] }}
 

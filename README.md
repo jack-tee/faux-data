@@ -225,6 +225,12 @@ See the [TimestampOffset examples](COLUMNS.md) for usage examples.
 
 ## Targets
 
+- [BigQuery](#bigquery)
+- [CloudStorage](#cloudstorage)
+- [LocalFile](#localfile)
+- [Pubsub](#pubsub)
+
+
 
 ### BigQuery
 
