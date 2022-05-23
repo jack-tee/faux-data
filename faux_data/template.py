@@ -6,8 +6,12 @@ from typing import List, Tuple
 
 import yaml
 
+from . import config
 from .table import Table
 from .template_rendering import render_template
+from .utils import split_gcs_path
+
+GCS_PREFIX = "gs://"
 
 
 @dataclass(kw_only=True)
@@ -43,9 +47,28 @@ class Template:
 
     @classmethod
     def from_file(cls, filepath, params={}):
-        # TODO: support reading from cloud storage
-        with open(filepath, "r") as f:
-            template_str = f.read()
+
+        if config.DEPLOYMENT_MODE == 'cloud_function' \
+            or filepath.startswith(GCS_PREFIX):
+
+            from google.cloud import storage
+            client = storage.Client()
+
+            if filepath.startswith(GCS_PREFIX):
+                template_path = filepath
+            else:
+                template_path = f"{GCS_PREFIX}{config.TEMPLATE_BUCKET}/{config.TEMPLATE_LOCATION}/{filepath}"
+
+            path = split_gcs_path(template_path)
+            bucket = client.get_bucket(path.group("bucket"))
+
+            template_str = bucket.get_blob(
+                path.group("obj")).download_as_text()
+
+        else:
+            with open(filepath, "r") as f:
+                template_str = f.read()
+
         return cls.from_string(template_str, params)
 
     @classmethod
