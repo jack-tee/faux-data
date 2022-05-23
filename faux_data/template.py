@@ -103,10 +103,3 @@ class Template:
         with open(filepath, "r") as f:
             template_str = f.read()
         return cls.render_template(template_str, params)
-
-    def __repr__(self):
-        tables = '\n'.join(table.__repr__() for table in self.tables)
-        return f"""
-TEMPLATE
-{tables}
-"""

@@ -124,22 +124,6 @@ class Table:
     def result(self):
         return "yope"
 
-    def __repr__(self):
-        if isinstance(self.df, pd.DataFrame):
-            df_repr = self.df.head(5)  #.to_markdown(index=False)
-            df_types = self.df.dtypes
-        else:
-            df_repr = "Not generated"
-            df_types = ""
-
-        return f"""
-Table: {self.name}
-Sample:
-{df_repr}
-
-Schema:
-{df_types}"""
-
 
 class TableParsingException(Exception):
     pass

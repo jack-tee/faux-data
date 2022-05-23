@@ -1,0 +1,9 @@
+Sample
+
+{% for table in template.tables %}
+{{ table.name }}
+{% if table.df is not none %}
+{{ table.df.head() }}
+{% endif %}
+
+{% endfor %}

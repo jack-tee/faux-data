@@ -4,11 +4,14 @@ import pprint
 import sys
 from typing import List
 
+from jinja2 import Environment, FileSystemLoader
+
 from .template import Template
 from .utils import get_parts
 
 log = logging.getLogger(__name__)
 
+env = Environment(loader=FileSystemLoader("faux_data/templates"))
 
 def parse_params(args):
     args = " ".join(args)
@@ -73,16 +76,19 @@ def cmd(args: List[str]):
                 case 'run':
                     t = Template.from_file(filename, params)
                     t.run()
-                    print(t)
+                    cmd_template = env.get_template("run.jinja")
+                    print(cmd_template.render(template=t))
 
                 case 'render':
                     t, v = Template.render_from_file(filename, params)
-                    show_template(filename, params, t, v)
+                    cmd_template = env.get_template("render.jinja")
+                    print(cmd_template.render(t=t, v=pprint.pformat(v), filename=filename, params=params))
 
                 case 'sample':
                     t = Template.from_file(filename, params)
                     t.generate()
-                    print(t)
+                    cmd_template = env.get_template("sample.jinja")
+                    print(cmd_template.render(template=t))
 
                 case 'sample-all':
                     for root, _, filenames in os.walk(filename):
@@ -96,46 +102,15 @@ def cmd(args: List[str]):
                                 except Exception as e:
                                     print(filepath, e)
 
-                case _:
-                    Exception(f"Unrecognised command {cmd}")
+                case _ as c:
+                    show_help(msg=f"Unrecognised command [{cmd}]. Expected one of render, sample, run or sample-all.")
 
-        case _:
-            print("Unrecognised args [{cmd_args}]")
-            show_help()
+        case _ as args:
+            show_help(msg=f"Unrecognised arguments {args}. Expected faux <command> <arg> [--flag ...].")
 
-# TODO: convert command output to use jinja templates
-
-def show_help():
-    s = """\
-faux-data - a fake data generator.
-
-Usage:
-  faux [command]
-
-Available Commands:
-  render filename.yaml [params]    render a template
-  sample filename.yaml [params]    generate a sample dataset for a template
-  run filename.yaml [params]       run a template loading data to the specified targets
-
-Flags:
-  --debug    enable debug logging
-
-  extra flags are passed to the template to override variables
-  e.g faux render templates/mytemplate.yaml --myvar=foo
-"""
-    print(s)
-
-def show_template(filename, params, t, v):
-    s = f"""\
-Filename: {filename}
-Input params: {params}
-===================== Resolved Parameters ======================
-{pprint.pformat(v)}
-====================== Rendered Template =======================
-{t}
-================================================================"""
-    print(s)
-
+def show_help(msg: str = None):
+    cmd_template = env.get_template("help.jinja")
+    print(cmd_template.render(msg=msg))
 
 
 def set_debug(params: dict) -> None:
