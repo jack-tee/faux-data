@@ -26,3 +26,15 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: update version file
+        run: |
+          echo "${{ steps.tag_version.outputs.new_tag }}" > VERSION.txt
+
+          git add -A
+          git commit -m "tag as version ${{ steps.tag_version.outputs.new_tag }}"
+          git push
+      
+      
+
+
