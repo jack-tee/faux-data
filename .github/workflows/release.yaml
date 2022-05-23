@@ -31,6 +31,9 @@ jobs:
         run: |
           echo "${{ steps.tag_version.outputs.new_tag }}" > VERSION.txt
 
+          git config --global user.email "you@example.com"
+          git config --global user.name "Release workflow"
+
           git add -A
           git commit -m "tag as version ${{ steps.tag_version.outputs.new_tag }}"
           git push
