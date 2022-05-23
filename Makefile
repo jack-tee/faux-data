@@ -2,7 +2,8 @@
 
 init:
 	@virtualenv venv
-	@pip install -r requirements.txt -r local_requirements.txt
+	@pip install --editable . 
+	@pip install -r test-requirements.txt
 	@echo "activate the virtualenv with 'source venv/bin/activate'"
 
 test:

@@ -43,6 +43,7 @@ class Template:
 
     @classmethod
     def from_file(cls, filepath, params={}):
+        # TODO: support reading from cloud storage
         with open(filepath, "r") as f:
             template_str = f.read()
         return cls.from_string(template_str, params)

@@ -323,11 +323,10 @@ Usage:
 
 If partition_cols is specified then data will be split into separate files and
 separate files / directories will be created with filepaths that follow the hive partitioning structure.
-e.g.
-    If a dataset has dt and currency columns and these are specified as partition_cols
-    then you might expect the following files to be created:
-    filepath/dt=2022-01-01/currency=USD/filename
-    filepath/dt=2022-01-01/currency=EUR/filename
+e.g. If a dataset has dt and currency columns and these are specified as partition_cols
+then you might expect the following files to be created:
+- filepath/dt=2022-01-01/currency=USD/filename
+- filepath/dt=2022-01-01/currency=EUR/filename
 
 
 ### Pubsub

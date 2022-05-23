@@ -58,6 +58,11 @@ def cmd(args: List[str]):
         case [] | ["--help"] | ["-h"]:
             show_help()
 
+        case ['version'] | ['--version']:
+            with open("./VERSION.txt") as vf:
+                version = vf.read()
+                print(f"faux-data version: {version}")
+
         case [cmd, filename, *objs]:
             params = parse_params(objs)
             set_debug(params)
@@ -88,7 +93,6 @@ def cmd(args: List[str]):
                                     print(filepath, "OK")
                                 except Exception as e:
                                     print(filepath, e)
-
 
                 case _:
                     Exception(f"Unrecognised command {cmd}")
