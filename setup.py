@@ -1,6 +1,5 @@
 import pathlib
-from dataclasses import dataclass
-from distutils.core import setup
+from setuptools import setup
 
 HERE = pathlib.Path(__file__).parent
 
