@@ -195,6 +195,19 @@ The library can be used in various ways
 
 ### Deploying as a Cloud Function
 
+To deploy a cloud function
+
+```
+gcloud functions deploy faux-data \
+  --region europe-west2 \
+  --project XXX \
+  --runtime python310 \
+  --trigger-http \
+  --set-env-vars='FAUX_DATA_DEPLOYMENT_MODE=cloud_function,FAUX_DATA_TEMPLATE_BUCKET=df2test,FAUX_DATA_TEMPLATE_LOCATION=templates' \
+  --entry-point generate
+
+```
+
 ## Concepts
 
 ### Variables

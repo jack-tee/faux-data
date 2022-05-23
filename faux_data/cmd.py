@@ -7,6 +7,8 @@ from typing import List
 from .template import Template
 from .utils import get_parts
 
+log = logging.getLogger(__name__)
+
 
 def parse_params(args):
     args = " ".join(args)
@@ -33,7 +35,7 @@ def parse_params(args):
                 prev_elem = None
                 continue
             else:
-                print(f"don't know waht to do with {elem}")
+                log.error(f"don't know what to do with {elem}")
 
         prev_elem = elem
 
@@ -101,6 +103,8 @@ def cmd(args: List[str]):
             print("Unrecognised args [{cmd_args}]")
             show_help()
 
+# TODO: convert command output to use jinja templates
+
 def show_help():
     s = """\
 faux-data - a fake data generator.
@@ -137,7 +141,7 @@ Input params: {params}
 def set_debug(params: dict) -> None:
     if params.get("debug"):
         logging.basicConfig(level="DEBUG")
-        logging.debug(f"Parsed params {params} from args {sys.argv}")
+        log.debug(f"Parsed params {params} from args {sys.argv}")
     else:
         logging.basicConfig(level="INFO")
 

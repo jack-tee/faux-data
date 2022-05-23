@@ -12,7 +12,7 @@ from .target import Target
 
 pd.set_option("max_colwidth", 180)
 
-# TODO: Handle a filename as rows: parameter
+log = logging.getLogger(__name__)
 
 
 @dataclass(kw_only=True)
@@ -46,6 +46,7 @@ class Table:
 
         except Exception as e:
             self.complete = False
+            log.error(e)
             raise TableParsingException(f"Error on table [{self.name}]. {e}")
 
     def parse_cols(self, columns) -> list:
@@ -65,7 +66,7 @@ class Table:
             try:
                 targs.append(TargetFactory.parse(target))
             except Exception as e:
-                logging.warning(f"unable to parse target - {e}")
+                log.warning(f"unable to parse target - {e}")
                 pass
 
         return targs

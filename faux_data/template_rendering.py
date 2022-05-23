@@ -11,6 +11,8 @@ from jinja2 import BaseLoader, Environment
 from jinja2.exceptions import UndefinedError
 from jinja2.runtime import StrictUndefined
 
+log = logging.getLogger(__name__)
+
 JINJA = Environment(loader=BaseLoader, undefined=StrictUndefined)
 
 
@@ -19,6 +21,9 @@ def render_template(template_str: str,
 
     start, end = resolve_time_period(runtime_vars.get("start"),
                                      runtime_vars.get("end"))
+
+    log.info(f"resolved start [{start}] and end [{end}] vars")
+
     if runtime_vars.get("start"):
         del runtime_vars["start"]
     if runtime_vars.get("end"):
@@ -29,7 +34,7 @@ def render_template(template_str: str,
     builtin_vars.update(ts_vars)
 
     vars_ = resolve_variables(template_str, builtin_vars, runtime_vars)
-    logging.debug(f"Final template vars: {vars_}")
+    log.debug(f"final template vars: {vars_}")
 
     try:
         rendered_template = JINJA.from_string(template_str).render(vars_)
@@ -146,6 +151,8 @@ def resolve_time_period(start, end):
     # default size of timeperiod
     period = timedelta(days=1)
     now = datetime.now()
+
+    # TODO: can pattern matching tidy this up?
 
     if start is None and end is None:
         # neither provided, default to 'yesterday'
