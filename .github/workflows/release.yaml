@@ -38,6 +38,16 @@ jobs:
           git commit -m "tag as version ${{ steps.tag_version.outputs.new_tag }}"
           git push
       
+      - name: create distribution
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: jack-tee
+          password: ${{ secrets.PYPI_API_TOKEN }}
+      
       
 
 
