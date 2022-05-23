@@ -11,7 +11,8 @@ from .utils import get_parts
 
 log = logging.getLogger(__name__)
 
-env = Environment(loader=FileSystemLoader("faux_data/templates"))
+dir = os.path.dirname(__file__)
+env = Environment(loader=FileSystemLoader(f"{dir}/templates"))
 
 def parse_params(args):
     args = " ".join(args)
