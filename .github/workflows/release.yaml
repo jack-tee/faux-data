@@ -40,7 +40,7 @@ jobs:
       
       - name: create distribution
         run: |
-          pip install twine
+          pip install wheel twine
           python setup.py sdist bdist_wheel
 
       - name: Publish a Python distribution to PyPI
