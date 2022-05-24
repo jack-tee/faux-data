@@ -1,8 +1,8 @@
 # Faux Data
 
-Faux Data is a library for generating data using template files.
+Faux Data is a library for generating data using configuration files.
 
-Templates define the columns, types, and logic for generating the data and targets define where the data should be loaded to.
+The configuration files are called templates. Within a template, `columns` defines the structure of the data and the logic for how each column should be generated and `targets` define where the data should be loaded to.
 
 The main aims of Faux Data are:
 - Make it easy to generate schematically correct datasets
@@ -365,6 +365,19 @@ The library can be used in various ways
 
 
 ### Deploying as a Cloud Function
+
+To deploy a cloud function
+
+```
+gcloud functions deploy faux-data \
+  --region europe-west2 \
+  --project XXX \
+  --runtime python310 \
+  --trigger-http \
+  --set-env-vars='FAUX_DATA_DEPLOYMENT_MODE=cloud_function,FAUX_DATA_TEMPLATE_BUCKET=df2test,FAUX_DATA_TEMPLATE_LOCATION=templates' \
+  --entry-point generate
+
+```
 
 ## Concepts
 

@@ -1,11 +1,31 @@
 columns:
+  - name: MapValues
+    title: Maps the values in one column to values in another
+    examples:
+      - desc: A simple mapping
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: currency Selection String
+              values:
+                - EUR
+                - USD
+                - GBP
+            - name: symbol
+              column_type: MapValues
+              source_column: currency
+              values:
+                EUR: €
+                USD: $
+                GBP: £
   - name: Selection
     title: Generates columns by selecting random values
     desc: >
       A selection column
     examples:
       - desc: A simple Selection column fills a column with a random selection from the provided `values`.
-        yaml: |+
+        column_yaml: |
           name: simple_selection
           column_type: Selection
           values: 
@@ -13,7 +33,7 @@ columns:
             - second
 
       - desc: You can apply weighting to the provided `values` to make some more likely to be selected. In this example USD is 10 times more likely than GBP and EUR is 3 times more likely than GBP. A specific weighting is not needed for GBP since it defaults to 1.
-        yaml: |+
+        column_yaml: |
           name: weighted_selection
           column_type: Selection
           values: 
@@ -31,14 +51,15 @@ columns:
       A Random column
     examples:
       - desc: A Random column generates random values between `min:` and `max:`.
-        yaml: |+
+        column_yaml: |
           name: simple_random_int
           column_type: Random
           data_type: Int
           min: 5
           max: 200
+
       - desc: You can generate random timestamps as well.
-        yaml: |+
+        column_yaml: |
           name: event_time
           column_type: Random
           data_type: Timestamp
@@ -46,7 +67,7 @@ columns:
           max: 2022-01-02 12:00:00
       
       - desc: Or random strings, where min and max are the length of the string.
-        yaml: |+
+        column_yaml: |
           name: message_id
           column_type: Random
           data_type: String
@@ -57,14 +78,14 @@ columns:
     title: Generates a column by incrementing a field from a `start:` by a `step:` for each row.
     examples:
       - desc: A simple Sequential column can be used for generating incrementing Ids.
-        yaml: |+
+        column_yaml: |
           name: id
           column_type: Sequential
           data_type: Int
           start: 1
           step: 1
-      - desc: They can also be used for timestamps
-        yaml: |+
+      - desc: They can also be used for timestamps and can be written in the following concise syntax.
+        column_yaml: |
           col: event_time Sequential Timestamp "1999-12-31 23:56:29" 1min45S
 
 
@@ -72,7 +93,7 @@ columns:
     title: Generates a column with a single fixed value
     examples:
       - desc: 
-        yaml: |+
+        column_yaml: |
           name: currency
           column_type: Fixed
           value: BTC
@@ -81,8 +102,19 @@ columns:
     title: Generates and empty (null) column of data
     examples:
       - desc: A simple empty column
-        yaml: |+
+        column_yaml: |
           name: pending_balance
           column_type: Empty
           data_type: Float
+
+  - name: Series
+    title: Repeats a series of values to fill a column
+    examples:
+      - desc: A simple series
+        column_yaml: |
+          name: group
+          column_type: Series
+          values:
+            - A
+            - B
           

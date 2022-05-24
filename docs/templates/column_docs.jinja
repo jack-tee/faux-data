@@ -2,7 +2,6 @@
 
 {% for column in columns.columns %}
 - [{{ column.name }}](#{{ column.name | lower }}) - {{ column.title }}
-
 {% endfor %}
 
 {% for column in columns.columns %}
@@ -18,11 +17,15 @@
 
 Template:
 ```
-{{ example.yaml -}}
+{% if example.column_yaml %}
+{{- example.column_yaml -}}
+{% elif example.columns_yaml %}
+{{- example.columns_yaml -}}
+{% endif -%}
 ```
 
 Result:
-{{ example |  render_column_example }}
+{{ example |  render_example }}
 
 ---
 

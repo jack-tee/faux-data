@@ -1,20 +1,61 @@
 # Columns
 
 
-- [Selection](#selection) - Generates columns by selecting random values
+- [MapValues](#mapvalues) - Maps the values in one column to values in another
 
+- [Selection](#selection) - Generates columns by selecting random values
 
 - [Random](#random) - Generates columns of random data
 
-
 - [Sequential](#sequential) - Generates a column by incrementing a field from a `start:` by a `step:` for each row.
-
 
 - [Fixed](#fixed) - Generates a column with a single fixed value
 
-
 - [Empty](#empty) - Generates and empty (null) column of data
 
+- [Series](#series) - Repeats a series of values to fill a column
+
+
+
+
+## MapValues
+
+A MapValues column
+
+### Examples
+
+
+A simple mapping
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: currency Selection String
+    values:
+      - EUR
+      - USD
+      - GBP
+  - name: symbol
+    column_type: MapValues
+    source_column: currency
+    values:
+      EUR: €
+      USD: $
+      GBP: £
+```
+
+Result:
+| currency   | symbol   |
+|------------|----------|
+| GBP        | £        |
+| EUR        | €        |
+| USD        | $        |
+| EUR        | €        |
+| GBP        | £        |
+
+---
 
 
 
@@ -36,17 +77,16 @@ column_type: Selection
 values: 
   - first
   - second
-
 ```
 
 Result:
 |    | simple_selection   |
 |----|--------------------|
-|  0 | second             |
+|  0 | first              |
 |  1 | first              |
-|  2 | first              |
-|  3 | second             |
-|  4 | first              |
+|  2 | second             |
+|  3 | first              |
+|  4 | second             |
 
 ---
 
@@ -65,8 +105,6 @@ values:
 weights:
   - 10
   - 3
-
-
 ```
 
 Result:
@@ -74,8 +112,8 @@ Result:
 |----|----------------------|
 |  0 | USD                  |
 |  1 | EUR                  |
-|  2 | USD                  |
-|  3 | EUR                  |
+|  2 | EUR                  |
+|  3 | USD                  |
 |  4 | USD                  |
 
 ---
@@ -105,11 +143,11 @@ max: 200
 Result:
 |    |   simple_random_int |
 |----|---------------------|
-|  0 |                 128 |
-|  1 |                  90 |
-|  2 |                  38 |
-|  3 |                 105 |
-|  4 |                  51 |
+|  0 |                  65 |
+|  1 |                 171 |
+|  2 |                  33 |
+|  3 |                  35 |
+|  4 |                  14 |
 
 ---
 
@@ -124,17 +162,16 @@ column_type: Random
 data_type: Timestamp
 min: 2022-01-01
 max: 2022-01-02 12:00:00
-
 ```
 
 Result:
 |    | event_time                 |
 |----|----------------------------|
-|  0 | 2022-01-02 01:18:05.609000 |
-|  1 | 2022-01-01 07:09:48.073000 |
-|  2 | 2022-01-01 02:09:15.744000 |
-|  3 | 2022-01-01 16:04:49.245000 |
-|  4 | 2022-01-02 04:05:57.375000 |
+|  0 | 2022-01-01 14:28:58.558000 |
+|  1 | 2022-01-01 19:06:05.292000 |
+|  2 | 2022-01-01 19:18:34.027000 |
+|  3 | 2022-01-01 08:42:31.526000 |
+|  4 | 2022-01-01 11:10:55.032000 |
 
 ---
 
@@ -149,17 +186,16 @@ column_type: Random
 data_type: String
 min: 4
 max: 12
-
 ```
 
 Result:
 |    | message_id   |
 |----|--------------|
-|  0 | lRXkYGdJ     |
-|  1 | PffSLbdu     |
-|  2 | cibPOLqDN    |
-|  3 | kMvomD       |
-|  4 | bHAPiPEE     |
+|  0 | iArZipWg     |
+|  1 | thlKXsQp     |
+|  2 | OLqxdAYl     |
+|  3 | eYxEjJGGIYA  |
+|  4 | wUSZTJyV     |
 
 ---
 
@@ -197,13 +233,11 @@ Result:
 
 
 
-They can also be used for timestamps
+They can also be used for timestamps and can be written in the following concise syntax.
 
 Template:
 ```
 col: event_time Sequential Timestamp "1999-12-31 23:56:29" 1min45S
-
-
 ```
 
 Result:
@@ -234,7 +268,6 @@ Template:
 name: currency
 column_type: Fixed
 value: BTC
-
 ```
 
 Result:
@@ -275,6 +308,38 @@ Result:
 |  2 |               nan |
 |  3 |               nan |
 |  4 |               nan |
+
+---
+
+
+
+
+## Series
+
+A Series column
+
+### Examples
+
+
+A simple series
+
+Template:
+```
+name: group
+column_type: Series
+values:
+  - A
+  - B
+```
+
+Result:
+|    | group   |
+|----|---------|
+|  0 | A       |
+|  1 | B       |
+|  2 | A       |
+|  3 | B       |
+|  4 | A       |
 
 ---
 
