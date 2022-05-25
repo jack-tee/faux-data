@@ -39,7 +39,7 @@ class BaseFactory:
     def parse(cls, conf: dict):
         """Read the column configuration and return the specified column type."""
 
-        if conf.get(cls.short_key):
+        if cls.short_key and conf.get(cls.short_key):
             type_ = conf.get(cls.short_key).split()[1]
 
         elif conf.get(cls.type_key):
@@ -61,7 +61,7 @@ class BaseFactory:
         if conf.get(cls.type_key):
             pass
 
-        elif conf.get(cls.short_key):
+        elif cls.short_key and conf.get(cls.short_key):
             parts = get_parts(conf.get(cls.short_key))
             fields = [
                 f for f in dataclasses.fields(c)
@@ -116,6 +116,6 @@ class TargetFactory(BaseFactory):
     error_class = TargetParsingException
     id_key: str = "target"
     type_key: str = "target"
-    short_key: str = "t"
+    short_key: str = None
     short_skip_fields: List[str] = []
     import_path: str | None = None

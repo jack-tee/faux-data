@@ -45,6 +45,11 @@ class Column(abc.ABC):
         df[self.name] = self.generate(len(df))
 
     def post_process(self, df: pd.DataFrame) -> None:
+        
+        if self.null_percentage > 0:
+            nanidx = df.sample(frac=self.null_percentage / 100).index
+            df.loc[nanidx,self.name] = np.nan 
+
         match self.data_type:
             case None:
                 pass

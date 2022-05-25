@@ -1,0 +1,50 @@
+tables:
+  - name: nullpercentage
+    rows: 20
+    targets:
+      - target: BigQuery
+        dataset: fd_test
+        table: nullpercentage
+        truncate: True
+    columns:
+      - name: str_null
+        column_type: Selection
+        data_type: String
+        values:
+          - "N"
+          - "Y"
+        null_percentage: 50
+        
+      - name: int_null
+        column_type: Sequential
+        data_type: Int
+        start: 1
+        step: 1
+        null_percentage: 50
+      
+      - name: float_null
+        column_type: Random
+        data_type: Float
+        min: 1
+        max: 100
+        null_percentage: 50
+      
+      - name: decimal_null
+        column_type: Random
+        data_type: Decimal
+        min: 10
+        max: 100
+        null_percentage: 50
+
+      - name: ts_null
+        column_type: Random
+        data_type: Timestamp
+        min: 2020-01-01
+        max: 2021-01-01
+        null_percentage: 50
+
+      - name: extract_date_null
+        column_type: ExtractDate
+        data_type: Date
+        source_column: ts_null
+        null_percentage: 50

@@ -1,6 +1,10 @@
 tables:
   - name: map_cols
     rows: 11
+    targets:
+      - target: BigQuery
+        dataset: fd_test
+        table: map_col
     columns:
       # Fixed
       - name: top_level_map
