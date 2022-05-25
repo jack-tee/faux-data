@@ -3,6 +3,8 @@
 
 - [MapValues](#mapvalues) - Maps the values in one column to values in another
 
+- [Map](#map) - Map columns create a record style field from other fields
+
 - [Selection](#selection) - Generates columns by selecting random values
 
 - [Random](#random) - Generates columns of random data
@@ -51,9 +53,103 @@ Result:
 |------------|----------|
 | GBP        | £        |
 | EUR        | €        |
-| USD        | $        |
+| GBP        | £        |
 | EUR        | €        |
 | GBP        | £        |
+
+---
+
+
+
+
+## Map
+
+A Map column
+
+### Examples
+
+
+You can create a Map field by specifing sub `columns:`. Note that the intermediate format here is a python dict and so it renders with single quotes.
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: mymap Map
+    columns:
+      - col: id Random Int 100 300
+      - col: name Random String 2 5
+```
+
+Result:
+| mymap                       |
+|-----------------------------|
+| {'id': 177, 'name': 'hv'}   |
+| {'id': 281, 'name': 'Dy'}   |
+| {'id': 164, 'name': 'QLcR'} |
+| {'id': 197, 'name': 'HlP'}  |
+| {'id': 201, 'name': 'jQY'}  |
+
+---
+
+
+
+If you want a valid json field specify `json: True`.
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: mymap Map
+    json: True
+    columns:
+      - col: id Random Int 100 300
+      - col: name Random String 2 5
+```
+
+Result:
+| mymap                     |
+|---------------------------|
+| {"id":225,"name":"axv"}   |
+| {"id":143,"name":"uZ"}    |
+| {"id":246,"name":"pDci"}  |
+| {"id":227,"name":"DNt"}   |
+| {"id":178,"name":"FNfPZ"} |
+
+---
+
+
+
+Similarly you can nest to any depth by adding Map columns within Map columns.
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: mymap Map
+    json: True
+    columns:
+      - col: id Random Int 100 300
+      - col: nestedmap Map
+        columns:
+          - col: balance Sequential Float 5.4 1.15
+          - col: status Selection String
+            values:
+              - active
+              - inactive
+```
+
+Result:
+| mymap                                                       |
+|-------------------------------------------------------------|
+| {"id":233,"nestedmap":{"balance":5.4,"status":"inactive"}}  |
+| {"id":233,"nestedmap":{"balance":6.55,"status":"active"}}   |
+| {"id":234,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
+| {"id":235,"nestedmap":{"balance":8.85,"status":"active"}}   |
+| {"id":278,"nestedmap":{"balance":10.0,"status":"inactive"}} |
 
 ---
 
@@ -83,10 +179,10 @@ Result:
 |    | simple_selection   |
 |----|--------------------|
 |  0 | first              |
-|  1 | first              |
+|  1 | second             |
 |  2 | second             |
 |  3 | first              |
-|  4 | second             |
+|  4 | first              |
 
 ---
 
@@ -111,9 +207,9 @@ Result:
 |    | weighted_selection   |
 |----|----------------------|
 |  0 | USD                  |
-|  1 | EUR                  |
-|  2 | EUR                  |
-|  3 | USD                  |
+|  1 | USD                  |
+|  2 | USD                  |
+|  3 | EUR                  |
 |  4 | USD                  |
 
 ---
@@ -143,11 +239,11 @@ max: 200
 Result:
 |    |   simple_random_int |
 |----|---------------------|
-|  0 |                  65 |
-|  1 |                 171 |
-|  2 |                  33 |
-|  3 |                  35 |
-|  4 |                  14 |
+|  0 |                  52 |
+|  1 |                  18 |
+|  2 |                  68 |
+|  3 |                 105 |
+|  4 |                  41 |
 
 ---
 
@@ -167,11 +263,11 @@ max: 2022-01-02 12:00:00
 Result:
 |    | event_time                 |
 |----|----------------------------|
-|  0 | 2022-01-01 14:28:58.558000 |
-|  1 | 2022-01-01 19:06:05.292000 |
-|  2 | 2022-01-01 19:18:34.027000 |
-|  3 | 2022-01-01 08:42:31.526000 |
-|  4 | 2022-01-01 11:10:55.032000 |
+|  0 | 2022-01-01 03:33:31.786000 |
+|  1 | 2022-01-01 12:37:18.726000 |
+|  2 | 2022-01-01 16:53:12.742000 |
+|  3 | 2022-01-01 08:56:54.167000 |
+|  4 | 2022-01-01 13:43:53.218000 |
 
 ---
 
@@ -191,11 +287,11 @@ max: 12
 Result:
 |    | message_id   |
 |----|--------------|
-|  0 | iArZipWg     |
-|  1 | thlKXsQp     |
-|  2 | OLqxdAYl     |
-|  3 | eYxEjJGGIYA  |
-|  4 | wUSZTJyV     |
+|  0 | hDWJFiIny    |
+|  1 | xigC         |
+|  2 | sMTaNqPeXOQ  |
+|  3 | pCYmyEnHXw   |
+|  4 | AwJpd        |
 
 ---
 

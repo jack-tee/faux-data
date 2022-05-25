@@ -89,7 +89,7 @@ def cmd(args: List[str]):
                     t = Template.from_file(filename, params)
                     t.generate()
                     cmd_template = env.get_template("sample.jinja")
-                    print(cmd_template.render(template=t))
+                    print(cmd_template.render(template=t, filename=filename))
 
                 case 'sample-all':
                     for root, _, filenames in os.walk(filename):

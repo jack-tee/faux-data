@@ -19,6 +19,47 @@ columns:
                 EUR: €
                 USD: $
                 GBP: £
+  - name: Map
+    title: Map columns create a record style field from other fields
+    examples:
+      - desc: You can create a Map field by specifing sub `columns:`. Note that the intermediate format here is a python dict and so it renders with single quotes.
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: mymap Map
+              columns:
+                - col: id Random Int 100 300
+                - col: name Random String 2 5
+      
+      - desc: "If you want a valid json field specify `json: True`."
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: mymap Map
+              json: True
+              columns:
+                - col: id Random Int 100 300
+                - col: name Random String 2 5
+      
+      - desc: "Similarly you can nest to any depth by adding Map columns within Map columns."
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: mymap Map
+              json: True
+              columns:
+                - col: id Random Int 100 300
+                - col: nestedmap Map
+                  columns:
+                    - col: balance Sequential Float 5.4 1.15
+                    - col: status Selection String
+                      values:
+                        - active
+                        - inactive
+          
   - name: Selection
     title: Generates columns by selecting random values
     desc: >

@@ -1,9 +1,13 @@
-Sample
-
+Sample {{ filename }}
 {% for table in template.tables %}
-{{ table.name }}
+Table: {{ table.name }}
+==============================
 {% if table.df is not none %}
 {{ table.df.head() }}
-{% endif %}
 
-{% endfor %}
+Schema
+{{ table.df.dtypes }}
+{% else %}
+Sample not generated
+{% endif -%}
+{% endfor -%}

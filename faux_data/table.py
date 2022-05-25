@@ -9,6 +9,7 @@ import yaml
 from .column import Column
 from .factory import ColumnFactory, TargetFactory
 from .target import Target
+from .utils import load_csv_with_types
 
 pd.set_option("max_colwidth", 180)
 
@@ -75,9 +76,8 @@ class Table:
         if isinstance(self.rows, int):
             return pd.DataFrame({"rowId": np.arange(self.rows)})
         else:
-            df = pd.read_csv(self.rows)
-            df['rowId'] = df.index
-            return df
+            # TODO: read file from cloud storage
+            return load_csv_with_types(self.rows)
 
     def generate(self) -> None:
         """Generates the table data"""
