@@ -7,24 +7,26 @@ tables:
         table: array_col
 
     columns:
-      - col: int1 Random Int 0 200
-      - col: int2 Random Int 0 300
-      - col: int3 Random Int 0 400
-      - col: arr1 Array
-        source_columns: [int1, int2, int3]
+      - col: str1 Random String 1 3
+      - col: str2 Random String 1 3
+      - col: str3 Random String 1 3
         null_percentage: 50
+
+      - col: arr1 Array
+        drop_nulls: True
+        source_columns: [str1, str2, str3]
       
-      - col: rec1 Map
-        columns:
-          - col: int4 Random Int 3 200
-          - col: str1 Random String 3 5
-          - col: flt1 Random Float 2 100
+      # - col: rec1 Map
+      #   columns:
+      #     - col: int4 Random Int 3 200
+      #     - col: str1 Random String 3 5
+      #     - col: flt1 Random Float 2 100
       
-      - col: rec2 Map
-        columns:
-          - col: int5 Random Int 3 200
-          - col: str2 Random String 3 5
-          - col: flt2 Random Float 2 100
+      # - col: rec2 Map
+      #   columns:
+      #     - col: int5 Random Int 3 200
+      #     - col: str2 Random String 3 5
+      #     - col: flt2 Random Float 2 100
       
-      - col: arr2 Array
-        source_columns: [rec1, rec2]
+      # - col: arr2 Array
+      #   source_columns: [rec1, rec2]

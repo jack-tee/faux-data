@@ -273,9 +273,17 @@ class Array(Column):
     """
 
     source_columns: List[str] = field(default_factory=list)
+    drop: bool = True
+    drop_nulls: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:
-        df[self.name] = list(df[self.source_columns].values)
+        if self.drop_nulls:
+            df[self.name] = list(df[self.source_columns].apply(lambda x: np.array(x[x.notnull()]), axis=1).values)
+        else:
+            df[self.name] = list(df[self.source_columns].values)
+        
+        if self.drop:
+            df.drop(columns=self.source_columns, inplace=True)
 
 
 @dataclass(kw_only=True)
