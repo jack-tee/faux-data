@@ -1,0 +1,9 @@
+tables:
+  - name: tbl
+    rows: 5
+    columns:
+      - name: col
+        column_type: Random
+        data_type: Int
+        start: 4
+        step: 4

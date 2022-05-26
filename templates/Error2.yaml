@@ -1,0 +1,12 @@
+tables:
+  - name: tbl
+    rows: 5
+    targets:
+      - target: Pubsub
+        topic: atopic
+    columns:
+      - name: col
+        column_type: Random
+        data_type: Int
+        min: 4
+        max: 200

@@ -350,7 +350,7 @@ class Pubsub(StreamingTarget, Target):
             if attributes_df is not None:
                 row_attrs = attributes_df.iloc[i].to_dict()
             else:
-                row_attrs = None
+                row_attrs = {}
 
             if self.validate_first:
                 res = self.process_row(row, row_attrs)
