@@ -9,5 +9,8 @@ init:
 test:
 	pytest
 
+coverage:
+	coverage run --source=./faux_data/ -m pytest && coverage report
+
 docs:
 	@python docs/main.py

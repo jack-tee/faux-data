@@ -1,6 +1,7 @@
 import unittest
 
-from faux_data.utils import get_parts
+import pytest
+from faux_data.utils import get_parts, split_gcs_path, extract_precision_and_scale
 
 
 class TestUtilsGetArgs(unittest.TestCase):
@@ -36,3 +37,39 @@ class TestUtilsGetArgs(unittest.TestCase):
         assert parts == [
             "mycol", "Random", "Timestamp", "2021-04-03 06:02:03", "2021-05-02"
         ]
+
+
+class TestUtilsSplitGcsPath(unittest.TestCase):
+
+    def test_split_parts_with_gs_prefix(self):
+        path = "gs://mybucket/some/path/file.csv"
+        split_path = split_gcs_path(path)
+        assert split_path.group("bucket") == "mybucket"
+        assert split_path.group("obj") == "some/path/file.csv"
+
+    def test_split_parts_with_no_prefix(self):
+        path = "mybucket2/some/path/to/file.csv"
+        split_path = split_gcs_path(path)
+        assert split_path.group("bucket") == "mybucket2"
+        assert split_path.group("obj") == "some/path/to/file.csv"
+
+    def test_split_parts_invalid(self):
+        path = "sometext"
+        with pytest.raises(Exception) as e:
+            split_path = split_gcs_path(path)
+        assert "sometext" in repr(e)
+
+
+class TestUtilsExtractPrecisionAndScale(unittest.TestCase):
+
+    def test_extract_precision_and_scale(self):
+        type_ = "Decimal(12,2)"
+        precision, scale = extract_precision_and_scale(type_)
+        assert precision == 12
+        assert scale == 2
+
+    def test_extract_precision_and_scale_invalid(self):
+        type_ = "Decimal(12)"
+        with pytest.raises(Exception) as e:
+            precision, scale = extract_precision_and_scale(type_)
+        assert type_ in repr(e)

@@ -29,10 +29,10 @@ def split_gcs_path(path: str):
     """Splits a path into bucket and the object path parts."""
 
     pattern = r"(?:gs://)?(?P<bucket>[^/]+)/(?P<obj>.+)"
-    path = re.match(pattern, path)
-    if not path:
+    re_match = re.match(pattern, path)
+    if not re_match:
         raise Exception(f"path [{path}] is invalid")
-    return path
+    return re_match
 
 
 def extract_precision_and_scale(type_: str) -> tuple[int, int]:
