@@ -1,6 +1,7 @@
 import unittest
 
 import pandas as pd
+import numpy as np
 import pytest
 from faux_data import column
 from faux_data.table import Table
@@ -173,10 +174,67 @@ class TestArrayColumnGeneration(unittest.TestCase):
         tbl.generate()
 
         #print(tbl.df)
-        assert len(tbl.df.columns) == 3
+        assert len(tbl.df.columns) == 1
 
         first_row = tbl.df['arr_col'][0]
         assert list(first_row) == [4, 5]
+
+    def test_basic_array_column_no_drop(self):
+        """When `drop: False` is set the source columns should be left in the output"""
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Fixed Int 4
+          - col: col2 Fixed Int 5
+          - col: arr_col Array
+            drop: False
+            source_columns:
+              - col1
+              - col2
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 3
+
+    def test_array_column_drop_nulls(self):
+        """When `drop_nulls: True` is set the null values should be removed from the array"""
+        conf = """
+        name: mytbl
+        rows: 100
+        columns:
+          - col: col1 Fixed String foo
+            null_percentage: 50
+          - col: col2 Fixed String bar
+            null_percentage: 50
+          - col: arr_col Array
+            drop_nulls: True
+            source_columns:
+              - col1
+              - col2
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        c = tbl.df["arr_col"]
+
+        # check the arrays are of the correct lengths
+        assert all(c.apply(lambda x: x.size).isin([0, 1, 2]))
+
+        # This doesn't work because it doesn't seem to interpret the arrays properly
+        # assert all(tbl.df['arr_col'].isin([
+        #     np.empty(0, dtype=object),
+        #     np.array(['foo']),
+        #     np.array(['bar']),
+        #     np.array(['foo', 'bar'])
+        # ]))
+        # so convert them to strings and check those
+
+        assert all(
+            c.astype(str).isin(['[]', "['foo']", "['bar']", "['foo' 'bar']"]))
+        assert c.astype(str).unique().size == 4
 
 
 class TestSequentialColumnGeneration(unittest.TestCase):
