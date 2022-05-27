@@ -2,6 +2,9 @@
 
 {% for column in columns.columns %}
 - [{{ column.name }}](#{{ column.name | lower }}) - {{ column.title }}
+  {% for example in column.examples -%}
+  -  [{{ example.title }}](#{{ column.name | lower }}{{ loop.index }})
+  {% endfor %}
 {% endfor %}
 
 {% for column in columns.columns %}
@@ -15,6 +18,7 @@
 
 {{ example.desc }}
 
+<a id="{{ column.name | lower }}{{ loop.index }}"></a>
 Template:
 ```
 {% if example.column_yaml %}

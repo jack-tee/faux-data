@@ -56,6 +56,7 @@ class ColumnDoc:
 
 @dataclass
 class Example:
+    title: str
     desc: str
     column_yaml: str | None = None
     columns_yaml: str | None = None

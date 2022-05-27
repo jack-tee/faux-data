@@ -2,20 +2,51 @@
 
 
 - [MapValues](#mapvalues) - Maps the values in one column to values in another
+  -  [A Simple MapValues](#mapvalues1)
+  -  [Mapping a subset of values](#mapvalues2)
+  -  [MapValues with Default](#mapvalues3)
+  
 
 - [Map](#map) - Map columns create a record style field from other fields
+  -  [A Simple Map](#map1)
+  -  [Map with Json Output](#map2)
+  -  [Nested Map](#map3)
+  
 
 - [Selection](#selection) - Generates columns by selecting random values
+  -  [Simple Selection](#selection1)
+  -  [Selection with Weighting](#selection2)
+  
 
 - [Random](#random) - Generates columns of random data
+  -  [Random Ints](#random1)
+  -  [Random Timestamps](#random2)
+  -  [Random Strings](#random3)
+  
 
 - [Sequential](#sequential) - Generates a column by incrementing a field from a `start:` by a `step:` for each row.
+  -  [Sequential Ints](#sequential1)
+  -  [Sequential Timestamps](#sequential2)
+  
 
 - [Fixed](#fixed) - Generates a column with a single fixed value
+  -  [A Fixed String](#fixed1)
+  
 
 - [Empty](#empty) - Generates and empty (null) column of data
+  -  [An Empty Float](#empty1)
+  
 
 - [Series](#series) - Repeats a series of values to fill a column
+  -  [Simple Series](#series1)
+  
+
+- [Array](#array) - Builds an array from the specified `source_columns:`.
+  -  [Simple Array with primitive types](#array1)
+  -  [Use of `drop: False`](#array2)
+  -  [With nulls in `source_columns:`](#array3)
+  -  [Use of `drop_nulls: True`](#array4)
+  
 
 
 
@@ -29,6 +60,7 @@ A MapValues column
 
 A simple mapping
 
+<a id="mapvalues1"></a>
 Template:
 ```
 name: mytbl
@@ -53,9 +85,9 @@ Result:
 |------------|----------|
 | GBP        | £        |
 | USD        | $        |
+| GBP        | £        |
 | EUR        | €        |
-| USD        | $        |
-| USD        | $        |
+| GBP        | £        |
 
 ---
 
@@ -63,6 +95,7 @@ Result:
 
 Any values not specified in the mapping are left empty / null
 
+<a id="mapvalues2"></a>
 Template:
 ```
 name: mytbl
@@ -84,9 +117,9 @@ columns:
 Result:
 | currency   | symbol   |
 |------------|----------|
-| EUR        | €        |
 | USD        | <NA>     |
-| GBP        | <NA>     |
+| EUR        | €        |
+| EUR        | €        |
 | EUR        | €        |
 | USD        | <NA>     |
 
@@ -96,6 +129,7 @@ Result:
 
 You can provide a default value to fill any gaps
 
+<a id="mapvalues3"></a>
 Template:
 ```
 name: mytbl
@@ -118,11 +152,11 @@ columns:
 Result:
 | currency   | symbol   |
 |------------|----------|
-| EUR        | €        |
-| USD        | n/a      |
+| GBP        | n/a      |
 | USD        | n/a      |
 | USD        | n/a      |
 | GBP        | n/a      |
+| EUR        | €        |
 
 ---
 
@@ -138,6 +172,7 @@ A Map column
 
 You can create a Map field by specifing sub `columns:`. Note that the intermediate format here is a python dict and so it renders with single quotes.
 
+<a id="map1"></a>
 Template:
 ```
 name: mytbl
@@ -152,11 +187,11 @@ columns:
 Result:
 | mymap                        |
 |------------------------------|
-| {'id': 287, 'name': 'OWO'}   |
-| {'id': 292, 'name': 'slNT'}  |
-| {'id': 257, 'name': 'qg'}    |
-| {'id': 105, 'name': 'Htc'}   |
-| {'id': 248, 'name': 'EEoNa'} |
+| {'id': 176, 'name': 'Ju'}    |
+| {'id': 119, 'name': 'EEL'}   |
+| {'id': 147, 'name': 'HdZ'}   |
+| {'id': 110, 'name': 'sKI'}   |
+| {'id': 283, 'name': 'Mdcpm'} |
 
 ---
 
@@ -164,6 +199,7 @@ Result:
 
 If you want a valid json field specify `data_type: String`.
 
+<a id="map2"></a>
 Template:
 ```
 name: mytbl
@@ -179,11 +215,11 @@ columns:
 Result:
 | mymap                     |
 |---------------------------|
-| {"id":205,"name":"HN"}    |
-| {"id":293,"name":"kl"}    |
-| {"id":148,"name":"eeZ"}   |
-| {"id":205,"name":"OoReD"} |
-| {"id":277,"name":"JwgPw"} |
+| {"id":154,"name":"ehfu"}  |
+| {"id":275,"name":"PWcBW"} |
+| {"id":110,"name":"IK"}    |
+| {"id":257,"name":"aQi"}   |
+| {"id":243,"name":"gBro"}  |
 
 ---
 
@@ -191,6 +227,7 @@ Result:
 
 Similarly you can nest to any depth by adding Map columns within Map columns.
 
+<a id="map3"></a>
 Template:
 ```
 name: mytbl
@@ -212,11 +249,11 @@ columns:
 Result:
 | mymap                                                       |
 |-------------------------------------------------------------|
-| {"id":170,"nestedmap":{"balance":5.4,"status":"active"}}    |
-| {"id":168,"nestedmap":{"balance":6.55,"status":"inactive"}} |
-| {"id":266,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
-| {"id":154,"nestedmap":{"balance":8.85,"status":"active"}}   |
-| {"id":141,"nestedmap":{"balance":10.0,"status":"active"}}   |
+| {"id":113,"nestedmap":{"balance":5.4,"status":"active"}}    |
+| {"id":167,"nestedmap":{"balance":6.55,"status":"inactive"}} |
+| {"id":200,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
+| {"id":195,"nestedmap":{"balance":8.85,"status":"active"}}   |
+| {"id":240,"nestedmap":{"balance":10.0,"status":"active"}}   |
 
 ---
 
@@ -233,6 +270,7 @@ A selection column
 
 A simple Selection column fills a column with a random selection from the provided `values`.
 
+<a id="selection1"></a>
 Template:
 ```
 name: simple_selection
@@ -257,6 +295,7 @@ Result:
 
 You can apply weighting to the provided `values` to make some more likely to be selected. In this example USD is 10 times more likely than GBP and EUR is 3 times more likely than GBP. A specific weighting is not needed for GBP since it defaults to 1.
 
+<a id="selection2"></a>
 Template:
 ```
 name: weighted_selection
@@ -294,6 +333,7 @@ A Random column
 
 A Random column generates random values between `min:` and `max:`.
 
+<a id="random1"></a>
 Template:
 ```
 name: simple_random_int
@@ -306,11 +346,11 @@ max: 200
 Result:
 |    |   simple_random_int |
 |----|---------------------|
-|  0 |                 154 |
-|  1 |                 119 |
-|  2 |                 152 |
-|  3 |                 106 |
-|  4 |                 157 |
+|  0 |                 122 |
+|  1 |                 198 |
+|  2 |                  47 |
+|  3 |                   5 |
+|  4 |                 104 |
 
 ---
 
@@ -318,6 +358,7 @@ Result:
 
 You can generate random timestamps as well.
 
+<a id="random2"></a>
 Template:
 ```
 name: event_time
@@ -330,11 +371,11 @@ max: 2022-01-02 12:00:00
 Result:
 |    | event_time                 |
 |----|----------------------------|
-|  0 | 2022-01-01 18:24:56.926000 |
-|  1 | 2022-01-02 08:01:19.704000 |
-|  2 | 2022-01-01 22:20:41.522000 |
-|  3 | 2022-01-01 13:06:56.493000 |
-|  4 | 2022-01-01 13:47:33.813000 |
+|  0 | 2022-01-02 04:08:19.811000 |
+|  1 | 2022-01-01 21:32:24.390000 |
+|  2 | 2022-01-01 08:46:27.097000 |
+|  3 | 2022-01-02 03:48:53.860000 |
+|  4 | 2022-01-02 05:14:08.297000 |
 
 ---
 
@@ -342,6 +383,7 @@ Result:
 
 Or random strings, where min and max are the length of the string.
 
+<a id="random3"></a>
 Template:
 ```
 name: message_id
@@ -354,11 +396,11 @@ max: 12
 Result:
 |    | message_id   |
 |----|--------------|
-|  0 | OEfbDM       |
-|  1 | BtwIAZZ      |
-|  2 | atSTuPYPgE   |
-|  3 | ZQZTKEs      |
-|  4 | ZnHsvEomr    |
+|  0 | bpTNmfsm     |
+|  1 | ZHvuhN       |
+|  2 | TyRD         |
+|  3 | zvUKgocnzd   |
+|  4 | kJWqMLgDkGr  |
 
 ---
 
@@ -374,6 +416,7 @@ A Sequential column
 
 A simple Sequential column can be used for generating incrementing Ids.
 
+<a id="sequential1"></a>
 Template:
 ```
 name: id
@@ -398,6 +441,7 @@ Result:
 
 They can also be used for timestamps and can be written in the following concise syntax.
 
+<a id="sequential2"></a>
 Template:
 ```
 col: event_time Sequential Timestamp "1999-12-31 23:56:29" 1min45S
@@ -424,8 +468,9 @@ A Fixed column
 ### Examples
 
 
-None
+A fixed string
 
+<a id="fixed1"></a>
 Template:
 ```
 name: currency
@@ -456,6 +501,7 @@ A Empty column
 
 A simple empty column
 
+<a id="empty1"></a>
 Template:
 ```
 name: pending_balance
@@ -486,6 +532,7 @@ A Series column
 
 A simple series
 
+<a id="series1"></a>
 Template:
 ```
 name: group
@@ -503,6 +550,132 @@ Result:
 |  2 | A       |
 |  3 | B       |
 |  4 | A       |
+
+---
+
+
+
+
+## Array
+
+A Array column
+
+### Examples
+
+
+A simple array of primitive types
+
+<a id="array1"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: int1 Random Int 20 50
+  - col: int2 Random Int 50 90
+  - name: array_col
+    column_type: Array
+    source_columns: [int1, int2]
+```
+
+Result:
+| array_col   |
+|-------------|
+| [22 77]     |
+| [48 68]     |
+| [40 76]     |
+| [50 56]     |
+| [48 55]     |
+
+---
+
+
+
+The source columns are removed by default but you can leave them with `drop: False`
+
+<a id="array2"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: int1 Random Int 20 50
+  - col: int2 Random Int 50 90
+  - name: array_col
+    drop: False
+    column_type: Array
+    source_columns: [int1, int2]
+```
+
+Result:
+|   int1 |   int2 | array_col   |
+|--------|--------|-------------|
+|     45 |     76 | [45 76]     |
+|     39 |     73 | [39 73]     |
+|     39 |     53 | [39 53]     |
+|     46 |     63 | [46 63]     |
+|     36 |     64 | [36 64]     |
+
+---
+
+
+
+Nulls in the source_columns are included in the array by default
+
+<a id="array3"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: int1 Random Int 20 50
+  - col: int2 Random Int 50 90
+    null_percentage: 90
+  - name: array_col
+    drop: False
+    column_type: Array
+    source_columns: [int1, int2]
+```
+
+Result:
+|   int1 | int2   | array_col   |
+|--------|--------|-------------|
+|     34 | 84     | [34 84]     |
+|     43 | <NA>   | [43 <NA>]   |
+|     43 | <NA>   | [43 <NA>]   |
+|     46 | <NA>   | [46 <NA>]   |
+|     41 | <NA>   | [41 <NA>]   |
+
+---
+
+
+
+Add `drop_nulls: True` to remove them from the array
+
+<a id="array4"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: int1 Random Int 20 50
+  - col: int2 Random Int 50 90
+    null_percentage: 90
+  - name: array_col
+    drop: False
+    drop_nulls: True
+    column_type: Array
+    source_columns: [int1, int2]
+```
+
+Result:
+|   int1 | int2   | array_col   |
+|--------|--------|-------------|
+|     44 | <NA>   | [44]        |
+|     31 | <NA>   | [31]        |
+|     35 | 59     | [35 59]     |
+|     27 | <NA>   | [27]        |
+|     28 | <NA>   | [28]        |
 
 ---
 
