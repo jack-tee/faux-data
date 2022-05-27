@@ -1,7 +1,10 @@
+from datetime import datetime
 import unittest
 
+import freezegun
 import pytest
 from faux_data.utils import get_parts, split_gcs_path, extract_precision_and_scale
+from faux_data.template_rendering import resolve_time_period
 
 
 class TestUtilsGetArgs(unittest.TestCase):
@@ -73,3 +76,39 @@ class TestUtilsExtractPrecisionAndScale(unittest.TestCase):
         with pytest.raises(Exception) as e:
             precision, scale = extract_precision_and_scale(type_)
         assert type_ in repr(e)
+
+
+class TestResolveTimePeriod:
+
+    # yapf: disable
+    test_values = [
+
+        # default
+        (None, None, datetime(2021, 2, 1), datetime(2021, 2, 2)),
+
+        # just start provided
+        ("2020-02-01", None, datetime(2020, 2, 1), datetime(2020, 2, 2)),
+        ("+3H", None, datetime(2021, 2, 2, 18, 5, 6), datetime(2021, 2, 3, 18, 5, 6)),
+        ("-4H", None, datetime(2021, 2, 2, 11, 5, 6), datetime(2021, 2, 2, 15, 5, 6)),
+
+        # just end provided
+        (None, "2020-02-01", datetime(2020, 1, 31), datetime(2020, 2, 1)),
+        (None, "+8H", datetime(2021, 2, 2, 15, 5, 6), datetime(2021, 2, 2, 23, 5, 6)),
+        (None, "-4H", datetime(2021, 2, 1, 11, 5, 6), datetime(2021, 2, 2, 11, 5, 6)),
+
+        # both start and end provided
+        ("2020-01-15", "2020-02-15", datetime(2020, 1, 15), datetime(2020, 2, 15)),
+        ("2020-01-15", "+8H5min", datetime(2020, 1, 15), datetime(2020, 1, 15, 8, 5)),
+        ("-4H4min", "2021-08-02 04:04:00", datetime(2021, 8, 2), datetime(2021, 8, 2, 4, 4)),
+        ("2021-08-02 04:04:00", "10min", datetime(2021, 8, 2, 4, 4), datetime(2021, 8, 2, 4, 14)),
+        ("-10min", "10min", datetime(2021, 2, 2, 14, 55, 6), datetime(2021, 2, 2, 15, 15, 6))
+    ]
+
+    @pytest.mark.parametrize("start,end,expected_start,expected_end", test_values)
+    @freezegun.freeze_time("2021-02-02 15:05:06")
+    def test_resolve_time_period(self, start, end, expected_start, expected_end):
+        output_start, output_end = resolve_time_period(start, end)
+        assert output_start == expected_start
+        assert output_end == expected_end
+
+    # yapf: enable

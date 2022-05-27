@@ -142,6 +142,15 @@ def resolve_time_period(start, end):
         If start is a negative offset it'll be subtracted from `now`, and the end will be `now`
 
     If just end is provided:
+        If end is a iso datetime it'll define the end of the time period, the start will be 1 day earlier
+        If end is a positive offset it'll be added onto `now`, the start will be now
+        If end is a negative offset it'll be subtracted from `now`, and the start will be 1 day earlier
+
+    If both start and end are provided:
+        If both are datetimes, they'll define the start and end of the interval
+        If start is a datetime and end is an offset, the period will be start, start + offset
+        If start is an offset and end is a datetime, the period will be end - offset, end
+        If start and end are offsets the period will be now - start, now + end
     """
 
     # parse the inputs
