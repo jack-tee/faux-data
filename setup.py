@@ -24,6 +24,10 @@ setup(name='faux-data',
       author_email='10283360+jack-tee@users.noreply.github.com',
       packages=['faux_data'],
       include_package_data=True,
+      classifiers=[
+          "Development Status :: 3 - Alpha",
+          "Programming Language :: Python :: 3.10",
+      ],
       install_requires=[
           "pandas==1.4.2",
           "google-cloud-bigquery",
