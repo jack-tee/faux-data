@@ -52,10 +52,77 @@ Result:
 | currency   | symbol   |
 |------------|----------|
 | GBP        | £        |
+| USD        | $        |
 | EUR        | €        |
-| GBP        | £        |
+| USD        | $        |
+| USD        | $        |
+
+---
+
+
+
+Any values not specified in the mapping are left empty / null
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: currency Selection String
+    values:
+      - EUR
+      - USD
+      - GBP
+  - name: symbol
+    column_type: MapValues
+    source_column: currency
+    data_type: String
+    values:
+      EUR: €
+```
+
+Result:
+| currency   | symbol   |
+|------------|----------|
 | EUR        | €        |
-| GBP        | £        |
+| USD        | <NA>     |
+| GBP        | <NA>     |
+| EUR        | €        |
+| USD        | <NA>     |
+
+---
+
+
+
+You can provide a default value to fill any gaps
+
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: currency Selection String
+    values:
+      - EUR
+      - USD
+      - GBP
+  - name: symbol
+    column_type: MapValues
+    source_column: currency
+    data_type: String
+    values:
+      EUR: €
+    default: "n/a"
+```
+
+Result:
+| currency   | symbol   |
+|------------|----------|
+| EUR        | €        |
+| USD        | n/a      |
+| USD        | n/a      |
+| USD        | n/a      |
+| GBP        | n/a      |
 
 ---
 
@@ -83,19 +150,19 @@ columns:
 ```
 
 Result:
-| mymap                       |
-|-----------------------------|
-| {'id': 177, 'name': 'hv'}   |
-| {'id': 281, 'name': 'Dy'}   |
-| {'id': 164, 'name': 'QLcR'} |
-| {'id': 197, 'name': 'HlP'}  |
-| {'id': 201, 'name': 'jQY'}  |
+| mymap                        |
+|------------------------------|
+| {'id': 287, 'name': 'OWO'}   |
+| {'id': 292, 'name': 'slNT'}  |
+| {'id': 257, 'name': 'qg'}    |
+| {'id': 105, 'name': 'Htc'}   |
+| {'id': 248, 'name': 'EEoNa'} |
 
 ---
 
 
 
-If you want a valid json field specify `json: True`.
+If you want a valid json field specify `data_type: String`.
 
 Template:
 ```
@@ -103,7 +170,7 @@ name: mytbl
 rows: 5
 columns:
   - col: mymap Map
-    json: True
+    data_type: String
     columns:
       - col: id Random Int 100 300
       - col: name Random String 2 5
@@ -112,11 +179,11 @@ columns:
 Result:
 | mymap                     |
 |---------------------------|
-| {"id":225,"name":"axv"}   |
-| {"id":143,"name":"uZ"}    |
-| {"id":246,"name":"pDci"}  |
-| {"id":227,"name":"DNt"}   |
-| {"id":178,"name":"FNfPZ"} |
+| {"id":205,"name":"HN"}    |
+| {"id":293,"name":"kl"}    |
+| {"id":148,"name":"eeZ"}   |
+| {"id":205,"name":"OoReD"} |
+| {"id":277,"name":"JwgPw"} |
 
 ---
 
@@ -130,7 +197,7 @@ name: mytbl
 rows: 5
 columns:
   - col: mymap Map
-    json: True
+    data_type: String
     columns:
       - col: id Random Int 100 300
       - col: nestedmap Map
@@ -145,11 +212,11 @@ columns:
 Result:
 | mymap                                                       |
 |-------------------------------------------------------------|
-| {"id":233,"nestedmap":{"balance":5.4,"status":"inactive"}}  |
-| {"id":233,"nestedmap":{"balance":6.55,"status":"active"}}   |
-| {"id":234,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
-| {"id":235,"nestedmap":{"balance":8.85,"status":"active"}}   |
-| {"id":278,"nestedmap":{"balance":10.0,"status":"inactive"}} |
+| {"id":170,"nestedmap":{"balance":5.4,"status":"active"}}    |
+| {"id":168,"nestedmap":{"balance":6.55,"status":"inactive"}} |
+| {"id":266,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
+| {"id":154,"nestedmap":{"balance":8.85,"status":"active"}}   |
+| {"id":141,"nestedmap":{"balance":10.0,"status":"active"}}   |
 
 ---
 
@@ -179,10 +246,10 @@ Result:
 |    | simple_selection   |
 |----|--------------------|
 |  0 | first              |
-|  1 | second             |
+|  1 | first              |
 |  2 | second             |
 |  3 | first              |
-|  4 | first              |
+|  4 | second             |
 
 ---
 
@@ -239,11 +306,11 @@ max: 200
 Result:
 |    |   simple_random_int |
 |----|---------------------|
-|  0 |                  52 |
-|  1 |                  18 |
-|  2 |                  68 |
-|  3 |                 105 |
-|  4 |                  41 |
+|  0 |                 154 |
+|  1 |                 119 |
+|  2 |                 152 |
+|  3 |                 106 |
+|  4 |                 157 |
 
 ---
 
@@ -263,11 +330,11 @@ max: 2022-01-02 12:00:00
 Result:
 |    | event_time                 |
 |----|----------------------------|
-|  0 | 2022-01-01 03:33:31.786000 |
-|  1 | 2022-01-01 12:37:18.726000 |
-|  2 | 2022-01-01 16:53:12.742000 |
-|  3 | 2022-01-01 08:56:54.167000 |
-|  4 | 2022-01-01 13:43:53.218000 |
+|  0 | 2022-01-01 18:24:56.926000 |
+|  1 | 2022-01-02 08:01:19.704000 |
+|  2 | 2022-01-01 22:20:41.522000 |
+|  3 | 2022-01-01 13:06:56.493000 |
+|  4 | 2022-01-01 13:47:33.813000 |
 
 ---
 
@@ -287,11 +354,11 @@ max: 12
 Result:
 |    | message_id   |
 |----|--------------|
-|  0 | hDWJFiIny    |
-|  1 | xigC         |
-|  2 | sMTaNqPeXOQ  |
-|  3 | pCYmyEnHXw   |
-|  4 | AwJpd        |
+|  0 | OEfbDM       |
+|  1 | BtwIAZZ      |
+|  2 | atSTuPYPgE   |
+|  3 | ZQZTKEs      |
+|  4 | ZnHsvEomr    |
 
 ---
 

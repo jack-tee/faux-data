@@ -19,6 +19,40 @@ columns:
                 EUR: €
                 USD: $
                 GBP: £
+      - desc: Any values not specified in the mapping are left empty / null 
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: currency Selection String
+              values:
+                - EUR
+                - USD
+                - GBP
+            - name: symbol
+              column_type: MapValues
+              source_column: currency
+              data_type: String
+              values:
+                EUR: €
+      - desc: You can provide a default value to fill any gaps 
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: currency Selection String
+              values:
+                - EUR
+                - USD
+                - GBP
+            - name: symbol
+              column_type: MapValues
+              source_column: currency
+              data_type: String
+              values:
+                EUR: €
+              default: "n/a"
+
   - name: Map
     title: Map columns create a record style field from other fields
     examples:
@@ -32,13 +66,13 @@ columns:
                 - col: id Random Int 100 300
                 - col: name Random String 2 5
       
-      - desc: "If you want a valid json field specify `json: True`."
+      - desc: "If you want a valid json field specify `data_type: String`."
         columns_yaml: |
           name: mytbl
           rows: 5
           columns:
             - col: mymap Map
-              json: True
+              data_type: String
               columns:
                 - col: id Random Int 100 300
                 - col: name Random String 2 5
@@ -49,7 +83,7 @@ columns:
           rows: 5
           columns:
             - col: mymap Map
-              json: True
+              data_type: String
               columns:
                 - col: id Random Int 100 300
                 - col: nestedmap Map

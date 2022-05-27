@@ -140,7 +140,7 @@ class TestMapColumnGeneration(unittest.TestCase):
         rows: 12
         columns:
           - col: map_col Map
-            json: True
+            data_type: String
             drop: True
             columns:
               - col: col1 Fixed String 'boo'

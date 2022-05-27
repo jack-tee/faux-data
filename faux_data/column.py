@@ -240,7 +240,6 @@ class Map(Column):
     columns: List = field(default_factory=list)
     drop: bool = False
     select_one: bool = False
-    json: bool = False
 
     def add_column(self, df: pd.DataFrame) -> None:
         if self.columns:
@@ -256,7 +255,7 @@ class Map(Column):
             for col in self.source_columns:
                 df.loc[chosen_cols != col, col] = np.nan
 
-        if self.json:
+        if self.data_type == 'String':
             df[self.name] = pd.Series(df[self.source_columns].to_json(orient='records', lines=True).splitlines()).astype("string")
         else:
             df[self.name] = df[self.source_columns].to_dict(orient='records')
