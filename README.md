@@ -1,5 +1,6 @@
 # Faux Data
 
+[![PyPI Latest Release](https://img.shields.io/pypi/v/faux-data.svg)](https://pypi.org/project/faux-data/)
 ![Tests](https://github.com/jack-tee/faux-data/actions/workflows/Tests.yaml/badge.svg)
 
 Faux Data is a library for generating data using configuration files.
