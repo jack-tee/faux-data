@@ -264,3 +264,52 @@ columns:
               column_type: Array
               source_columns: [int1, int2]
           
+  - name: ExtractDate
+    title: "Extracts a date from a timestamp `source_column:`"
+    examples:
+      - title: Simple ExtractDate
+        desc: You may want to use a timestamp column to populate another column. For example populating a `dt` column with the date. The ExtractDate column provides an easy way to do this.
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: event_time Random Timestamp 2022-02-02 2022-04-01
+            - name: dt
+              column_type: ExtractDate
+              data_type: Date
+              source_column: event_time
+      
+      - title: ExtractDate with custom formatting
+        desc: You can also extract the date as a string and control the formatting
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: event_time Random Timestamp 2022-02-02 2022-04-01
+            - name: day_of_month
+              column_type: ExtractDate
+              data_type: String
+              date_format: "A %A in %B"
+              source_column: event_time
+      
+      - title: ExtractDate to an Int
+        desc: Or extract part of the date as an integer
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: event_time Random Timestamp 2000-01-01 2010-12-31
+            - name: year
+              column_type: ExtractDate
+              data_type: Int
+              date_format: "%Y"
+              source_column: event_time
+      
+              
+  
+
+  # - name: TimestampOffset
+  #   title:
+
+  # - name: Eval
+  #   title:

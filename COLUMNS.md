@@ -48,6 +48,12 @@
   -  [Use of `drop_nulls: True`](#array4)
   
 
+- [ExtractDate](#extractdate) - Extracts a date from a timestamp `source_column:`
+  -  [Simple ExtractDate](#extractdate1)
+  -  [ExtractDate with custom formatting](#extractdate2)
+  -  [ExtractDate to an Int](#extractdate3)
+  
+
 
 
 
@@ -74,11 +80,11 @@ max: 200
 Result:
 |    |   simple_random_int |
 |----|---------------------|
-|  0 |                  43 |
-|  1 |                 194 |
-|  2 |                 129 |
-|  3 |                  41 |
-|  4 |                  62 |
+|  0 |                 126 |
+|  1 |                 172 |
+|  2 |                  93 |
+|  3 |                  95 |
+|  4 |                 136 |
 
 ---
 
@@ -99,11 +105,11 @@ max: 2022-01-02 12:00:00
 Result:
 |    | event_time                 |
 |----|----------------------------|
-|  0 | 2022-01-02 07:23:00.680000 |
-|  1 | 2022-01-02 01:58:51.558000 |
-|  2 | 2022-01-01 02:48:55.726000 |
-|  3 | 2022-01-01 18:43:30.256000 |
-|  4 | 2022-01-02 10:31:23.253000 |
+|  0 | 2022-01-02 09:29:39.611000 |
+|  1 | 2022-01-01 20:00:46.763000 |
+|  2 | 2022-01-02 01:15:53.421000 |
+|  3 | 2022-01-02 03:04:37.731000 |
+|  4 | 2022-01-02 03:21:22.376000 |
 
 ---
 
@@ -124,11 +130,11 @@ max: 12
 Result:
 |    | message_id   |
 |----|--------------|
-|  0 | PDDoBqm      |
-|  1 | xaJAunkMD    |
-|  2 | qwpZ         |
-|  3 | iVUbtCq      |
-|  4 | eUZmVyeAZrD  |
+|  0 | KwfdIAuGA    |
+|  1 | SoMigZAOk    |
+|  2 | KaSyDuhXqkE  |
+|  3 | LWafhzwoJlH  |
+|  4 | RhWekoeG     |
 
 ---
 
@@ -158,11 +164,11 @@ values:
 Result:
 |    | simple_selection   |
 |----|--------------------|
-|  0 | second             |
-|  1 | first              |
+|  0 | first              |
+|  1 | second             |
 |  2 | first              |
 |  3 | second             |
-|  4 | first              |
+|  4 | second             |
 
 ---
 
@@ -286,8 +292,8 @@ Result:
 |------------|----------|
 | EUR        | €        |
 | USD        | $        |
-| GBP        | £        |
 | EUR        | €        |
+| GBP        | £        |
 | EUR        | €        |
 
 ---
@@ -318,11 +324,11 @@ columns:
 Result:
 | currency   | symbol   |
 |------------|----------|
-| USD        | <NA>     |
+| EUR        | €        |
 | USD        | <NA>     |
 | EUR        | €        |
 | USD        | <NA>     |
-| GBP        | <NA>     |
+| EUR        | €        |
 
 ---
 
@@ -354,9 +360,9 @@ Result:
 | currency   | symbol   |
 |------------|----------|
 | EUR        | €        |
-| USD        | n/a      |
+| EUR        | €        |
+| EUR        | €        |
 | GBP        | n/a      |
-| USD        | n/a      |
 | GBP        | n/a      |
 
 ---
@@ -481,13 +487,13 @@ columns:
 ```
 
 Result:
-| mymap                       |
-|-----------------------------|
-| {'id': 233, 'name': 'fA'}   |
-| {'id': 117, 'name': 'KTqc'} |
-| {'id': 115, 'name': 'wcoM'} |
-| {'id': 296, 'name': 'IIEJ'} |
-| {'id': 296, 'name': 'Oh'}   |
+| mymap                        |
+|------------------------------|
+| {'id': 259, 'name': 'PvO'}   |
+| {'id': 171, 'name': 'bifmH'} |
+| {'id': 278, 'name': 'Dxh'}   |
+| {'id': 200, 'name': 'GMIU'}  |
+| {'id': 182, 'name': 'MPn'}   |
 
 ---
 
@@ -509,13 +515,13 @@ columns:
 ```
 
 Result:
-| mymap                    |
-|--------------------------|
-| {"id":275,"name":"aCy"}  |
-| {"id":105,"name":"lUDo"} |
-| {"id":209,"name":"oPGv"} |
-| {"id":108,"name":"ag"}   |
-| {"id":142,"name":"kxsf"} |
+| mymap                     |
+|---------------------------|
+| {"id":298,"name":"ExcE"}  |
+| {"id":172,"name":"GeTYE"} |
+| {"id":186,"name":"FuS"}   |
+| {"id":262,"name":"hvQMd"} |
+| {"id":234,"name":"fMaVq"} |
 
 ---
 
@@ -545,11 +551,11 @@ columns:
 Result:
 | mymap                                                       |
 |-------------------------------------------------------------|
-| {"id":206,"nestedmap":{"balance":5.4,"status":"inactive"}}  |
-| {"id":249,"nestedmap":{"balance":6.55,"status":"inactive"}} |
-| {"id":236,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
-| {"id":138,"nestedmap":{"balance":8.85,"status":"inactive"}} |
-| {"id":254,"nestedmap":{"balance":10.0,"status":"inactive"}} |
+| {"id":167,"nestedmap":{"balance":5.4,"status":"inactive"}}  |
+| {"id":144,"nestedmap":{"balance":6.55,"status":"active"}}   |
+| {"id":196,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
+| {"id":159,"nestedmap":{"balance":8.85,"status":"active"}}   |
+| {"id":205,"nestedmap":{"balance":10.0,"status":"inactive"}} |
 
 ---
 
@@ -581,11 +587,11 @@ columns:
 Result:
 | array_col   |
 |-------------|
-| [45 63]     |
-| [43 65]     |
-| [37 68]     |
-| [31 73]     |
-| [33 60]     |
+| [29 70]     |
+| [31 56]     |
+| [39 65]     |
+| [42 67]     |
+| [32 78]     |
 
 ---
 
@@ -610,11 +616,11 @@ columns:
 Result:
 |   int1 |   int2 | array_col   |
 |--------|--------|-------------|
-|     33 |     58 | [33 58]     |
-|     29 |     78 | [29 78]     |
-|     35 |     71 | [35 71]     |
-|     32 |     62 | [32 62]     |
-|     42 |     54 | [42 54]     |
+|     47 |     87 | [47 87]     |
+|     24 |     53 | [24 53]     |
+|     27 |     73 | [27 73]     |
+|     49 |     88 | [49 88]     |
+|     36 |     69 | [36 69]     |
 
 ---
 
@@ -640,11 +646,11 @@ columns:
 Result:
 |   int1 | int2   | array_col   |
 |--------|--------|-------------|
-|     32 | <NA>   | [32 <NA>]   |
-|     49 | 86     | [49 86]     |
-|     22 | <NA>   | [22 <NA>]   |
-|     34 | <NA>   | [34 <NA>]   |
-|     37 | <NA>   | [37 <NA>]   |
+|     47 | <NA>   | [47 <NA>]   |
+|     24 | <NA>   | [24 <NA>]   |
+|     40 | 56     | [40 56]     |
+|     21 | <NA>   | [21 <NA>]   |
+|     39 | <NA>   | [39 <NA>]   |
 
 ---
 
@@ -671,11 +677,107 @@ columns:
 Result:
 |   int1 | int2   | array_col   |
 |--------|--------|-------------|
-|     47 | <NA>   | [47]        |
-|     34 | <NA>   | [34]        |
-|     34 | <NA>   | [34]        |
-|     31 | 74     | [31 74]     |
-|     48 | <NA>   | [48]        |
+|     36 | 69     | [36 69]     |
+|     37 | <NA>   | [37]        |
+|     39 | <NA>   | [39]        |
+|     37 | <NA>   | [37]        |
+|     20 | <NA>   | [20]        |
+
+---
+
+
+
+
+## ExtractDate
+
+A ExtractDate column
+
+### Examples
+
+
+You may want to use a timestamp column to populate another column. For example populating a `dt` column with the date. The ExtractDate column provides an easy way to do this.
+
+<a id="extractdate1"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: event_time Random Timestamp 2022-02-02 2022-04-01
+  - name: dt
+    column_type: ExtractDate
+    data_type: Date
+    source_column: event_time
+```
+
+Result:
+| event_time                 | dt         |
+|----------------------------|------------|
+| 2022-02-28 15:05:34.782000 | 2022-02-28 |
+| 2022-03-16 23:38:57.914000 | 2022-03-16 |
+| 2022-03-14 14:10:41.136000 | 2022-03-14 |
+| 2022-02-05 18:15:05.382000 | 2022-02-05 |
+| 2022-03-24 02:22:29.786000 | 2022-03-24 |
+
+---
+
+
+
+You can also extract the date as a string and control the formatting
+
+<a id="extractdate2"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: event_time Random Timestamp 2022-02-02 2022-04-01
+  - name: day_of_month
+    column_type: ExtractDate
+    data_type: String
+    date_format: "A %A in %B"
+    source_column: event_time
+```
+
+Result:
+| event_time                 | day_of_month           |
+|----------------------------|------------------------|
+| 2022-03-30 08:57:45.677000 | A Wednesday in March   |
+| 2022-03-20 05:59:27.461000 | A Sunday in March      |
+| 2022-03-02 23:23:36.551000 | A Wednesday in March   |
+| 2022-02-18 00:23:32.406000 | A Friday in February   |
+| 2022-02-19 02:47:16.570000 | A Saturday in February |
+
+---
+
+
+
+Or extract part of the date as an integer
+
+<a id="extractdate3"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: event_time Random Timestamp 2000-01-01 2010-12-31
+  - name: year
+    column_type: ExtractDate
+    data_type: Int
+    date_format: "%Y"
+    source_column: event_time
+
+    
+```
+
+Result:
+| event_time                 |   year |
+|----------------------------|--------|
+| 2003-01-01 12:08:42.781000 |   2003 |
+| 2004-11-27 03:59:38.491000 |   2004 |
+| 2006-06-03 09:50:21.590000 |   2006 |
+| 2010-05-26 04:58:22.983000 |   2010 |
+| 2001-12-03 23:12:02.674000 |   2001 |
 
 ---
 
