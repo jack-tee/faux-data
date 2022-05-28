@@ -1,8 +1,10 @@
 # Faux Data
 
+![Tests](https://github.com/jack-tee/faux-data/actions/workflows/test.yaml/badge.svg)
+
 Faux Data is a library for generating data using configuration files.
 
-The configuration files are called templates. Within a template, `columns` defines the structure of the data and the logic for how each column should be generated and `targets` define where the data should be loaded to.
+The configuration files are called templates. Within a template, `columns` define the structure of the data and `targets` define where to load the data.
 
 The main aims of Faux Data are:
 - Make it easy to generate schematically correct datasets
@@ -10,6 +12,7 @@ The main aims of Faux Data are:
 - Support serverless generation of data e.g. using a Cloud Function invocation to generate data
 
 Faux Data was originally a Python port of the scala application [dunnhumby/data-faker](https://github.com/dunnhumby/data-faker), but has evolved from there. The templates are still similar but are not directly compatible.
+
 ## Contents
 
 - [Quick Start](#quick-start)
@@ -156,7 +159,7 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 ## Columns
 
-faux-data templates support the following columns
+faux-data templates support the following `column_type:`s:
 
 - [Array](#array)
 - [Empty](#empty)
@@ -248,7 +251,7 @@ See [COLUMNS.md](COLUMNS.md#timestampoffset) for more info and usage examples.
 
 ## Targets
 
-faux-data templates support the following targets
+faux-data templates support the following `targets:`:
 
 - [BigQuery](#bigquery)
 - [CloudStorage](#cloudstorage)
@@ -360,7 +363,7 @@ Usage:
 
 The library can be used in various ways
 - via the faux cli
-- as a library by importing it into your python project, instantiating templates and calling the `.generate()` and `.load()` methods on them
+- as a library by importing it into your python project, instantiating templates and calling the `.generate()` or `.run()` methods on them
 - running the code in a cloud function, passing a template to the cloud function at call time, or using a template stored in cloud storage
 
 
@@ -383,4 +386,4 @@ gcloud functions deploy faux-data \
 
 ### Variables
 
-### Data Types
+### Data Types and Output Types
