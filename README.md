@@ -1,6 +1,6 @@
 # Faux Data
 
-![Tests](https://github.com/jack-tee/faux-data/actions/workflows/test.yaml/badge.svg)
+![Tests](https://github.com/jack-tee/faux-data/actions/workflows/Tests.yaml/badge.svg)
 
 Faux Data is a library for generating data using configuration files.
 
