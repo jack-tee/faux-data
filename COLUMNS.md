@@ -46,6 +46,7 @@
   -  [Use of `drop: False`](#array2)
   -  [With nulls in `source_columns:`](#array3)
   -  [Use of `drop_nulls: True`](#array4)
+  -  [Outputting a Json array](#array5)
   
 
 - [ExtractDate](#extractdate) - Extracts a date from a timestamp `source_column:`
@@ -682,11 +683,41 @@ columns:
 Result:
 |   int1 | int2   | array_col   |
 |--------|--------|-------------|
-|     23 | <NA>   | [23]        |
-|     31 | <NA>   | [31]        |
-|     21 | <NA>   | [21]        |
-|     28 | 80     | [28 80]     |
+|     27 | <NA>   | [27]        |
 |     20 | <NA>   | [20]        |
+|     37 | <NA>   | [37]        |
+|     42 | <NA>   | [42]        |
+|     36 | 72     | [36 72]     |
+
+---
+
+
+
+You can get a Json formatted string using data_type: String
+
+<a id="array5"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: int1 Random Int 20 50
+  - col: int2 Empty Int
+  - col: str1 Fixed String foo
+  - name: array_col
+    data_type: String
+    column_type: Array
+    source_columns: [int1, int2, str1]
+```
+
+Result:
+| array_col         |
+|-------------------|
+| [21, null, "foo"] |
+| [21, null, "foo"] |
+| [50, null, "foo"] |
+| [35, null, "foo"] |
+| [46, null, "foo"] |
 
 ---
 

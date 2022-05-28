@@ -263,6 +263,20 @@ columns:
               drop_nulls: True
               column_type: Array
               source_columns: [int1, int2]
+      
+      - title: "Outputting a Json array"
+        desc: "You can get a Json formatted string using data_type: String"
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: int1 Random Int 20 50
+            - col: int2 Empty Int
+            - col: str1 Fixed String foo
+            - name: array_col
+              data_type: String
+              column_type: Array
+              source_columns: [int1, int2, str1]
           
   - name: ExtractDate
     title: "Extracts a date from a timestamp `source_column:`"

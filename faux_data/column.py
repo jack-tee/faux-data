@@ -1,4 +1,5 @@
 import abc
+import json
 import logging
 import random
 import string
@@ -263,6 +264,11 @@ class Map(Column):
         if self.drop:
             df.drop(columns=self.source_columns, inplace=True)
 
+def pandas_types_json_serialiser(val):
+    if pd.isnull(val):
+        return None
+    else:
+        return val
 
 @dataclass(kw_only=True)
 class Array(Column):
@@ -277,9 +283,14 @@ class Array(Column):
 
     def add_column(self, df: pd.DataFrame) -> None:
         if self.drop_nulls:
-            df[self.name] = list(df[self.source_columns].apply(lambda x: np.array(x[x.notnull()]), axis=1).values)
+            fields = df[self.source_columns].apply(lambda x: np.array(x[x.notnull()]), axis=1)
         else:
-            df[self.name] = list(df[self.source_columns].values)
+            fields = pd.Series(list(df[self.source_columns].values))
+        
+        if self.data_type == 'String':
+            df[self.name] = fields.apply(lambda x: json.dumps(list(x), default=pandas_types_json_serialiser)).astype('string')
+        else:
+            df[self.name] = fields
         
         if self.drop:
             df.drop(columns=self.source_columns, inplace=True)

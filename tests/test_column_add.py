@@ -236,6 +236,76 @@ class TestArrayColumnGeneration(unittest.TestCase):
             c.astype(str).isin(['[]', "['foo']", "['bar']", "['foo' 'bar']"]))
         assert c.astype(str).unique().size == 4
 
+    def test_basic_array_column_to_json(self):
+        """"""
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Fixed Int 4
+          - col: col2 Fixed Int 5
+          - col: col3 Fixed String foo
+          - col: arr_col Array String
+            source_columns:
+              - col1
+              - col2
+              - col3
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        first_row = tbl.df['arr_col'][0]
+        assert first_row == '[4, 5, "foo"]'
+
+    def test_array_column_to_json_with_null(self):
+        """"""
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Empty Int
+          - col: col2 Fixed Int 5
+          - col: col3 Fixed String foo
+          - col: arr_col Array String
+            source_columns:
+              - col1
+              - col2
+              - col3
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        first_row = tbl.df['arr_col'][0]
+        assert first_row == '[null, 5, "foo"]'
+
+    def test_array_column_to_json_with_null_drop_nulls(self):
+        """"""
+        conf = """
+        name: mytbl
+        rows: 10
+        columns:
+          - col: col1 Empty Int
+          - col: col2 Fixed Int 5
+          - col: col3 Fixed String foo
+          - col: arr_col Array String
+            drop_nulls: True
+            source_columns:
+              - col1
+              - col2
+              - col3
+        """
+        tbl = Table.parse_from_yaml(conf)
+        tbl.generate()
+
+        #print(tbl.df)
+        assert len(tbl.df.columns) == 1
+        first_row = tbl.df['arr_col'][0]
+        assert first_row == '[5, "foo"]'
+
 
 class TestSequentialColumnGeneration(unittest.TestCase):
 
