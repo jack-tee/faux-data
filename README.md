@@ -17,7 +17,7 @@ Faux Data was originally a Python port of the scala application [dunnhumby/data-
 
 - [Quick Start](#quick-start)
 - [Columns](#columns)
-  - [Array](#array), [Empty](#empty), [Eval](#eval), [ExtractDate](#extractdate), [Fixed](#fixed), [Map](#map), [MapValues](#mapvalues), [Random](#random), [Selection](#selection), [Sequential](#sequential), [Series](#series), [TimestampOffset](#timestampoffset)
+  - [Random](#random), [Selection](#selection), [Sequential](#sequential), [MapValues](#mapvalues), [Series](#series), [Fixed](#fixed), [Empty](#empty), [Map](#map), [Array](#array), [Eval](#eval), [ExtractDate](#extractdate), [TimestampOffset](#timestampoffset)
 - [Targets](#targets)
   - [BigQuery](#bigquery), [CloudStorage](#cloudstorage), [LocalFile](#localfile), [Pubsub](#pubsub)
 - [Deploying](#deploying)
@@ -161,62 +161,20 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 faux-data templates support the following `column_type:`s:
 
-- [Array](#array)
-- [Empty](#empty)
-- [Eval](#eval)
-- [ExtractDate](#extractdate)
-- [Fixed](#fixed)
-- [Map](#map)
-- [MapValues](#mapvalues)
 - [Random](#random)
 - [Selection](#selection)
 - [Sequential](#sequential)
+- [MapValues](#mapvalues)
 - [Series](#series)
+- [Fixed](#fixed)
+- [Empty](#empty)
+- [Map](#map)
+- [Array](#array)
+- [Eval](#eval)
+- [ExtractDate](#extractdate)
 - [TimestampOffset](#timestampoffset)
 
 
-
-### Array
-
-Creates an array column based on a list of `source_columns:`.
-
-See [COLUMNS.md](COLUMNS.md#array) for more info and usage examples.
-
-### Empty
-
-An empty column.
-
-See [COLUMNS.md](COLUMNS.md#empty) for more info and usage examples.
-
-### Eval
-
-An eval column
-
-See [COLUMNS.md](COLUMNS.md#eval) for more info and usage examples.
-
-### ExtractDate
-
-Extracts dates from a `source_columnn:`.
-
-See [COLUMNS.md](COLUMNS.md#extractdate) for more info and usage examples.
-
-### Fixed
-
-A column with a single fixed `value:`.
-
-See [COLUMNS.md](COLUMNS.md#fixed) for more info and usage examples.
-
-### Map
-
-Creates a dict of columns based on the source cols
-
-See [COLUMNS.md](COLUMNS.md#map) for more info and usage examples.
-
-### MapValues
-
-A map column.
-
-See [COLUMNS.md](COLUMNS.md#mapvalues) for more info and usage examples.
 
 ### Random
 
@@ -236,11 +194,53 @@ See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offs
 
 See [COLUMNS.md](COLUMNS.md#sequential) for more info and usage examples.
 
+### MapValues
+
+A map column.
+
+See [COLUMNS.md](COLUMNS.md#mapvalues) for more info and usage examples.
+
 ### Series
 
 Repeats a series of values
 
 See [COLUMNS.md](COLUMNS.md#series) for more info and usage examples.
+
+### Fixed
+
+A column with a single fixed `value:`.
+
+See [COLUMNS.md](COLUMNS.md#fixed) for more info and usage examples.
+
+### Empty
+
+An empty column.
+
+See [COLUMNS.md](COLUMNS.md#empty) for more info and usage examples.
+
+### Map
+
+Creates a dict of columns based on the source cols
+
+See [COLUMNS.md](COLUMNS.md#map) for more info and usage examples.
+
+### Array
+
+Creates an array column based on a list of `source_columns:`.
+
+See [COLUMNS.md](COLUMNS.md#array) for more info and usage examples.
+
+### Eval
+
+An eval column
+
+See [COLUMNS.md](COLUMNS.md#eval) for more info and usage examples.
+
+### ExtractDate
+
+Extracts dates from a `source_columnn:`.
+
+See [COLUMNS.md](COLUMNS.md#extractdate) for more info and usage examples.
 
 ### TimestampOffset
 

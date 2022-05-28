@@ -30,7 +30,7 @@ def generate(request):
         logging.info(t)
     except Exception as e:
         logging.error(e)
-        return ''.join(traceback.format_exception(e))
+        return ''.join(traceback.format_exception(e)), 500
 
     return "done"
 

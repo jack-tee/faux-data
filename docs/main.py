@@ -84,12 +84,15 @@ def main():
     # Generate COLUMNS.md
     column_docs = yaml.safe_load(open("./docs/column_docs.yaml"))
     column_docs = ColumnDocs(column_docs["columns"])
+    column_order = {c.name: i for i, c in enumerate(column_docs.columns)}
+    print(column_order)
     template = env.get_template("column_docs.jinja")
     template.stream(columns=column_docs).dump("COLUMNS.md")
 
     # Generate README.md
     targets = inspect.getmembers(target, is_usable)
     columns = inspect.getmembers(column, is_usable)
+    columns.sort(key=lambda x: column_order.get(x[0], 500))
     template = env.get_template("readme.md.jinja")
     template.stream(columns=columns, targets=targets).dump("README.md")
 
