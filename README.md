@@ -17,7 +17,7 @@ Faux Data was originally a Python port of the scala application [dunnhumby/data-
 
 - [Quick Start](#quick-start)
 - [Columns](#columns)
-  - [Random](#random), [Selection](#selection), [Sequential](#sequential), [MapValues](#mapvalues), [Series](#series), [Fixed](#fixed), [Empty](#empty), [Map](#map), [Array](#array), [ExtractDate](#extractdate), [Eval](#eval), [TimestampOffset](#timestampoffset)
+  - [Random](#random), [Selection](#selection), [Sequential](#sequential), [MapValues](#mapvalues), [Series](#series), [Fixed](#fixed), [Empty](#empty), [Map](#map), [Array](#array), [ExtractDate](#extractdate), [TimestampOffset](#timestampoffset), [Eval](#eval)
 - [Targets](#targets)
   - [BigQuery](#bigquery), [CloudStorage](#cloudstorage), [LocalFile](#localfile), [Pubsub](#pubsub)
 - [Deploying](#deploying)
@@ -171,8 +171,8 @@ faux-data templates support the following `column_type:`s:
 - [Map](#map)
 - [Array](#array)
 - [ExtractDate](#extractdate)
-- [Eval](#eval)
 - [TimestampOffset](#timestampoffset)
+- [Eval](#eval)
 
 
 
@@ -236,17 +236,17 @@ Extracts dates from a `source_columnn:`.
 
 See [COLUMNS.md](COLUMNS.md#extractdate) for more info and usage examples.
 
-### Eval
-
-An eval column
-
-See [COLUMNS.md](COLUMNS.md#eval) for more info and usage examples.
-
 ### TimestampOffset
 
 Create a new column by adding or removing random time deltas from another timestamp column.
 
 See [COLUMNS.md](COLUMNS.md#timestampoffset) for more info and usage examples.
+
+### Eval
+
+An eval column
+
+See [COLUMNS.md](COLUMNS.md#eval) for more info and usage examples.
 
 
 ## Targets

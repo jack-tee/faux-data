@@ -305,11 +305,36 @@ columns:
               date_format: "%Y"
               source_column: event_time
       
-              
-  
+  - name: TimestampOffset
+    title: TimestampOffset produces a Timestamp column by adding some timedelta onto an existing timestamp column.
+    examples:
+      - title: Simple TimestampOffset
+        desc: This example shows adding a random timedelta onto a timestamp field
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: game_id Random Int 2 8
+            - col: game_start Random Timestamp 2022-02-02 2022-04-01
+            - name: game_end
+              column_type: TimestampOffset
+              source_column: game_start
+              min: 1min30s
+              max: 25min
 
-  # - name: TimestampOffset
-  #   title:
+      - title: Fixed TimestampOffset
+        desc: If you want a fixed offset from the source timestamp you can set min and max to the same value
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: promo_id Sequential Int 100 1
+            - col: promo_start Sequential Timestamp 2022-02-02T12:00:00 1min15s
+            - name: promo_end
+              column_type: TimestampOffset
+              source_column: promo_start
+              min: 1min15s
+              max: 1min15s
 
   # - name: Eval
   #   title:

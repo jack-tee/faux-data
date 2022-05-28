@@ -85,7 +85,6 @@ def main():
     column_docs = yaml.safe_load(open("./docs/column_docs.yaml"))
     column_docs = ColumnDocs(column_docs["columns"])
     column_order = {c.name: i for i, c in enumerate(column_docs.columns)}
-    print(column_order)
     template = env.get_template("column_docs.jinja")
     template.stream(columns=column_docs).dump("COLUMNS.md")
 
