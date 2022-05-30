@@ -39,8 +39,10 @@ setup(name='faux-data',
       packages=['faux_data'],
       include_package_data=True,
       classifiers=[
-          "Development Status :: 3 - Alpha",
+          "Development Status :: 4 - Beta",
+          "Programming Language :: Python :: 3 :: Only",
           "Programming Language :: Python :: 3.10",
+          "License :: OSI Approved :: Apache Software License",
       ],
       install_requires=[
           "pandas==1.4.2",
