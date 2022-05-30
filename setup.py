@@ -12,13 +12,12 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from ctypes.wintypes import LONG
 import pathlib
 from setuptools import setup
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = (HERE / "VERSION.txt").read_text()
+exec(open('faux_data/version.py').read())
 
 LONG_DESCRIPTION = """\
 # Faux Data
@@ -30,7 +29,7 @@ See the project on github for more info - https://github.com/jack-tee/faux-data
 """
 
 setup(name='faux-data',
-      version=VERSION,
+      version=__version__,
       description='Generate fake data from yaml templates',
       long_description=LONG_DESCRIPTION,
       long_description_content_type='text/markdown',

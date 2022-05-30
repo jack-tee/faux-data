@@ -41,13 +41,13 @@ jobs:
 
       - name: update version file
         run: |
-          echo "${{ steps.tag_version.outputs.new_tag }}" > VERSION.txt
+          echo "__version__ = '${{ steps.tag_version.outputs.new_version }}'" > faux_data/version.py
 
           git config --global user.email "you@example.com"
           git config --global user.name "Release workflow"
 
           git add -A
-          git commit -m "tag as version ${{ steps.tag_version.outputs.new_tag }}"
+          git commit -m "update version to ${{ steps.tag_version.outputs.new_version }}"
           git push
       
       - name: create distribution

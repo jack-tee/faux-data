@@ -22,6 +22,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from .template import Template
 from .utils import get_parts
+from .version import __version__
 
 log = logging.getLogger(__name__)
 
@@ -79,9 +80,7 @@ def cmd(args: List[str]):
             show_help()
 
         case ['version'] | ['--version']:
-            with open("./VERSION.txt") as vf:
-                version = vf.read()
-                print(f"faux-data version: {version}")
+            print(__version__)
 
         case [cmd, filename, *objs]:
             params = parse_params(objs)
