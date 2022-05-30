@@ -179,13 +179,68 @@ faux-data templates support the following `column_type:`s:
 
 ### Random
 
-A random value.
+Generates a column of values uniformly between `min:` and `max:`.
+Random supports the following `data_types:` - Int, Bool, Float Decimal, String, Timestamp and TimestampAsInt.
+
+**Usage:**
+```
+- name: my_random_col
+  column_type: Random
+  data_type: Decimal
+  min: 1000
+  max: 5000
+```
+
+**Concise syntax:**
+```
+- col: my_random_col Random Timestamp "2022-01-01 12:00:00" 2022-04-05
+  time_unit: us
+```
+
+Required params:
+- `min:` the lower bound
+- `max:` the uppper bound
+
+Optional params:
+- `decimal_places:` applies to Decimal and Float, rounds the output values to the specified decimal places, default 4.
+- `time_unit:` one of 's', 'ms', 'us', 'ns'. Applies to Timestamp and TimestampAsInt, controls the resolution of the resulting Timestamps or Ints, default is 'ms'.
+- `str_max_chars:` when using the String data_type this column will generate random strings of length between min and max. This value provides an extra limit on how long the strings can be. It exists to prevent enormous strings being generated accidently. Default limit is 5000.
 
 See [COLUMNS.md](COLUMNS.md#random) for more info and usage examples.
 
 ### Selection
 
-A random selection from some preset values
+Generates a column by randomly selecting from a list of `values:`.
+Random supports the following `data_types:` - Int, Bool, Float Decimal, String and Timestamp.
+
+**Usage:**
+```
+- name: my_selection_col
+  column_type: Selection
+  data_type: String
+  values:
+    - foo
+    - bar
+    - baz
+  weights:
+    - 10
+    - 2
+```
+
+**Concise syntax:**
+```
+- col: my_selection_col Selection Int
+  values:
+    - 0
+    - 10
+    - 100
+```
+
+Required params:
+- `values:` the list of values to pick from, if the Bool `data_type` is specified then `values` is automatically set to [True, False].
+
+Optional params:
+- `weights:` increases the likelyhood that certain `values` will be selected. Weights are applied in the same order as the list of `values`. All `values` are assigned a weight of 1 by default so only differing weights need to be specified.
 
 See [COLUMNS.md](COLUMNS.md#selection) for more info and usage examples.
 
