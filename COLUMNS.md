@@ -39,6 +39,7 @@
   -  [A Simple Map](#map1)
   -  [Map with Json Output](#map2)
   -  [Nested Map](#map3)
+  -  [Usage of `select_one:`](#map4)
   
 
 - [Array](#array) - Builds an array from the specified `source_columns:`.
@@ -555,13 +556,45 @@ columns:
 ```
 
 Result:
-| mymap                                                     |
-|-----------------------------------------------------------|
-| {"id":180,"nestedmap":{"balance":5.4,"status":"active"}}  |
-| {"id":117,"nestedmap":{"balance":6.55,"status":"active"}} |
-| {"id":103,"nestedmap":{"balance":7.7,"status":"active"}}  |
-| {"id":100,"nestedmap":{"balance":8.85,"status":"active"}} |
-| {"id":151,"nestedmap":{"balance":10.0,"status":"active"}} |
+| mymap                                                       |
+|-------------------------------------------------------------|
+| {"id":288,"nestedmap":{"balance":5.4,"status":"active"}}    |
+| {"id":255,"nestedmap":{"balance":6.55,"status":"inactive"}} |
+| {"id":297,"nestedmap":{"balance":7.7,"status":"inactive"}}  |
+| {"id":118,"nestedmap":{"balance":8.85,"status":"active"}}   |
+| {"id":206,"nestedmap":{"balance":10.0,"status":"inactive"}} |
+
+---
+
+
+
+Specifying `select_one: True`, picks one field and masks all the others.
+
+<a id="map4"></a>
+Template:
+```
+name: mytbl
+rows: 5
+columns:
+  - col: mymap Map String
+    select_one: True
+    columns:
+      - col: id Random Int 100 300
+      - col: name Random String 3 6
+      - col: status Selection
+        values:
+          - Y
+          - N
+```
+
+Result:
+| mymap                                     |
+|-------------------------------------------|
+| {"id":null,"name":"xvVgqc","status":null} |
+| {"id":215,"name":null,"status":null}      |
+| {"id":null,"name":null,"status":"Y"}      |
+| {"id":null,"name":"ziSWa","status":null}  |
+| {"id":null,"name":null,"status":"Y"}      |
 
 ---
 

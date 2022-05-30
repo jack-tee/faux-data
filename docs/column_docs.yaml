@@ -206,6 +206,23 @@ columns:
                       values:
                         - active
                         - inactive
+      
+      - title: "Usage of `select_one:`"
+        desc: "Specifying `select_one: True`, picks one field and masks all the others."
+        columns_yaml: |
+          name: mytbl
+          rows: 5
+          columns:
+            - col: mymap Map String
+              select_one: True
+              columns:
+                - col: id Random Int 100 300
+                - col: name Random String 3 6
+                - col: status Selection
+                  values:
+                    - Y
+                    - N
+
           
   - name: Array
     title: Builds an array from the specified `source_columns:`.

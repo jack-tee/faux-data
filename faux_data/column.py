@@ -156,7 +156,7 @@ unit_factor = {
 class Random(Column):
     """
     Generates a column of values uniformly between `min:` and `max:`.
-    Random supports the following `data_types:` - Int, Bool, Float Decimal, String, Timestamp and TimestampAsInt.
+    Random supports the following `data_types:` - Int, Bool, Float, Decimal, String, Timestamp and TimestampAsInt.
 
     **Usage:**
     ```
@@ -226,7 +226,8 @@ class Random(Column):
 class Selection(Column):
     """
     Generates a column by randomly selecting from a list of `values:`.
-    Random supports the following `data_types:` - Int, Bool, Float Decimal, String and Timestamp.
+
+    Random supports the following `data_types:` - Int, Bool, Float, Decimal, String and Timestamp.
 
     **Usage:**
     ```
@@ -282,8 +283,29 @@ class Selection(Column):
 @dataclass(kw_only=True)
 class Sequential(Column):
     """
+    Generates a column starting at `start:` and increasing by `step:` for each row.
 
-    See https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for `step:` values for Timestamps
+    Sequential supports the following `data_types:` - Int, Float, Decimal and Timestamp.
+
+    **Usage:**
+    ```
+    - name: my_sequential_col
+      column_type: Sequential
+      data_type: Int
+      start: 0
+      step: 1
+    ```
+
+    **Concise syntax:**
+    ```
+    - col: my_sequential_col Sequential Timestamp 1H30min
+    ```
+
+    Required params:
+    - `start:` the value to start from
+    - `step:` the amount to increment by per row
+
+    For the Timestamp data_type the step parameter should be specified in pandas offset format see https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases.
     """
     start: any = 0
     step: any = 1
@@ -302,7 +324,39 @@ class Sequential(Column):
 @dataclass(kw_only=True)
 class Map(Column):
     """
-    Creates a dict of columns based on the source cols
+    Creates a Map based on the specified `source_columns:`.
+
+    Typically you would not specify data_type for this column, the only exception is if you want the output serialised as a JSON string, use `data_type: String`.
+
+    You can either specify a list of `source_columns:` that refer to previously created data, or defined further `columns:` to generate them inline.
+
+    **Usage with `source_columns`:**
+    ```
+    # generate some data
+    - col: id Sequential Int 1 1
+    - col: name Random Sting 3 10
+
+    # use the columns in a Map col
+    - name: my_map_col
+      column_type: Map
+      source_columns: [id, name]
+    ```
+
+    **Usage with sub `columns:` and concise syntax:**
+    ```
+    - col: my_map_col Map
+      columns:
+        - col: id Sequential Int 1 1
+        - col: name Random String 3 10
+
+    ```
+
+    Required params:
+    - `source_columns:` or `columns:` the columns to combine into a Map
+
+    Optional params:
+    - `drop:` whether to drop the `source_columns:` from the data after combining them into a Map, default False for `source_columns:` and True for `columns:`.
+    - `select_one:` whether to randomly pick one of the fields in the Map and set all the others to null. Default False.
 
     """
 
