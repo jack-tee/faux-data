@@ -117,7 +117,7 @@ def cmd(args: List[str]):
                                     print(filepath, e)
 
                 case _ as c:
-                    show_help(msg=f"Unrecognised command [{cmd}]. Expected one of render, sample, run or sample-all.")
+                    show_help(msg=f"Unrecognised command [{c}]. Expected one of render, sample, run or sample-all.")
 
         case _ as args:
             show_help(msg=f"Unrecognised arguments {args}. Expected faux <command> <arg> [--flag ...].")

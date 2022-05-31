@@ -521,7 +521,37 @@ step: 1
 
 ### MapValues
 
-A map column.
+A maps the `source_column:` values to the output column.
+
+MapValues supports the following `data_types:` - Int, Bool, Float, Decimal, String and Timestamp.
+
+**Usage:**
+```
+- col: currency Selection String
+  values:
+    - EUR
+    - GBP
+    - USD
+
+- name: currency_symbol
+  column_type: MapValues
+  source_column: currency
+  values:
+    EUR: €
+    GBP: £
+```
+
+**Concise syntax:**
+```
+- col: my_fixed_col Fixed String banana
+```
+
+Required params:
+- `source_column:` the column to base on
+- `values:` the mapping to use
+
+Optional params:
+- `default:` the output value to use for source values that don't exist in `values`
 
 
 #### Examples
@@ -708,7 +738,22 @@ values:
 
 ### Fixed
 
-A column with a single fixed `value:`.
+A column filled with a single fixed `value:`.
+
+Fixed supports the following `data_types:` - Int, Bool, Float, Decimal, String and Timestamp.
+
+**Usage:**
+```
+- name: my_fixed_col
+  column_type: Fixed
+  data_type: String
+  value: banana
+```
+
+**Concise syntax:**
+```
+- col: my_fixed_col Fixed String banana
+```
 
 
 #### Examples
