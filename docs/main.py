@@ -6,10 +6,14 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 import pandas as pd
+import numpy as np
 import yaml
 from faux_data import column, table, target
 from faux_data.factory import ColumnFactory
 from jinja2 import Environment, FileSystemLoader
+
+# set the numpy random state
+np.random.seed(3)
 
 
 def render_example(example: Example) -> str:
