@@ -162,50 +162,50 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 faux-data templates support the following `column_type:`s:
 
-- [Random](#random) - Generates columns of random data
+- **[Random](#random) - Generates columns of random data**
    
-   Examples: [Random Ints](#random), [Random Timestamps](#random), [Random Strings](#random)
+   _Examples: [Random Ints](#random), [Random Timestamps](#random), [Random Strings](#random)_
+
+- **[Selection](#selection) - Generates columns by selecting random values**
    
-- [Selection](#selection) - Generates columns by selecting random values
+   _Examples: [Simple Selection](#selection), [Selection with Weighting](#selection)_
+
+- **[Sequential](#sequential) - Generates a column by incrementing a field from a `start:` by a `step:` for each row.**
    
-   Examples: [Simple Selection](#selection), [Selection with Weighting](#selection)
+   _Examples: [Sequential Ints](#sequential), [Sequential Timestamps](#sequential)_
+
+- **[MapValues](#mapvalues) - Maps the values in one column to values in another**
    
-- [Sequential](#sequential) - Generates a column by incrementing a field from a `start:` by a `step:` for each row.
+   _Examples: [A Simple MapValues](#mapvalues), [Mapping a subset of values](#mapvalues), [MapValues with Default](#mapvalues)_
+
+- **[Series](#series) - Repeats a series of values to fill a column**
    
-   Examples: [Sequential Ints](#sequential), [Sequential Timestamps](#sequential)
+   _Examples: [Simple Series](#series)_
+
+- **[Fixed](#fixed) - Generates a column with a single fixed value**
    
-- [MapValues](#mapvalues) - Maps the values in one column to values in another
+   _Examples: [A Fixed String](#fixed)_
+
+- **[Empty](#empty) - Generates and empty (null) column of data**
    
-   Examples: [A Simple MapValues](#mapvalues), [Mapping a subset of values](#mapvalues), [MapValues with Default](#mapvalues)
+   _Examples: [An Empty Float](#empty)_
+
+- **[Map](#map) - Map columns create a record style field from other fields**
    
-- [Series](#series) - Repeats a series of values to fill a column
+   _Examples: [A Simple Map](#map), [Map with Json Output](#map), [Nested Map](#map), [Usage of `select_one:`](#map)_
+
+- **[Array](#array) - Builds an array from the specified `source_columns:`.**
    
-   Examples: [Simple Series](#series)
+   _Examples: [Simple Array with primitive types](#array), [Use of `drop: False`](#array), [With nulls in `source_columns:`](#array), [Use of `drop_nulls: True`](#array), [Outputting a Json array](#array)_
+
+- **[ExtractDate](#extractdate) - Extracts a date from a timestamp `source_column:`**
    
-- [Fixed](#fixed) - Generates a column with a single fixed value
+   _Examples: [Simple ExtractDate](#extractdate), [ExtractDate with custom formatting](#extractdate), [ExtractDate to an Int](#extractdate), [ExtractDate concise syntax](#extractdate)_
+
+- **[TimestampOffset](#timestampoffset) - TimestampOffset produces a Timestamp column by adding some timedelta onto an existing timestamp column.**
    
-   Examples: [A Fixed String](#fixed)
-   
-- [Empty](#empty) - Generates and empty (null) column of data
-   
-   Examples: [An Empty Float](#empty)
-   
-- [Map](#map) - Map columns create a record style field from other fields
-   
-   Examples: [A Simple Map](#map), [Map with Json Output](#map), [Nested Map](#map), [Usage of `select_one:`](#map)
-   
-- [Array](#array) - Builds an array from the specified `source_columns:`.
-   
-   Examples: [Simple Array with primitive types](#array), [Use of `drop: False`](#array), [With nulls in `source_columns:`](#array), [Use of `drop_nulls: True`](#array), [Outputting a Json array](#array)
-   
-- [ExtractDate](#extractdate) - Extracts a date from a timestamp `source_column:`
-   
-   Examples: [Simple ExtractDate](#extractdate), [ExtractDate with custom formatting](#extractdate), [ExtractDate to an Int](#extractdate), [ExtractDate concise syntax](#extractdate)
-   
-- [TimestampOffset](#timestampoffset) - TimestampOffset produces a Timestamp column by adding some timedelta onto an existing timestamp column.
-   
-   Examples: [Simple TimestampOffset](#timestampoffset), [Fixed TimestampOffset](#timestampoffset)
-   
+   _Examples: [Simple TimestampOffset](#timestampoffset), [Fixed TimestampOffset](#timestampoffset)_
+
 
 
 
