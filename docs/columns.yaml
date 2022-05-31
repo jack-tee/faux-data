@@ -223,7 +223,6 @@ columns:
                     - Y
                     - N
 
-          
   - name: Array
     title: Builds an array from the specified `source_columns:`.
     examples:
@@ -345,7 +344,6 @@ columns:
             - col: event_time Random Timestamp 2000-01-01 2010-12-31
             - col: dt ExtractDate Date event_time
 
-      
   - name: TimestampOffset
     title: TimestampOffset produces a Timestamp column by adding some timedelta onto an existing timestamp column.
     examples:

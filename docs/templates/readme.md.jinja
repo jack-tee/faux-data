@@ -18,7 +18,7 @@ Faux Data was originally a Python port of the scala application [dunnhumby/data-
 
 - [Quick Start](#quick-start)
 - [Columns](#columns)
-  - {% for column in columns %}[{{ column[0] }}](#{{ column[0] | lower }}){{ ", " if not loop.last else "" }}{% endfor %}
+  - {% for name in column_docs.columns %}[{{ name }}](#{{ name | lower }}){{ ", " if not loop.last else "" }}{% endfor %}
 - [Targets](#targets)
   - {% for target in targets %}[{{ target[0] }}](#{{ target[0] | lower }}){{ ", " if not loop.last else "" }}{% endfor %}
 - [Deploying](#deploying)
@@ -162,16 +162,44 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 faux-data templates support the following `column_type:`s:
 
-{% for column in columns -%}
-- [{{ column[0] }}](#{{ column[0] | lower }})
+{% for name in column_docs.columns -%}
+- [{{ name }}](#{{ name | lower }})
 {% endfor %}
 
-{% for column in columns %}
-### {{ column[0] }}
+{% for name, column in column_docs.columns.items() %}
+### {{ name }}
 
-{{ column[1].__doc__ | cleandoc }}
+{{ column.cls.__doc__ | cleandoc }}
 
-See [COLUMNS.md](COLUMNS.md#{{ column[0] | lower }}) for more info and usage examples.
+{% if column.examples %}
+#### Examples
+
+{% for example in column.examples %}
+
+<a id="{{ column.name | lower }}{{ loop.index }}"></a>
+<details>
+  <summary>{{ example.title }}</summary>
+
+  {{ example.desc }}
+
+  Template:
+  ```
+  {% if example.column_yaml %}
+  {{- example.column_yaml -}}
+  {% elif example.columns_yaml %}
+  {{- example.columns_yaml -}}
+  {% endif -%}
+  ```
+
+  Result:
+  {{ example |  render_example }}
+
+</details>
+
+{% endfor %}
+{% endif %}
+
+---
 {% endfor %}
 
 ## Targets
@@ -196,6 +224,9 @@ The library can be used in various ways
 - as a library by importing it into your python project, instantiating templates and calling the `.generate()` or `.run()` methods on them
 - running the code in a cloud function, passing a template to the cloud function at call time, or using a template stored in cloud storage
 
+### Using the CLI
+
+### Using the Python Library
 
 ### Deploying as a Cloud Function
 
