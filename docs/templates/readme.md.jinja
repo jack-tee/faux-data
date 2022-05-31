@@ -162,8 +162,11 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 faux-data templates support the following `column_type:`s:
 
-{% for name in column_docs.columns -%}
-- [{{ name }}](#{{ name | lower }})
+{% for name, column in column_docs.columns.items() -%}
+- [{{ name }}](#{{ name | lower }}) - {{ column.title }}
+   
+   {% if column.examples %}Examples: {% for example in column.examples %}[{{ example.title }}](#{{ column.name | lower }}){{ ", " if not loop.last else "" }}{% endfor %}{% endif %}
+   
 {% endfor %}
 
 {% for name, column in column_docs.columns.items() %}

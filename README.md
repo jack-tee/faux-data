@@ -162,17 +162,50 @@ This will create a dataset in your google cloud project named mydataset and a ta
 
 faux-data templates support the following `column_type:`s:
 
-- [Random](#random)
-- [Selection](#selection)
-- [Sequential](#sequential)
-- [MapValues](#mapvalues)
-- [Series](#series)
-- [Fixed](#fixed)
-- [Empty](#empty)
-- [Map](#map)
-- [Array](#array)
-- [ExtractDate](#extractdate)
-- [TimestampOffset](#timestampoffset)
+- [Random](#random) - Generates columns of random data
+   
+   Examples: [Random Ints](#random), [Random Timestamps](#random), [Random Strings](#random)
+   
+- [Selection](#selection) - Generates columns by selecting random values
+   
+   Examples: [Simple Selection](#selection), [Selection with Weighting](#selection)
+   
+- [Sequential](#sequential) - Generates a column by incrementing a field from a `start:` by a `step:` for each row.
+   
+   Examples: [Sequential Ints](#sequential), [Sequential Timestamps](#sequential)
+   
+- [MapValues](#mapvalues) - Maps the values in one column to values in another
+   
+   Examples: [A Simple MapValues](#mapvalues), [Mapping a subset of values](#mapvalues), [MapValues with Default](#mapvalues)
+   
+- [Series](#series) - Repeats a series of values to fill a column
+   
+   Examples: [Simple Series](#series)
+   
+- [Fixed](#fixed) - Generates a column with a single fixed value
+   
+   Examples: [A Fixed String](#fixed)
+   
+- [Empty](#empty) - Generates and empty (null) column of data
+   
+   Examples: [An Empty Float](#empty)
+   
+- [Map](#map) - Map columns create a record style field from other fields
+   
+   Examples: [A Simple Map](#map), [Map with Json Output](#map), [Nested Map](#map), [Usage of `select_one:`](#map)
+   
+- [Array](#array) - Builds an array from the specified `source_columns:`.
+   
+   Examples: [Simple Array with primitive types](#array), [Use of `drop: False`](#array), [With nulls in `source_columns:`](#array), [Use of `drop_nulls: True`](#array), [Outputting a Json array](#array)
+   
+- [ExtractDate](#extractdate) - Extracts a date from a timestamp `source_column:`
+   
+   Examples: [Simple ExtractDate](#extractdate), [ExtractDate with custom formatting](#extractdate), [ExtractDate to an Int](#extractdate), [ExtractDate concise syntax](#extractdate)
+   
+- [TimestampOffset](#timestampoffset) - TimestampOffset produces a Timestamp column by adding some timedelta onto an existing timestamp column.
+   
+   Examples: [Simple TimestampOffset](#timestampoffset), [Fixed TimestampOffset](#timestampoffset)
+   
 
 
 
