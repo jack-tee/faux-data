@@ -324,7 +324,7 @@ class Sequential(Column):
 @dataclass(kw_only=True)
 class Map(Column):
     """
-    Creates a Map based on the specified `source_columns:`.
+    Creates a Map based on the specified `columns:` or `source_columns:`.
 
     Typically you would not specify data_type for this column, the only exception is if you want the output serialised as a JSON string, use `data_type: String`.
 
@@ -396,7 +396,36 @@ def pandas_types_json_serialiser(val):
 @dataclass(kw_only=True)
 class Array(Column):
     """
-    Creates an array column based on a list of `source_columns:`.
+    Creates a Array based on the specified `source_columns:`.
+
+    Typically you would not specify data_type for this column, the only exception is if you want the output serialised as a JSON string, use `data_type: String`.
+
+    **Usage:**
+    ```
+    # generate some data
+    - col: int1 Sequential Int 1 1
+    - col: int2 Random Sting 3 10
+    - col: int3 Random Sting 40 200
+
+    # use the columns in an Array col
+    - name: my_array_col
+      column_type: Array
+      source_columns: [int1, int2, int3]
+    ```
+
+    **Concise syntax:**
+    ```
+    - col: my_array_col Array String
+      source_columns: [int1, int2, int3]
+
+    ```
+
+    Required params:
+    - `source_columns:` the columns to combine into an Array
+
+    Optional params:
+    - `drop:` whether to drop the `source_columns:` from the data after combining them into an Array, default True.
+    - `drop_nulls:` whether to drop null values when combining them into an Array, some targets, like BigQuery do not accept null values within an Array. This can also be used in combination with `null_percentage:` to create variable length Arrays.
 
     """
 
@@ -422,7 +451,29 @@ class Array(Column):
 @dataclass(kw_only=True)
 class Series(Column):
     """
-    Repeats a series of values
+    Fills a column with a series of repeating `values:`.
+
+    **Usage:**
+    ```
+    - name: my_series_col
+      column_type: Series
+      values:
+        - A
+        - B
+        - C
+    ```
+
+    **Concise syntax:**
+    ```
+    - col: my_series_col Series Int
+      values:
+        - 1
+        - 10
+        - 100
+    ```
+
+    Required params:
+    - `values:` the values to repeat
 
     """
 
@@ -436,8 +487,34 @@ class Series(Column):
 @dataclass(kw_only=True)
 class ExtractDate(Column):
     """
-    Extracts dates from a `source_columnn:`.
+    Extracts and manipulates Dates from a Timestamp `source_column:`.
 
+    ExtractDate supports the following `data_types:` - Date, String, Int.
+
+    **Usage:**
+    ```
+    # given a source timestamp column
+    - col: event_time Random Timestamp 2022-01-01 2022-02-01
+
+    # extract the date from it
+    - name: dt
+      column_type: ExtractDate
+      data_type: Date
+      source_column: event_time
+    ```
+
+    **Concise syntax:**
+    ```
+    - col: my_date_col ExtractDate Date my_source_col
+
+    ```
+
+    Required params:
+    - `source_column:` - the column to base on
+
+    Optional params:
+    - `date_format:` used when `data_type:` is String or Int to format the timestamp. Follows python's strftime syntax. For `Int` the result of the formatting must be castable to an Integer i.e `%Y%m` but not `%Y-%m`.
+    
     """
 
     source_column: str
@@ -468,8 +545,28 @@ class Eval(Column):
 @dataclass(kw_only=True)
 class TimestampOffset(Column):
     """
-    Create a new column by adding or removing random time deltas from another timestamp column.
+    Create a new column by adding or removing random time deltas from a Timestamp `source_column:`.
 
+    **Usage:**
+    ```
+    - col: start_time Random Timestamp 2021-01-01 2021-12-31
+
+    - name: end_time
+      column_type: TimestampOffset
+      min: 4H
+      max: 30D
+    ```
+
+    **Concise syntax:**
+    ```
+    - col: end_time TimestampOffset Timestamp 4H 30D
+    ```
+
+    Required params:
+    - `min:` the lower bound
+    - `max:` the uppper bound
+
+    `min:` and `max:` should  be specified in pandas offset format see https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases.
     """
     min: str
     max: str
