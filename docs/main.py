@@ -15,8 +15,8 @@ from faux_data.factory import ColumnFactory
 from jinja2 import Environment, FileSystemLoader
 
 # set the numpy random state
-np.random.seed(3)
-random.seed(4)
+np.random.seed(7)
+random.seed(3)
 
 
 def render_example(example: Example) -> str:
