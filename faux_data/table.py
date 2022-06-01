@@ -13,6 +13,7 @@
 #    limitations under the License.
 
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import List
 
@@ -23,7 +24,7 @@ import yaml
 from .column import Column
 from .factory import ColumnFactory, TargetFactory
 from .target import Target
-from .utils import load_csv_with_types
+from .utils import load_csv_with_types, normalise_path, GCS_PREFIX
 
 pd.set_option("max_colwidth", 180)
 
@@ -32,6 +33,7 @@ log = logging.getLogger(__name__)
 
 @dataclass(kw_only=True)
 class Table:
+    template_dir: str | None
     name: str
     rows: int
     columns: List[Column]
@@ -50,9 +52,11 @@ class Table:
                  name: str,
                  rows: int | str,
                  columns: list,
+                 template_dir: str = None,
                  output_columns: list = None,
                  targets: list = None):
         try:
+            self.template_dir = template_dir
             self.name = name
             self.rows = rows
             self.columns = self.parse_cols(columns)
@@ -90,8 +94,20 @@ class Table:
         if isinstance(self.rows, int):
             return pd.DataFrame({"rowId": np.arange(self.rows)})
         else:
-            # TODO: read file from cloud storage
-            return load_csv_with_types(self.rows)
+
+            if self.rows.startswith("/") or self.rows.startswith(GCS_PREFIX):
+                # absolute path
+                filepath = self.rows
+            elif self.template_dir is None:
+                raise Exception(
+                    "rows: is a relative path but the template_dir was not available"
+                )
+            else:
+                filepath = normalise_path(
+                    os.path.join(self.template_dir, self.rows))
+
+            log.debug(f"loading csv from {filepath}")
+            return load_csv_with_types(filepath)
 
     def generate(self) -> None:
         """Generates the table data"""

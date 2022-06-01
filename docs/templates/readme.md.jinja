@@ -229,7 +229,11 @@ The library can be used in various ways
 
 ### Using the CLI
 
+---
+
 ### Using the Python Library
+
+---
 
 ### Deploying as a Cloud Function
 
@@ -245,9 +249,52 @@ gcloud functions deploy faux-data \
   --entry-point generate
 
 ```
+---
 
 ## Concepts
 
 ### Variables
 
+You can specify variables in a template to make parts of it modifyable at runtime. A common use case for this is to control the number of rows of data generated as follows:
+
+```
+variables:
+  row_count: 100
+tables:
+  - name: mytable
+    rows: {{ '{{ row_count }}' }}
+    columns:
+      ...
+```
+By default the above will generate 100 rows, but when running the template you can specify row_count to override this number. For examples through the cli you might run `faux run mytemplate.yaml --row_count 40000`.
+
+---
+
 ### Data Types and Output Types
+
+---
+
+### Using a CSV as the basis for a table
+
+You may want to contain hardcoded data for some or all columns of a table. You can do this by specifying the path to the file as the `rows:` attribute. The path should be either a path relative to the template directory or an absolute or cloud storage path.
+
+The following example will look for mytable.csv in the same directory as the template yaml file. This will work whether the template file is local or stored in cloud storage.
+
+```
+tables:
+  - name: mytable
+    rows: mytable.csv
+    columns:
+      ...
+```
+
+The following example, being an absolute pathm, will load the csv from cloud storage regardless of where the template yaml is loaded from.
+
+```
+tables:
+  - name: mytable
+    rows: gs://mybucket/templates/data/mytable.csv
+    columns:
+      ...
+```
+---

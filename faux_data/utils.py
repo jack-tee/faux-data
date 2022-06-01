@@ -12,11 +12,13 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import os
 import re
 from decimal import Decimal
 
 import pandas as pd
 
+GCS_PREFIX = "gs://"
 
 def get_parts(val: str):
     """Splits a string into parts respecting double and single quotes
@@ -102,3 +104,10 @@ def load_csv_with_types(path: str) -> pd.DataFrame:
 
     df['rowId'] = df.index
     return df
+
+
+def normalise_path(path: str) -> str:
+    """Normalise and resolve a path, preserving the cloud storage prefix gs:// if it exists."""
+
+    normpath = os.path.normpath(path)
+    return re.sub("^gs:\/(?![\/])", GCS_PREFIX, normpath)

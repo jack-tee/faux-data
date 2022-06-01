@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import base64
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
@@ -24,22 +25,32 @@ import yaml
 from . import config
 from .table import Table
 from .template_rendering import render_template
-from .utils import split_gcs_path
+from .utils import split_gcs_path, GCS_PREFIX
 
 log = logging.getLogger(__name__)
-
-GCS_PREFIX = "gs://"
 
 
 @dataclass(kw_only=True)
 class Template:
+    template_path: str | None = None
     variables: dict = field(default_factory=dict, repr=False)
     tables: List[Table]
     params: dict = field(default_factory=dict, init=False, repr=False)
 
-    def __init__(self, tables: dict, variables: dict = None):
+    def __init__(self,
+                 tables: dict,
+                 template_path: str = None,
+                 variables: dict = None):
+        self.template_path = template_path
         self.variables = variables
-        self.tables = [Table(**table) for table in tables]
+        self.tables = [
+            Table(template_dir=self.dirname, **table) for table in tables
+        ]
+
+    @property
+    def dirname(self):
+        return os.path.dirname(
+            self.template_path) if self.template_path else None
 
     def generate(self):
         for table in self.tables:
@@ -55,12 +66,13 @@ class Template:
     @classmethod
     def from_string(cls,
                     template_str: str,
+                    template_path: str = None,
                     params: dict[str, str] = {}) -> Template:
         """Instantiate a `Template` from a string."""
 
         rendered_template, _ = cls.render_template(template_str, params)
         parsed = yaml.safe_load(rendered_template)
-        return cls(**parsed)
+        return cls(template_path=template_path, **parsed)
 
     @classmethod
     def from_base64_string(cls, base64_str: str) -> Template:
@@ -97,11 +109,12 @@ class Template:
                 path.group("obj")).download_as_text()
 
         else:
-            log.debug(f"loading file from filesystem [{filepath}]")
-            with open(filepath, "r") as f:
+            template_path = os.path.abspath(filepath)
+            log.debug(f"loading file from filesystem [{template_path}]")
+            with open(template_path, "r") as f:
                 template_str = f.read()
 
-        return cls.from_string(template_str, params)
+        return cls.from_string(template_str, template_path, params)
 
     @classmethod
     def render_template(cls,

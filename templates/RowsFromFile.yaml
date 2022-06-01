@@ -1,5 +1,5 @@
 tables:
   - name: fromfile
-    rows: templates/test.csv
+    rows: ./test.csv
     columns:
       - col: mycol Random String 2 5

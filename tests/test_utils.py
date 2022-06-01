@@ -3,7 +3,7 @@ import unittest
 
 import freezegun
 import pytest
-from faux_data.utils import get_parts, split_gcs_path, extract_precision_and_scale
+from faux_data.utils import *
 from faux_data.template_rendering import resolve_time_period
 
 
@@ -110,5 +110,23 @@ class TestResolveTimePeriod:
         output_start, output_end = resolve_time_period(start, end)
         assert output_start == expected_start
         assert output_end == expected_end
+
+    # yapf: enable
+
+
+class TestNormalisePath:
+    # yapf: disable
+    test_values = [
+        ("gs://mybucket/myfile.csv", "gs://mybucket/myfile.csv"),
+        ("gs://mybucket//myfile.csv", "gs://mybucket/myfile.csv"),
+        ("gs://mybucket/somedir/../myfile.csv", "gs://mybucket/myfile.csv"),
+        ("gs://mybucket/somedir/./myfile.csv", "gs://mybucket/somedir/myfile.csv"),
+        ("/some/absolute/path/myfile.csv", "/some/absolute/path/myfile.csv"),
+        ("relative/path/file.csv", "relative/path/file.csv"),
+    ]
+
+    @pytest.mark.parametrize("path,normalised_path", test_values)
+    def test_path(self, path, normalised_path):
+        assert normalise_path(path) == normalised_path
 
     # yapf: enable
