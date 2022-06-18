@@ -1,0 +1,2 @@
+deployment_mode = "local"
+gcp_project_id = "NOTSET"

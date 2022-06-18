@@ -1,14 +1,17 @@
 import unittest
 from unittest.mock import MagicMock
 
-from google.cloud import bigquery
 import pandas as pd
-
+from dynaconf import Dynaconf
+from faux_data import target
 from faux_data.factory import TargetFactory
 from faux_data.table import Table
-from faux_data import target
+from google.cloud import bigquery
 
-target.GOOGLE_PROJECT_ID = 'myproject'
+target.settings = Dynaconf(
+    deployment_mode='local',
+    gcp_project_id='myproject',
+)
 
 tbl_conf = {
     "name": "dummy_table",

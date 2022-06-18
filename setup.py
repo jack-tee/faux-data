@@ -53,5 +53,6 @@ setup(name='faux-data',
           "tabulate",
           "fsspec",
           "gcsfs",
+          "dynaconf",
       ],
       entry_points={'console_scripts': ['faux=faux_data.cmd:main']})

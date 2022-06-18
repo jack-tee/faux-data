@@ -46,7 +46,7 @@ def generate(request):
         logging.error(e)
         return ''.join(traceback.format_exception(e)), 500
 
-    return "done"
+    return f"Completed {t.template_path}"
 
 
 class FauxDataSetupException(Exception):

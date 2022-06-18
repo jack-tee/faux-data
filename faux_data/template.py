@@ -22,7 +22,7 @@ from typing import List, Tuple
 
 import yaml
 
-from . import config
+from .config import settings
 from .table import Table
 from .template_rendering import render_template
 from .utils import split_gcs_path, GCS_PREFIX
@@ -87,7 +87,7 @@ class Template:
             f"instantiating Template from file: [{filepath}] with params: [{params}]"
         )
 
-        if config.DEPLOYMENT_MODE == 'cloud_function' \
+        if settings.deployment_mode == 'cloud_function' \
             or filepath.startswith(GCS_PREFIX):
 
             from google.cloud import storage
@@ -96,7 +96,7 @@ class Template:
             if filepath.startswith(GCS_PREFIX):
                 template_path = filepath
             else:
-                template_path = f"{GCS_PREFIX}{config.TEMPLATE_BUCKET}/{config.TEMPLATE_LOCATION}/{filepath}"
+                template_path = f"{GCS_PREFIX}{settings.template_bucket}/{settings.template_location}/{filepath}"
 
             log.debug(
                 f"retrieving file from cloud storage from path: [{template_path}]"

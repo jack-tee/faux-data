@@ -21,7 +21,7 @@ Faux Data was originally a Python port of the scala application [dunnhumby/data-
   - [Random](#random), [Selection](#selection), [Sequential](#sequential), [MapValues](#mapvalues), [Series](#series), [Fixed](#fixed), [Empty](#empty), [Map](#map), [Array](#array), [ExtractDate](#extractdate), [TimestampOffset](#timestampoffset)
 - [Targets](#targets)
   - [BigQuery](#bigquery), [CloudStorage](#cloudstorage), [LocalFile](#localfile), [Pubsub](#pubsub)
-- [Deploying](#deploying)
+- [Usage](#usage)
 - [Concepts](#concepts)
 
 ## Quick Start
@@ -1579,7 +1579,7 @@ Usage:
 
 
 
-## Deploying
+## Usage
 
 The library can be used in various ways
 - via the faux cli
@@ -1587,6 +1587,16 @@ The library can be used in various ways
 - running the code in a cloud function, passing a template to the cloud function at call time, or using a template stored in cloud storage
 
 ### Using the CLI
+
+#### Configuration
+To use Google Cloud targets do *one* of the following:
+- ensure that the `GOOGLE_CLOUD_PROJECT` environment variable is set 
+- set the `FAUXDATA_GCP_PROJECT_ID` environment variable
+- place a toml file at `~/.fauxdata/config.toml` with the following contents:
+
+```
+gcp_project_id = "myproject"
+```
 
 ---
 
@@ -1604,7 +1614,7 @@ gcloud functions deploy faux-data \
   --project XXX \
   --runtime python310 \
   --trigger-http \
-  --set-env-vars='FAUX_DATA_DEPLOYMENT_MODE=cloud_function,FAUX_DATA_TEMPLATE_BUCKET=df2test,FAUX_DATA_TEMPLATE_LOCATION=templates' \
+  --set-env-vars='FAUXDATA_DEPLOYMENT_MODE=cloud_function,FAUXDATA_TEMPLATE_BUCKET=df2test,FAUXDATA_TEMPLATE_LOCATION=templates' \
   --entry-point generate
 
 ```

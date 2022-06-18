@@ -14,12 +14,14 @@
 """
 Module for environment level config.
 """
+from pathlib import Path
 
-import os
+from dynaconf import Dynaconf
 
-GOOGLE_PROJECT_ID = os.environ.get("GOOGLE_PROJECT_ID", "weigh-in-service")
-DEPLOYMENT_MODE = os.environ.get("FAUX_DATA_DEPLOYMENT_MODE",
-                                 "local")  # or cloud_function
-
-TEMPLATE_BUCKET = os.environ.get("FAUX_DATA_TEMPLATE_BUCKET", "")
-TEMPLATE_LOCATION = os.environ.get("FAUX_DATA_TEMPLATE_LOCATION", "")
+settings = Dynaconf(
+    envvar_prefix="FAUXDATA",
+    settings_files=[
+        "default.toml",
+        Path.home() / '.fauxdata/config.toml',
+    ],
+)

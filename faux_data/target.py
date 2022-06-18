@@ -22,7 +22,7 @@ from typing import Optional, Tuple
 
 import pandas as pd
 
-from .config import GOOGLE_PROJECT_ID
+from .config import settings
 
 
 @dataclass(kw_only=True)
@@ -211,7 +211,7 @@ class BigQuery(Target):
         self.bigquery = bigquery
 
         if not self.project:
-            self.project = GOOGLE_PROJECT_ID
+            self.project = settings.gcp_project_id
 
         if not self.client:
             self.client = bigquery.Client(self.project)
@@ -318,7 +318,7 @@ class Pubsub(StreamingTarget, Target):
 
     def __post_init__(self):
         if not self.project:
-            self.project = GOOGLE_PROJECT_ID
+            self.project = settings.gcp_project_id
 
     @property
     def topic_path(self):
