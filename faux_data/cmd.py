@@ -20,6 +20,7 @@ from typing import List
 
 from jinja2 import Environment, FileSystemLoader
 
+from .config import log_config
 from .template import Template
 from .utils import get_parts
 from .version import __version__
@@ -81,6 +82,9 @@ def cmd(args: List[str]):
 
         case ['version'] | ['--version']:
             print(__version__)
+
+        case ['config'] | ['--config']:
+            print('\n'.join(c for c in log_config()))
 
         case [cmd, filename, *objs]:
             params = parse_params(objs)

@@ -14,9 +14,13 @@
 """
 Module for environment level config.
 """
+import logging
+import os
 from pathlib import Path
 
 from dynaconf import Dynaconf, Validator
+
+log = logging.getLogger(__name__)
 
 settings = Dynaconf(
     envvar_prefix="FAUXDATA",
@@ -25,6 +29,23 @@ settings = Dynaconf(
     ],
 )
 
-settings.validators.register(Validator("DEPLOYMENT_MODE", default="local"), )
+
+def default_gcp_project_id(settings, validator):
+    if settings.get("gcp_project_id"):
+        return
+    if os.environ.get("GOOGLE_PROJECT_ID"):
+        return os.environ.get("GOOGLE_PROJECT_ID")
+    else:
+        return "NOTSET"
+
+
+settings.validators.register(Validator("DEPLOYMENT_MODE", default="local"))
+settings.validators.register(
+    Validator("GCP_PROJECT_ID", default=default_gcp_project_id))
 
 settings.validators.validate_all()
+
+
+def log_config():
+    params = ["deployment_mode", "gcp_project_id"]
+    return [f"{param} is set to: [{settings.get(param)}]" for param in params]
