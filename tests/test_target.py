@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, ANY
 
 import pandas as pd
 from dynaconf import Dynaconf
@@ -104,8 +104,17 @@ class TestBigQueryTarget(unittest.TestCase):
 
         targ.save(tbl)
 
+        expected_job_config = bigquery.LoadJobConfig(
+            write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+            schema=[])
+
         mock_client.load_table_from_dataframe.assert_called_once_with(
-            dataset, "myproject.mydataset.my_table", job_config=None)
+            dataset, "myproject.mydataset.my_table", job_config=ANY)
+
+        job_config = mock_client.load_table_from_dataframe.call_args.kwargs[
+            "job_config"]
+        assert job_config.write_disposition == expected_job_config.write_disposition
+        assert job_config.schema == expected_job_config.schema
 
     def test_target_bigquery_specific_project_save(self):
         conf = """
@@ -124,8 +133,17 @@ class TestBigQueryTarget(unittest.TestCase):
 
         targ.save(tbl)
 
+        expected_job_config = bigquery.LoadJobConfig(
+            write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+            schema=[])
+
         mock_client.load_table_from_dataframe.assert_called_once_with(
-            dataset, "anotherproject.mydataset.my_table", job_config=None)
+            dataset, "anotherproject.mydataset.my_table", job_config=ANY)
+
+        job_config = mock_client.load_table_from_dataframe.call_args.kwargs[
+            "job_config"]
+        assert job_config.write_disposition == expected_job_config.write_disposition
+        assert job_config.schema == expected_job_config.schema
 
     def test_target_bigquery_truncate_save(self):
         conf = """

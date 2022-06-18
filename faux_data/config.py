@@ -45,6 +45,8 @@ settings.validators.register(
 
 settings.validators.validate_all()
 
+print(settings.vars)
+
 
 def log_config():
     params = ["deployment_mode", "gcp_project_id"]

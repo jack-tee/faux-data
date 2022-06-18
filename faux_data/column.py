@@ -31,6 +31,7 @@ pandas_type_mapping = {
     "Float": "float64",
     "Decimal": "float",
     "Timestamp": "datetime64[ns]",
+    "Datetime": "datetime64[ns]",
     "TimestampAsInt": "Int64",
     "Bool": "bool",
     "Date": "object",
@@ -89,6 +90,8 @@ class Column(abc.ABC):
                     df[self.name] = df[self.name].dt.strftime(self.date_format).astype('string')
                 else:
                     df[self.name] = df[self.name].astype(pandas_type_mapping[self.output_type])
+            case 'Timestamp' | 'Datetime':
+                df[self.name] = df[self.name].astype(pandas_type_mapping[self.output_type])
             case _:
                 raise Exception(f"output_type: [{self.output_type}] not recognised")
 
@@ -249,7 +252,7 @@ class Random(Column):
                 self.max = min(int(self.max), self.str_max_chars)
                 return pd.Series(list(''.join(random.choices(string.ascii_letters, k=random.randint(self.min, self.max))) for _ in range(rows)), dtype=self.pandas_type())
 
-            case 'Timestamp':
+            case 'Timestamp' | 'Datetime':
                 date_ints_series = self.random_date_ints(self.min, self.max, rows, self.time_unit)
                 return pd.to_datetime(date_ints_series, unit=self.time_unit)
 
@@ -355,14 +358,16 @@ class Sequential(Column):
     step: any = 1
 
     def add_column(self, df: pd.DataFrame) -> None:
-        if self.data_type in ['Int', 'Decimal', 'Float', None]:
-            df[self.name] = (df['rowId'] * float(self.step) + float(self.start)).round(decimals=self.decimal_places)
+        match self.data_type:
+            case 'Int' | 'Decimal' | 'Float' | None:
+        
+                df[self.name] = (df['rowId'] * float(self.step) + float(self.start)).round(decimals=self.decimal_places)
 
-        elif self.data_type == 'Timestamp':
-            df[self.name] = pd.date_range(start=self.start, periods=len(df), freq=self.step)
+            case 'Timestamp' | 'Datetime':
+                df[self.name] = pd.date_range(start=self.start, periods=len(df), freq=self.step)
 
-        else:
-            raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
+            case _:
+                raise ColumnGenerationException(f"Data type [{self.data_type}] not recognised")
 
 
 @dataclass(kw_only=True)

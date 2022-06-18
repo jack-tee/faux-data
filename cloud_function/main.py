@@ -42,11 +42,11 @@ def generate(request):
 
         t.run()
         logging.info(t)
+        return f"Completed {t.template_path}"
+
     except Exception as e:
         logging.error(e)
         return ''.join(traceback.format_exception(e)), 500
-
-    return f"Completed {t.template_path}"
 
 
 class FauxDataSetupException(Exception):

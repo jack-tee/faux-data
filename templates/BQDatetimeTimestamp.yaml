@@ -1,0 +1,11 @@
+tables:
+  - name: dt_ts
+    rows: 10
+    targets:
+      - target: BigQuery
+        dataset: fd_test
+        table: dt_ts
+        truncate: true
+    columns:
+      - col: ts_default Random Timestamp "2020-01-01" "2020-01-30"
+      - col: dt Random Datetime "2020-01-01" "2020-01-30"

@@ -231,6 +231,16 @@ class BigQuery(Target):
             dataset = self.client.create_dataset(dataset)
         return dataset
 
+    def get_bq_schema_fields(self, tbl):
+        """Generate a schema just for the fields that cannot have their types inferred from pandas types.
+        In this case it's just the Timestamp type that by default is loaded as a Datetime"""
+        schema = []
+        for col in tbl.columns:
+            if col.data_type == "Timestamp" and col.output_type is None:
+                schema.append(self.bigquery.SchemaField(col.name, self.bigquery.enums.SqlTypeNames.TIMESTAMP))
+        return schema
+
+
     def save(self, tbl):
         """The save method is called when this target is executed."""
         self.setup()
@@ -239,11 +249,14 @@ class BigQuery(Target):
         schema_table = f"{self.project}.{self.dataset}.{self.table}"
         dataset = self.get_or_create_dataset(dataset_id)
 
-        job_config = None
+        write_disposition = self.bigquery.WriteDisposition.WRITE_TRUNCATE if self.truncate else self.bigquery.WriteDisposition.WRITE_APPEND
 
-        if self.truncate:
-            job_config = self.bigquery.LoadJobConfig(
-                write_disposition=self.bigquery.WriteDisposition.WRITE_TRUNCATE)
+        schema = self.get_bq_schema_fields(tbl)
+
+        job_config = self.bigquery.LoadJobConfig(
+            write_disposition=write_disposition,
+            schema=schema,
+            )
 
         logging.info(f"Uploading {tbl.name} data to {schema_table}")
         result = self.client.load_table_from_dataframe(
