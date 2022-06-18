@@ -16,12 +16,15 @@ Module for environment level config.
 """
 from pathlib import Path
 
-from dynaconf import Dynaconf
+from dynaconf import Dynaconf, Validator
 
 settings = Dynaconf(
     envvar_prefix="FAUXDATA",
     settings_files=[
-        "default.toml",
         Path.home() / '.fauxdata/config.toml',
     ],
 )
+
+settings.validators.register(Validator("DEPLOYMENT_MODE", default="local"), )
+
+settings.validators.validate_all()
