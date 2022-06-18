@@ -10,7 +10,7 @@ from faux_data.factory import ColumnFactory
 from tests.utils import empty_df
 
 
-class TestColumnParsing(unittest.TestCase):
+class TestColumnParsing:
     # Fixed Column
     def test_fixed_column_parses(self):
         conf = """
@@ -152,18 +152,20 @@ class TestColumnParsing(unittest.TestCase):
         assert col.source_columns == ["col3", "col4"]
 
     # Sequential Column
-    def test_short_sequential(self):
-        conf = """
-        col: mycol Sequential Timestamp 10 3
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_short_sequential(self, data_type):
+        conf = f"""
+        col: mycol Sequential {data_type} 10 3
         """
         col = ColumnFactory.parse_from_yaml(conf)
         assert isinstance(col, column.Sequential)
         assert int(col.start) == 10
         assert int(col.step) == 3
 
-    def test_short_sequential_dates(self):
-        conf = """
-        col: mycol Sequential Timestamp "2021-03-02 00:06:02" -2H30m
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_short_sequential_dates(self, data_type):
+        conf = f"""
+        col: mycol Sequential {data_type} "2021-03-02 00:06:02" -2H30m
         """
         col = ColumnFactory.parse_from_yaml(conf)
         assert isinstance(col, column.Sequential)
@@ -180,11 +182,12 @@ class TestColumnParsing(unittest.TestCase):
         assert col.start == 0
         assert col.step == 1
 
-    def test_long_sequential_y2kbug(self):
-        conf = """
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_long_sequential_y2kbug(self, data_type):
+        conf = f"""
         name: mycol
         column_type: Sequential
-        data_type: Timestamp
+        data_type: {data_type}
         start: "1999-12-31 23:50:00" 
         step: "1min1S"
         """
@@ -349,7 +352,7 @@ class TestFixedColumnGeneration(unittest.TestCase):
         assert series.dtype == 'float64'
 
 
-class TestRandomColumnGeneration(unittest.TestCase):
+class TestRandomColumnGeneration:
 
     def test_random_column_no_data_type(self):
         conf = """
@@ -458,9 +461,10 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert series.dtype == 'string'
         assert all(lens == 5000)
 
-    def test_random_timestamp_default_ms(self):
-        conf = """
-        col: mycol Random Timestamp '2021-01-01' "2021-04-01 12:00:00"
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_random_timestamp_default_ms(self, data_type):
+        conf = f"""
+        col: mycol Random {data_type} '2021-01-01' "2021-04-01 12:00:00"
         """
         col = ColumnFactory.parse_from_yaml(conf)
         assert isinstance(col, column.Random)
@@ -477,9 +481,10 @@ class TestRandomColumnGeneration(unittest.TestCase):
         # mod 1000 to just get micros which should all be zero
         assert all(series.dt.microsecond.mod(1000) == 0)
 
-    def test_random_timestamp_microsecond_prec(self):
-        conf = """
-        col: mycol Random Timestamp '2021-01-01 08:00:00' "2021-01-01 16:00:00"
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_random_timestamp_microsecond_prec(self, data_type):
+        conf = f"""
+        col: mycol Random {data_type} '2021-01-01 08:00:00' "2021-01-01 16:00:00"
         time_unit: us
         """
         col = ColumnFactory.parse_from_yaml(conf)
@@ -495,9 +500,10 @@ class TestRandomColumnGeneration(unittest.TestCase):
         assert any(series.dt.microsecond > 0)
         assert all(series.dt.nanosecond == 0)
 
-    def test_random_timestamp_second_prec(self):
-        conf = """
-        col: mycol Random Timestamp '2021-01-01 08:00:00' "2021-01-01 16:00:00"
+    @pytest.mark.parametrize("data_type", ["Timestamp", "Datetime"])
+    def test_random_timestamp_second_prec(self, data_type):
+        conf = f"""
+        col: mycol Random {data_type} '2021-01-01 08:00:00' "2021-01-01 16:00:00"
         time_unit: s
         """
         col = ColumnFactory.parse_from_yaml(conf)
